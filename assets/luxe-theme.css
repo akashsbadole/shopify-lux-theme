@@ -939,36 +939,137 @@ h1,h2,h3,h4,h5,h6 { font-family: 'Cormorant Garamond', Georgia, serif; font-weig
 .promo-banner { 
   max-width: var(--container); 
   margin: 0 auto; 
-  padding: 40px var(--gutter); 
+  padding: 0 var(--gutter) 40px;
 }
 .promo-banner__inner {
   border-radius: var(--radius); overflow: hidden;
   background: linear-gradient(135deg, var(--color-blue) 0%, #1a5fa8 40%, var(--color-purple) 100%);
   padding: 48px 64px;
   display: flex; align-items: center; justify-content: space-between; position: relative;
+  min-height: 200px;
 }
 .promo-banner__inner::before {
   content:''; position:absolute; inset:0;
   background:url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='.03'%3E%3Ccircle cx='40' cy='40' r='40'/%3E%3C/g%3E%3C/svg%3E");
 }
-.promo-banner__content { position: relative; z-index: 1; max-width: 480px; }
-.promo-banner__heading { color: white; font-size: 2.6rem; margin-bottom: 10px; }
-.promo-banner__subheading { color: rgba(255,255,255,0.75); font-size: 15px; line-height: 1.6; }
-.promo-banner__actions { display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; }
-.promo-banner__visual { position:relative; width:240px; height:200px; flex-shrink:0; z-index:1; }
+.promo-banner__content { 
+  position: relative; 
+  z-index: 1; 
+  max-width: 520px; 
+  flex: 1;
+}
+.promo-banner__heading { 
+  color: white; 
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; 
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 12px; 
+}
+.promo-banner__subheading { 
+  color: rgba(255,255,255,0.85); 
+  font-size: 16px; 
+  line-height: 1.6; 
+  margin-bottom: 0;
+}
+.promo-banner__content p {
+  color: #ffffff;
+}
+.promo-banner__actions { 
+  display: flex; 
+  gap: 14px; 
+  margin-top: 28px; 
+  flex-wrap: wrap; 
+}
+
+/* Buttons */
+.promo-banner .btn--promo-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background: white;
+  color: var(--color-purple);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.promo-banner .btn--promo-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.promo-banner .btn--promo-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background: transparent;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.promo-banner .btn--promo-secondary:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: white;
+}
+
+.promo-banner__visual { 
+  position: relative; 
+  width: 220px; 
+  height: 180px; 
+  flex-shrink: 0; 
+  z-index: 1; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.promo-banner__image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
 .promo-banner__circles {
-  width: 200px; height: 200px; border-radius: 50%;
+  width: 180px; height: 180px; border-radius: 50%;
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
   display: flex; align-items: center; justify-content: center; position: relative;
 }
 .promo-banner__circles::before {
   content:''; position:absolute;
-  width:140px; height:140px; border-radius:50%;
-  background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);
+  width: 130px; height: 130px; border-radius:50%;
+  background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15);
 }
-.promo-banner__discount { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:white; z-index:2; }
-.promo-banner__discount-label { font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; opacity:0.7; display:block; margin-bottom:4px; }
-.promo-banner__discount-value { font-family:'Cormorant Garamond',serif; font-size:4rem; font-weight:300; line-height:1; display:block; }
+.promo-banner__discount { 
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  text-align: center; 
+  color: white; 
+  z-index: 2; 
+}
+.promo-banner__discount-label { 
+  font-size: 11px; 
+  font-weight: 600; 
+  letter-spacing: 0.12em; 
+  text-transform: uppercase; 
+  opacity: 0.75; 
+  display: block; 
+  margin-bottom: 6px; 
+}
+.promo-banner__discount-value { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: 3.8rem; 
+  font-weight: 400; 
+  line-height: 1; 
+  display: block; 
+}
 
 /* ─── IMAGE WITH TEXT ─── */
 .image-with-text { 
@@ -1399,8 +1500,19 @@ h1,h2,h3,h4,h5,h6 { font-family: 'Cormorant Garamond', Georgia, serif; font-weig
   .trust-bar__inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
   .product-grid, .product-grid--4-col, .product-grid--3-col { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .image-with-text__inner { grid-template-columns: 1fr; direction: ltr !important; }
-  .promo-banner__inner { padding: 36px 32px; }
-  .promo-banner__heading { font-size: 2rem; }
+  
+  /* Tablet Promo Banner */
+  .promo-banner { padding: 0 var(--gutter) 32px; }
+  .promo-banner__inner { 
+    padding: 36px 32px; 
+    gap: 24px;
+  }
+  .promo-banner__heading { font-size: 2.2rem; }
+  .promo-banner__subheading { font-size: 15px; }
+  .promo-banner__visual { width: 180px; height: 160px; }
+  .promo-banner__circles { width: 150px; height: 150px; }
+  .promo-banner__circles::before { width: 110px; height: 110px; }
+  .promo-banner__discount-value { font-size: 3rem; }
   
   /* Smaller product cards on tablet */
   .product-card__body { padding: 10px; }
@@ -1452,11 +1564,34 @@ h1,h2,h3,h4,h5,h6 { font-family: 'Cormorant Garamond', Georgia, serif; font-weig
   .product-card__title { font-size: 11px; margin-bottom: 4px; }
   .product-card__price-regular, .product-card__price-sale { font-size: 13px; }
   .product-card__swatches { margin-bottom: 4px; }
+  
+  /* Promo Banner mobile */
+  .promo-banner { padding: 0 var(--gutter) 24px; }
+  .promo-banner__inner { 
+    padding: 28px 24px; 
+    flex-direction: column; 
+    text-align: center;
+    gap: 24px;
+  }
+  .promo-banner__content { max-width: 100%; }
+  .promo-banner__heading { font-size: 1.8rem; }
+  .promo-banner__subheading { font-size: 14px; }
+  .promo-banner__actions { 
+    justify-content: center; 
+    margin-top: 20px;
+  }
+  .promo-banner__visual { 
+    width: 160px; 
+    height: 140px; 
+  }
+  .promo-banner__circles { width: 140px; height: 140px; }
+  .promo-banner__circles::before { width: 100px; height: 100px; }
+  .promo-banner__discount-value { font-size: 2.8rem; }
 }
-  .site-footer__bottom-inner { flex-direction: column; align-items: flex-start; }
-  .promo-banner__inner { padding: 28px 24px; flex-direction: column; }
-  .auth-form__row { grid-template-columns: 1fr; }
-  .main-cart__layout { grid-template-columns: 1fr; }
+
+.site-footer__bottom-inner { flex-direction: column; align-items: flex-start; }
+.auth-form__row { grid-template-columns: 1fr; }
+.main-cart__layout { grid-template-columns: 1fr; }
 
 
 /* ============================================================

@@ -4,18 +4,18 @@
   Usage: {% render 'cod-badge' %}
 {%- endcomment -%}
 
-{%- if section.settings.enable_cod != false -%}
+{%- if settings.enable_cod != false -%}
 <div class="cod-badge" id="CODBadge">
   <span class="cod-badge__icon">💵</span>
-  <span class="cod-badge__text">{{ section.settings.cod_text | default: 'Cash on Delivery Available' }}</span>
-  {%- if section.settings.show_cod_info -%}
-    <button type="button" class="cod-badge__info" aria-label="COD information" id="CODInfoBtn">
-      ?
-    </button>
+  <span class="cod-badge__text">{{ settings.cod_text | default: 'Cash on Delivery Available' }}</span>
+  {%- if settings.show_cod_info -%}
+  <button type="button" class="cod-badge__info" aria-label="COD information" id="CODInfoBtn">
+    ?
+  </button>
   {%- endif -%}
 </div>
 
-{%- if section.settings.show_cod_info -%}
+{%- if settings.show_cod_info -%}
 <div class="cod-info-modal" id="CODInfoModal" hidden>
   <div class="cod-info-modal__overlay" id="CODInfoOverlay"></div>
   <div class="cod-info-modal__content" role="dialog" aria-labelledby="CODInfoTitle">
@@ -27,7 +27,7 @@
       <li>✅ Pay only on delivery</li>
       <li>✅ Easy returns available</li>
     </ul>
-    <p><small>Note: COD available on orders up to ₹{{ section.settings.cod_limit | default: 50000 }}</small></p>
+    <p><small>Note: COD available on orders up to ₹{{ settings.cod_limit | default: 5000 }}</small></p>
   </div>
 </div>
 

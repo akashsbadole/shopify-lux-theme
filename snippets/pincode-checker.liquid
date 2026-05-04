@@ -59,7 +59,7 @@
     var deliveryDate = document.getElementById('DeliveryDate');
     var deliveryDays = document.getElementById('DeliveryDays');
 
-    var deliveryDaysMin = {{ section.settings.default_delivery_days | default: 5 }};
+    var deliveryDaysMin = {{ settings.default_delivery_days | default: 5 }};
     var deliveryDaysMax = deliveryDaysMin + 2;
 
     function formatDate(days) {

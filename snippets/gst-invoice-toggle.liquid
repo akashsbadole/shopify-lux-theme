@@ -5,14 +5,14 @@
   Usage: {% render 'gst-invoice-toggle' %}
 {%- endcomment -%}
 
-{%- if section.settings.enable_gst_toggle != false -%}
+{%- if settings.enable_gst_toggle != false -%}
 <div class="gst-invoice" id="GSTInvoice">
   <label class="gst-invoice__checkbox-wrap">
     <input type="checkbox" class="gst-invoice__check" id="GSTCheck">
     <span class="gst-invoice__icon">🏢</span>
     <span class="gst-invoice__text">
-      <strong>{{ section.settings.gst_label | default: 'Request GST Invoice' }}</strong>
-      <span class="gst-invoice__subtext">{{ section.settings.gst_sublabel | default: 'Add GSTIN for business purchase' }}</span>
+      <strong>{{ settings.gst_label | default: 'Request GST Invoice' }}</strong>
+      <span class="gst-invoice__subtext">{{ settings.gst_sublabel | default: 'Add GSTIN for business purchase' }}</span>
     </span>
   </label>
 

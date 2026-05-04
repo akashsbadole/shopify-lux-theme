@@ -6,7 +6,7 @@
         <h2 class="promo-banner__heading">{{ section.settings.heading }}</h2>
       {%- endif -%}
       {%- if section.settings.subheading != blank -%}
-        <p class="promo-banner__subheading">{{ section.settings.subheading }}</p>
+        <p class="promo-banner__subheading"{% if section.settings.subheading_color != blank %} style="color: {{ section.settings.subheading_color }}"{% endif %}>{{ section.settings.subheading }}</p>
       {%- endif -%}
       <div class="promo-banner__actions">
         {%- if section.settings.button_primary_label != blank -%}
@@ -23,16 +23,25 @@
     </div>
 
     <div class="promo-banner__visual" aria-hidden="true">
-      <div class="promo-banner__circles">
-        {%- if section.settings.discount_value != blank -%}
-          <div class="promo-banner__discount">
-            {%- if section.settings.discount_label != blank -%}
-              <span class="promo-banner__discount-label">{{ section.settings.discount_label }}</span>
-            {%- endif -%}
-            <strong class="promo-banner__discount-value">{{ section.settings.discount_value }}</strong>
-          </div>
-        {%- endif -%}
-      </div>
+      {%- if section.settings.image != blank -%}
+        <img 
+          src="{{ section.settings.image | image_url: width: 400 }}" 
+          alt="{{ section.settings.image_alt | default: 'Promotion image' }}"
+          class="promo-banner__image"
+          style="width: {{ section.settings.image_width | default: 200 }}px;"
+        >
+      {%- else -%}
+        <div class="promo-banner__circles">
+          {%- if section.settings.discount_value != blank -%}
+            <div class="promo-banner__discount">
+              {%- if section.settings.discount_label != blank -%}
+                <span class="promo-banner__discount-label">{{ section.settings.discount_label }}</span>
+              {%- endif -%}
+              <strong class="promo-banner__discount-value">{{ section.settings.discount_value }}</strong>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
 
   </div>
@@ -55,6 +64,12 @@
       "id": "subheading",
       "label": "Subheading",
       "default": "Join and unlock exclusive deals, early sale access, and free express shipping."
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#ffffff"
     },
     {
       "type": "text",
@@ -89,6 +104,29 @@
       "id": "discount_label",
       "label": "Discount label",
       "default": "Members Discount"
+    },
+    {
+      "type": "header",
+      "content": "Right Side Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Upload image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width (px)",
+      "min": 100,
+      "max": 400,
+      "step": 10,
+      "default": 200
     }
   ],
   "presets": [

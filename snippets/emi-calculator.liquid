@@ -6,12 +6,14 @@
 
 {%- assign emi_price = price | default: product.price -%}
 
-{%- if section.settings.enable_emi != false and emi_price >= section.settings.emi_min_amount -%}
+{%- assign emi_tenures_list = settings.emi_tenures | default: '3,6,9,12' | split: ',' -%}
+
+{%- if settings.enable_emi != false and emi_price >= settings.emi_min_amount -%}
 <div class="emi-calculator" id="EMICalculator" data-price="{{ emi_price }}">
-  <span class="emi-calculator__label">{{ section.settings.emi_label | default: 'Starting at' }}</span>
+  <span class="emi-calculator__label">{{ settings.emi_label | default: 'Starting at' }}</span>
   
   <div class="emi-calculator__options">
-    {%- for tenure in section.settings.emi_tenures | split: ',' -%}
+    {%- for tenure in emi_tenures_list -%}
       {%- assign months = tenure | strip | times: 1 -%}
       {%- assign emi = emi_price | divided_by: months -%}
       <button 
@@ -25,15 +27,15 @@
     {%- endfor -%}
   </div>
   
-  {%- if section.settings.show_emi_info -%}
+  {%- if settings.show_emi_info -%}
     <p class="emi-calculator__note">
-      {{ section.settings.emi_note | default: 'No Cost EMI available on selected cards' }}
+      {{ settings.emi_note | default: 'No Cost EMI available on selected cards' }}
       <a href="#" class="emi-calculator__link" id="EMIInfoLink">Details</a>
     </p>
   {%- endif -%}
 </div>
 
-{%- if section.settings.show_emi_info -%}
+{%- if settings.show_emi_info -%}
 <div class="emi-info-modal" id="EMIInfoModal" hidden>
   <div class="emi-info-modal__overlay" id="EMIInfoOverlay"></div>
   <div class="emi-info-modal__content" role="dialog" aria-labelledby="EMIInfoTitle">
