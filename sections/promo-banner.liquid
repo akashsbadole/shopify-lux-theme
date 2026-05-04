@@ -29,6 +29,8 @@
           alt="{{ section.settings.image_alt | default: 'Promotion image' }}"
           class="promo-banner__image"
           style="width: {{ section.settings.image_width | default: 200 }}px;"
+          width="400"
+          height="400"
         >
       {%- else -%}
         <div class="promo-banner__circles">

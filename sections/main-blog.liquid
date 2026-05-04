@@ -114,7 +114,7 @@
         {%- endcase -%}
       </div>
 
-      {%- if section.settings.enable_pagination -%}
+      {%- if section.settings.enable_pagination and paginate -%}
         {%- render 'pagination', paginate: paginate -%}
       {%- endif -%}
 
