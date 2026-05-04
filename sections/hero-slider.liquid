@@ -1,0 +1,276 @@
+{%- comment -%}
+  Hero Slider
+  Full-width slideshow with images, text, and CTAs.
+  Usage: Add to homepage templates.
+{%- endcomment -%}
+
+{%- if section.blocks.size > 0 -%}
+<div class="hero-slider section-{{ section.id }}" id="HeroSlider" data-autoplay="{% if section.settings.autoplay != false %}{{ settings.hero_slider_autoplay | default: true }}{% else %}false{% endif %}" data-speed="{{ settings.hero_slider_speed | default: 5 }}000" data-dots="{{ section.settings.show_dots }}" data-arrows="{{ section.settings.show_arrows }}">
+  <div class="hero-slider__track" id="HeroSliderTrack">
+    {%- for block in section.blocks -%}
+      <div class="hero-slider__slide" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        {%- if block.settings.image != blank -%}
+          {{ block.settings.image | image_url: width: 1920 | image_tag: class: 'hero-slider__img', loading: 'eager', fetchpriority: 'high' }}
+        {%- else -%}
+          <img 
+            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80" 
+            alt="Hero slide {{ forloop.index }}"
+            class="hero-slider__img"
+            loading="eager"
+          >
+        {%- endif -%}
+        
+        <div class="hero-slider__overlay" style="opacity: {{ block.settings.overlay_opacity | default: 40 | divided_by: 100.0 }};"></div>
+        
+        <div class="hero-slider__content">
+          {%- if block.settings.subheading != blank -%}
+            <p class="hero-slider__subheading">{{ block.settings.subheading }}</p>
+          {%- endif -%}
+          
+          {%- if block.settings.heading != blank -%}
+            <h2 class="hero-slider__heading">{{ block.settings.heading }}</h2>
+          {%- endif -%}
+          
+          {%- if block.settings.text != blank -%}
+            <p class="hero-slider__text">{{ block.settings.text }}</p>
+          {%- endif -%}
+          
+          {%- if block.settings.button_label_1 != blank or block.settings.button_label_2 != blank -%}
+            <div class="hero-slider__buttons">
+              {%- if block.settings.button_label_1 != blank -%}
+                <a href="{{ block.settings.button_url_1 | default: '#' }}" class="hero-slider__btn hero-slider__btn--primary">
+                  {{ block.settings.button_label_1 }}
+                </a>
+              {%- endif -%}
+              {%- if block.settings.button_label_2 != blank -%}
+                <a href="{{ block.settings.button_url_2 | default: '#' }}" class="hero-slider__btn hero-slider__btn--secondary">
+                  {{ block.settings.button_label_2 }}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+  
+  {%- if section.blocks.size > 1 -%}
+    {%- if section.settings.show_arrows != false -%}
+      <button class="hero-slider__arrow hero-slider__arrow--prev" aria-label="Previous slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="hero-slider__arrow hero-slider__arrow--next" aria-label="Next slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    {%- endif -%}
+    
+    {%- if section.settings.show_dots != false -%}
+      <div class="hero-slider__dots" role="tablist">
+        {%- for block in section.blocks -%}
+          <button class="hero-slider__dot{% if forloop.first %} hero-slider__dot--active{% endif %}" data-index="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}" aria-selected="{{ forloop.first }}"></button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var slider = document.getElementById('HeroSlider');
+  if (!slider) return;
+  
+  var track = document.getElementById('HeroSliderTrack');
+  var slides = slider.querySelectorAll('.hero-slider__slide');
+  var dots = slider.querySelectorAll('.hero-slider__dot');
+  var prevBtn = slider.querySelector('.hero-slider__arrow--prev');
+  var nextBtn = slider.querySelector('.hero-slider__arrow--next');
+  
+  var currentIndex = 0;
+  var totalSlides = slides.length;
+  var autoplay = slider.dataset.autoplay === 'true';
+  var speed = parseInt(slider.dataset.speed) || 5000;
+  var interval;
+  
+  function goToSlide(index) {
+    currentIndex = (index + totalSlides) % totalSlides;
+    track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+    
+    dots.forEach(function(dot, i) {
+      dot.classList.toggle('hero-slider__dot--active', i === currentIndex);
+      dot.setAttribute('aria-selected', i === currentIndex);
+    });
+  }
+  
+  function nextSlide() {
+    goToSlide(currentIndex + 1);
+  }
+  
+  function prevSlide() {
+    goToSlide(currentIndex - 1);
+  }
+  
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+  
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      goToSlide(parseInt(this.dataset.index));
+      if (autoplay) {
+        clearInterval(interval);
+        interval = setInterval(nextSlide, speed);
+      }
+    });
+  });
+  
+  if (autoplay) {
+    interval = setInterval(nextSlide, speed);
+    track.addEventListener('mouseenter', function() { clearInterval(interval); });
+    track.addEventListener('mouseleave', function() { interval = setInterval(nextSlide, speed); });
+  }
+  
+  goToSlide(0);
+});
+</script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Hero Slider",
+  "tag": "section",
+  "class": "hero-slider-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-play slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Slide duration (ms)",
+      "min": 3000,
+      "max": 8000,
+      "step": 500,
+      "default": 5000,
+      "info": "Time between slide transitions"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show navigation dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show arrow buttons",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "color",
+          "id": "gradient_start",
+          "label": "Placeholder gradient start",
+          "default": "#1a2a4a"
+        },
+        {
+          "type": "color",
+          "id": "gradient_end",
+          "label": "Placeholder gradient end",
+          "default": "#8A2BE2"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Overlay opacity %",
+          "min": 0,
+          "max": 80,
+          "step": 5,
+          "default": 40
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "New Collection"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Summer Essentials"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Discover the latest trends in fashion with our curated collection."
+        },
+        {
+          "type": "text",
+          "id": "button_label_1",
+          "label": "Primary button text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_url_1",
+          "label": "Primary button link"
+        },
+        {
+          "type": "text",
+          "id": "button_label_2",
+          "label": "Secondary button text",
+          "default": "Learn More"
+        },
+        {
+          "type": "url",
+          "id": "button_url_2",
+          "label": "Secondary button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Slider",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "subheading": "New Arrivals",
+            "heading": "Fresh Styles for You",
+            "text": "Explore our latest collection of premium products.",
+            "button_label_1": "Shop Now"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "subheading": "Limited Time",
+            "heading": "Up to 40% Off",
+            "text": "Don't miss out on our biggest sale of the season.",
+            "button_label_1": "View Deals"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

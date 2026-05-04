@@ -1,5 +1,14 @@
 {
   "sections": {
+    "hero_slider": {
+      "type": "hero-slider",
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": 5000,
+        "show_dots": true,
+        "show_arrows": true
+      }
+    },
     "hero_grid": {
       "type": "hero-grid",
       "settings": {
@@ -96,6 +105,7 @@
     }
   },
   "order": [
+    "hero_slider",
     "hero_grid",
     "trust_bar",
     "featured_collection",

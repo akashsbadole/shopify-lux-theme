@@ -380,6 +380,176 @@ h1,h2,h3,h4,h5,h6 { font-family: 'Cormorant Garamond', Georgia, serif; font-weig
 }
 .section-header__link:hover { gap: 8px; }
 
+/* ─── HERO SLIDER ─── */
+.hero-slider {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  background: var(--color-navy);
+}
+.hero-slider__track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+.hero-slider__slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+}
+.hero-slider__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-slider__placeholder {
+  width: 100%;
+  height: 100%;
+}
+.hero-slider__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(14,29,52,0.7) 0%, rgba(14,29,52,0.3) 100%);
+}
+.hero-slider__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 800px;
+  width: 90%;
+  text-align: center;
+  color: white;
+  z-index: 2;
+}
+.hero-slider__subheading {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-purple);
+  margin-bottom: 12px;
+}
+.hero-slider__heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  color: white;
+}
+.hero-slider__text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 28px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-slider__buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-slider__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.hero-slider__btn--primary {
+  background: var(--color-purple);
+  color: white;
+}
+.hero-slider__btn--primary:hover {
+  background: var(--color-purple-h);
+  transform: translateY(-2px);
+}
+.hero-slider__btn--secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.4);
+}
+.hero-slider__btn--secondary:hover {
+  border-color: white;
+  background: rgba(255,255,255,0.1);
+}
+
+/* Navigation arrows */
+.hero-slider__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 3;
+}
+.hero-slider__arrow:hover {
+  background: rgba(255,255,255,0.25);
+}
+.hero-slider__arrow--prev { left: 24px; }
+.hero-slider__arrow--next { right: 24px; }
+
+/* Dots */
+.hero-slider__dots {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+.hero-slider__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.hero-slider__dot--active,
+.hero-slider__dot:hover {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-slider { height: 500px; }
+  .hero-slider__heading { font-size: 2.5rem; }
+  .hero-slider__text { font-size: 15px; }
+}
+@media (max-width: 600px) {
+  .hero-slider { height: 400px; }
+  .hero-slider__heading { font-size: 1.8rem; }
+  .hero-slider__text { font-size: 14px; display: none; }
+  .hero-slider__buttons { gap: 10px; }
+  .hero-slider__btn { padding: 12px 24px; font-size: 13px; }
+  .hero-slider__arrow { width: 40px; height: 40px; }
+  .hero-slider__arrow--prev { left: 12px; }
+  .hero-slider__arrow--next { right: 12px; }
+}
+
 /* ─── HERO GRID ─── */
 .hero-grid { 
   max-width: var(--container); 
@@ -588,9 +758,7 @@ h1,h2,h3,h4,h5,h6 { font-family: 'Cormorant Garamond', Georgia, serif; font-weig
   color: white; 
   border-color: var(--color-purple); 
 }
-  display: flex; align-items: center; justify-content: center;
-  color: var(--color-navy); text-decoration: none; transition: all var(--transition);
-}
+
 .product-card__action-btn:hover { background: var(--color-purple); color: white; border-color: var(--color-purple); }
 .product-card__body { 
   padding: 12px; 
@@ -1289,7 +1457,7 @@ h1,h2,h3,h4,h5,h6 { font-family: 'Cormorant Garamond', Georgia, serif; font-weig
   .promo-banner__inner { padding: 28px 24px; flex-direction: column; }
   .auth-form__row { grid-template-columns: 1fr; }
   .main-cart__layout { grid-template-columns: 1fr; }
-}
+
 
 /* ============================================================
    PRIORITY 1 FEATURES CSS

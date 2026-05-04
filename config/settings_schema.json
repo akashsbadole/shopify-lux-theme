@@ -158,6 +158,245 @@
         "type": "url",
         "id": "social_twitter_url",
         "label": "Twitter / X"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube_url",
+        "label": "YouTube"
+      },
+      {
+        "type": "url",
+        "id": "social_linkedin_url",
+        "label": "LinkedIn"
+      }
+    ]
+  },
+  {
+    "name": "Homepage Sections",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Trust Bar"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_trust_bar",
+        "label": "Show trust bar on homepage",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Hero Slider"
+      },
+      {
+        "type": "checkbox",
+        "id": "hero_slider_autoplay",
+        "label": "Auto-play hero slider",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "hero_slider_speed",
+        "label": "Slider speed (seconds)",
+        "min": 3,
+        "max": 8,
+        "step": 1,
+        "default": 5
+      },
+      {
+        "type": "header",
+        "content": "Featured Products"
+      },
+      {
+        "type": "text",
+        "id": "featured_products_title",
+        "label": "Section title",
+        "default": "Featured Products"
+      },
+      {
+        "type": "checkbox",
+        "id": "featured_show_view_all",
+        "label": "Show 'View All' button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "featured_show_badges",
+        "label": "Show product badges",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "featured_show_swatches",
+        "label": "Show color swatches",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Trending Carousel"
+      },
+      {
+        "type": "text",
+        "id": "trending_title",
+        "label": "Section title",
+        "default": "Trending Now"
+      },
+      {
+        "type": "checkbox",
+        "id": "trending_autoplay",
+        "label": "Auto-scroll carousel",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Promo Banner"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_promo_banner",
+        "label": "Show promo banner",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "promo_discount_label",
+        "label": "Discount label",
+        "default": "Extra"
+      }
+    ]
+  },
+  {
+    "name": "Product Cards",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "product_show_badges",
+        "label": "Show badges (New, Sale)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_swatches",
+        "label": "Show color swatches",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_quick_view",
+        "label": "Show quick view button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_wishlist",
+        "label": "Show wishlist button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_rating",
+        "label": "Show star ratings",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Collection Page",
+    "settings": [
+      {
+        "type": "select",
+        "id": "collection_grid_columns",
+        "label": "Products per row (desktop)",
+        "options": [
+          { "value": "3", "label": "3 columns" },
+          { "value": "4", "label": "4 columns" },
+          { "value": "5", "label": "5 columns" }
+        ],
+        "default": "4"
+      },
+      {
+        "type": "range",
+        "id": "collection_products_per_page",
+        "label": "Products per page",
+        "min": 8,
+        "max": 48,
+        "step": 4,
+        "default": 24
+      },
+      {
+        "type": "select",
+        "id": "collection_pagination",
+        "label": "Pagination style",
+        "options": [
+          { "value": "standard", "label": "Standard (page numbers)" },
+          { "value": "load_more", "label": "Load More button" },
+          { "value": "infinite", "label": "Infinite scroll" }
+        ],
+        "default": "standard"
+      },
+      {
+        "type": "checkbox",
+        "id": "collection_show_filter",
+        "label": "Show filter panel",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "collection_show_sort",
+        "label": "Show sort dropdown",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Quick View",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_quick_view",
+        "label": "Enable Quick View modal",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "quick_view_show_description",
+        "label": "Show product description",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "quick_view_show_reviews",
+        "label": "Show reviews summary",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Blog",
+    "settings": [
+      {
+        "type": "text",
+        "id": "blog_placeholder_title",
+        "label": "Latest Articles title",
+        "default": "Latest Articles"
+      },
+      {
+        "type": "text",
+        "id": "blog_read_more",
+        "label": "Read more button text",
+        "default": "Read more"
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_excerpt",
+        "label": "Show article excerpt",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_date",
+        "label": "Show publish date",
+        "default": true
       }
     ]
   },
@@ -257,6 +496,30 @@
         "id": "enable_pincode_checker",
         "label": "Enable Pincode Checker",
         "default": true
+      },
+      {
+        "type": "text",
+        "id": "pincode_placeholder",
+        "label": "Input placeholder",
+        "default": "Enter PIN code"
+      },
+      {
+        "type": "text",
+        "id": "pincode_button",
+        "label": "Check button text",
+        "default": "Check"
+      },
+      {
+        "type": "text",
+        "id": "pincode_success_title",
+        "label": "Success message title",
+        "default": "Delivery available!"
+      },
+      {
+        "type": "text",
+        "id": "pincode_error_title",
+        "label": "Error message title",
+        "default": "Sorry, we don't deliver to this pincode yet."
       },
       {
         "type": "range",

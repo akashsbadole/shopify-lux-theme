@@ -20,6 +20,21 @@
   if product.available
     assign sold_out = false
   endif
+
+  assign show_badge = show_badge
+  if show_badge == nil
+    assign show_badge = settings.product_show_badges
+  endif
+
+  assign show_swatches = show_swatches
+  if show_swatches == nil
+    assign show_swatches = settings.product_show_swatches
+  endif
+
+  assign show_rating = show_rating
+  if show_rating == nil
+    assign show_rating = settings.product_show_rating
+  endif
 -%}
 
 <div class="product-card" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}" data-product-url="{{ product.url }}" data-product-title="{{ product.title | escape }}" data-product-price="{{ product.price }}" data-product-image="{{ product.featured_image | image_url: width: 400 }}">
