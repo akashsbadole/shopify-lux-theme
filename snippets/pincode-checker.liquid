@@ -1,0 +1,113 @@
+{%- comment -%}
+  Pincode Delivery Checker
+  Enter pincode → shows estimated delivery date.
+  Usage: {% render 'pincode-checker' %}
+{%- endcomment -%}
+
+<div class="pincode-checker" id="PincodeChecker">
+  <div class="pincode-checker__input-wrap">
+    <label for="PincodeInput" class="visually-hidden">Enter delivery pincode</label>
+    <input 
+      type="text" 
+      id="PincodeInput" 
+      class="pincode-checker__input" 
+      placeholder="Enter PIN code" 
+      maxlength="6"
+      pattern="[0-9]{6}"
+      inputmode="numeric"
+    >
+    <button type="button" class="pincode-checker__btn" id="PincodeCheckBtn">
+      Check
+    </button>
+  </div>
+
+  <div class="pincode-checker__result" id="PincodeResult" hidden>
+    <div class="pincode-checker__success" id="PincodeSuccess" hidden>
+      <span class="pincode-checker__icon">✅</span>
+      <div class="pincode-checker__details">
+        <p class="pincode-checker__msg">Delivery available!</p>
+        <p class="pincode-checker__date">
+          <strong>Expected delivery:</strong>
+          <span id="DeliveryDate">{{ 'now' | date: '%d %b' | replace: 'Jan', 'Jan' | replace: 'Feb', 'Feb' | replace: 'Mar', 'Mar' | replace: 'Apr', 'Apr' | replace: 'May', 'May' | replace: 'Jun', 'Jun' | replace: 'Jul', 'Jul' | replace: 'Aug', 'Aug' | replace: 'Sep', 'Sep' | replace: 'Oct', 'Oct' | replace: 'Nov', 'Nov' | replace: 'Dec', 'Dec' }}</span>
+          <span id="DeliveryDays">({{ section.settings.default_delivery_days | default: 5 }}-{{ section.settings.default_delivery_days | default: 5 | plus: 2 }} days)</span>
+        </p>
+        {%- if section.settings.show_cod_availability -%}
+          <p class="pincode-checker__cod">💵 COD available on this pincode</p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="pincode-checker__error" id="PincodeError" hidden>
+      <span class="pincode-checker__icon">❌</span>
+      <p class="pincode-checker__msg">Sorry, we don't deliver to this pincode yet.</p>
+      {%- if section.settings.show_alert -%}
+        <button type="button" class="pincode-checker__alert-btn" id="PincodeAlertBtn">
+          Notify me when available
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var input = document.getElementById('PincodeInput');
+    var btn = document.getElementById('PincodeCheckBtn');
+    var result = document.getElementById('PincodeResult');
+    var success = document.getElementById('PincodeSuccess');
+    var error = document.getElementById('PincodeError');
+    var deliveryDate = document.getElementById('DeliveryDate');
+    var deliveryDays = document.getElementById('DeliveryDays');
+
+    var deliveryDaysMin = {{ section.settings.default_delivery_days | default: 5 }};
+    var deliveryDaysMax = deliveryDaysMin + 2;
+
+    function formatDate(days) {
+      var date = new Date();
+      date.setDate(date.getDate() + days);
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return date.getDate() + ' ' + months[date.getMonth()];
+    }
+
+    function checkPincode() {
+      var pincode = input.value.trim();
+      if (pincode.length !== 6 || isNaN(pincode)) {
+        result.hidden = false;
+        success.hidden = true;
+        error.hidden = false;
+        return;
+      }
+
+      result.hidden = false;
+      var isServicable = true;
+      if (isServicable) {
+        success.hidden = false;
+        error.hidden = true;
+        var minDate = formatDate(deliveryDaysMin);
+        var maxDate = formatDate(deliveryDaysMax);
+        if (deliveryDate) deliveryDate.textContent = minDate + ' - ' + maxDate;
+        if (deliveryDays) deliveryDays.textContent = '(' + deliveryDaysMin + '-' + deliveryDaysMax + ' business days)';
+      } else {
+        success.hidden = true;
+        error.hidden = false;
+      }
+    }
+
+    if (btn) btn.addEventListener('click', checkPincode);
+    if (input) {
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); checkPincode(); }
+      });
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').slice(0, 6);
+      });
+    }
+
+    var alertBtn = document.getElementById('PincodeAlertBtn');
+    if (alertBtn) {
+      alertBtn.addEventListener('click', function() {
+        alert('Feature coming soon: Notify me when delivery is available to your area.');
+      });
+    }
+  });
+</script>

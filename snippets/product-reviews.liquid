@@ -1,0 +1,271 @@
+{%- comment -%}
+  Product Reviews Section
+  Supports:
+    1. Judge.me  — auto-detected via shop metafields
+    2. Yotpo     — auto-detected via shop metafields
+    3. Native    — Shopify product.metafields.reviews.*
+  Usage: {% render 'product-reviews', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign rating_val   = product.metafields.reviews.rating.value
+  assign rating_count = product.metafields.reviews.rating_count.value
+  assign review_list  = product.metafields.reviews.reviews.value
+-%}
+
+<div class="reviews-section" id="ProductReviews" data-product-id="{{ product.id }}">
+
+  <!-- ── Summary bar ── -->
+  <div class="reviews-summary">
+    <div class="reviews-summary__score">
+      {%- if rating_val != blank -%}
+        {%- assign rating_rounded = rating_val | round: 1 -%}
+        <span class="reviews-summary__avg">{{ rating_rounded }}</span>
+        <div class="reviews-summary__stars" aria-label="{{ rating_rounded }} out of 5 stars">
+          {%- for i in (1..5) -%}
+            {%- assign filled = rating_rounded | floor -%}
+            {%- assign next_filled = filled | plus: 1 -%}
+            {%- if i <= filled -%}
+              <span class="rev-star rev-star--full">★</span>
+            {%- elsif i == next_filled and rating_rounded != filled -%}
+              <span class="rev-star rev-star--half">★</span>
+            {%- else -%}
+              <span class="rev-star rev-star--empty">★</span>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if rating_count != blank -%}
+          <span class="reviews-summary__count">{{ rating_count }} review{{ rating_count | pluralize: '', 's' }}</span>
+        {%- endif -%}
+      {%- else -%}
+        <span class="reviews-summary__avg">–</span>
+        <div class="reviews-summary__stars">
+          {%- for i in (1..5) -%}<span class="rev-star rev-star--empty">★</span>{%- endfor -%}
+        </div>
+        <span class="reviews-summary__count">No reviews yet</span>
+      {%- endif -%}
+    </div>
+
+    <!-- Rating breakdown bars -->
+    {%- if rating_val != blank -%}
+      <div class="reviews-summary__bars" aria-label="Rating breakdown">
+        {%- for i in (5..1) -%}
+          {%- assign bar_key = 'rating_' | append: i | append: '_count' -%}
+          {%- assign bar_count = product.metafields.reviews[bar_key].value | default: 0 -%}
+          {%- assign bar_pct = bar_count | times: 100 | divided_by: rating_count | default: 0 -%}
+          <div class="reviews-bar-row">
+            <button class="reviews-bar-label" data-filter="{{ i }}" aria-label="Filter {{ i }} star reviews">{{ i }}★</button>
+            <div class="reviews-bar" role="presentation">
+              <div class="reviews-bar__fill" style="width:{{ bar_pct }}%"></div>
+            </div>
+            <span class="reviews-bar-count">{{ bar_count }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="reviews-summary__cta">
+      <button class="btn btn--primary" id="WriteReviewBtn" aria-controls="WriteReviewForm">
+        ✏️ Write a Review
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Write Review Form ── -->
+  <div class="write-review" id="WriteReviewForm" hidden>
+    <h3 class="write-review__title">Write a Review</h3>
+    <form class="write-review__form" id="ReviewSubmitForm" novalidate>
+      <input type="hidden" name="product_id" value="{{ product.id }}">
+
+      <!-- Star picker -->
+      <div class="write-review__field">
+        <label class="write-review__label">Your Rating <span aria-hidden="true">*</span></label>
+        <div class="star-picker" id="StarPicker" role="radiogroup" aria-label="Select rating">
+          {%- for i in (1..5) -%}
+            <button
+              type="button"
+              class="star-picker__star"
+              data-value="{{ i }}"
+              aria-label="{{ i }} star{{ i | pluralize: '', 's' }}"
+              aria-pressed="false"
+            >★</button>
+          {%- endfor -%}
+          <input type="hidden" name="rating" id="ReviewRatingInput" value="0" required>
+        </div>
+      </div>
+
+      <div class="write-review__row">
+        <div class="write-review__field">
+          <label class="write-review__label" for="ReviewAuthor">Name <span aria-hidden="true">*</span></label>
+          <input type="text" id="ReviewAuthor" name="author" class="write-review__input" placeholder="Your name" required autocomplete="name">
+        </div>
+        <div class="write-review__field">
+          <label class="write-review__label" for="ReviewEmail">Email <span aria-hidden="true">*</span></label>
+          <input type="email" id="ReviewEmail" name="email" class="write-review__input" placeholder="your@email.com" required autocomplete="email">
+          <p class="write-review__hint">Never displayed publicly</p>
+        </div>
+      </div>
+
+      <div class="write-review__field">
+        <label class="write-review__label" for="ReviewTitle">Review Title</label>
+        <input type="text" id="ReviewTitle" name="title" class="write-review__input" placeholder="Sum up your experience">
+      </div>
+
+      <div class="write-review__field">
+        <label class="write-review__label" for="ReviewBody">Your Review <span aria-hidden="true">*</span></label>
+        <textarea id="ReviewBody" name="body" class="write-review__textarea" rows="4" placeholder="Tell others what you think..." required></textarea>
+      </div>
+
+      <!-- Photo upload -->
+      <div class="write-review__field">
+        <label class="write-review__label">Add Photos</label>
+        <div class="review-photo-upload" id="ReviewPhotoUpload">
+          <input type="file" id="ReviewPhotos" name="photos" accept="image/*" multiple class="review-photo-upload__input">
+          <label for="ReviewPhotos" class="review-photo-upload__label">
+            <span class="review-photo-upload__icon">📷</span>
+            <span>Upload photos (max 5)</span>
+          </label>
+          <div class="review-photo-upload__previews" id="ReviewPhotoPreviews"></div>
+        </div>
+      </div>
+
+      <div class="write-review__error" id="ReviewError" hidden></div>
+
+      <div class="write-review__actions">
+        <button type="submit" class="btn btn--primary" id="ReviewSubmitBtn">Submit Review</button>
+        <button type="button" class="btn btn--outline" id="ReviewCancelBtn">Cancel</button>
+      </div>
+
+      <div class="write-review__success" id="ReviewSuccess" hidden>
+        <span class="write-review__success-icon">✅</span>
+        Thank you! Your review has been submitted for approval.
+      </div>
+    </form>
+  </div>
+
+  <!-- ── Filter + Sort bar ── -->
+  {%- if review_list != blank or rating_count > 0 -%}
+    <div class="reviews-toolbar">
+      <div class="reviews-toolbar__filters" id="ReviewFilters">
+        <button class="reviews-filter-btn reviews-filter-btn--active" data-filter="all">All</button>
+        <button class="reviews-filter-btn" data-filter="5">5★</button>
+        <button class="reviews-filter-btn" data-filter="4">4★</button>
+        <button class="reviews-filter-btn" data-filter="3">3★</button>
+        <button class="reviews-filter-btn" data-filter="2">2★</button>
+        <button class="reviews-filter-btn" data-filter="1">1★</button>
+      </div>
+      <div class="reviews-toolbar__sort">
+        <label for="ReviewSort" class="visually-hidden">Sort reviews</label>
+        <select id="ReviewSort" class="reviews-sort-select">
+          <option value="newest">Newest first</option>
+          <option value="highest">Highest rated</option>
+          <option value="lowest">Lowest rated</option>
+          <option value="helpful">Most helpful</option>
+        </select>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- ── Review cards ── -->
+  <div class="reviews-list" id="ReviewsList">
+
+    {%- if review_list != blank -%}
+      {%- for review in review_list -%}
+        <article class="review-card" data-rating="{{ review.rating }}" itemscope itemtype="https://schema.org/Review">
+          <div class="review-card__header">
+            <div class="review-card__author-wrap">
+              <div class="review-card__avatar" aria-hidden="true">
+                {{ review.author | slice: 0 | upcase }}
+              </div>
+              <div>
+                <p class="review-card__author" itemprop="author">{{ review.author }}</p>
+                {%- if review.verified -%}
+                  <span class="review-card__verified">✓ Verified Purchase</span>
+                {%- endif -%}
+              </div>
+            </div>
+            <div class="review-card__meta">
+              <div class="review-card__stars" aria-label="{{ review.rating }} stars" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+                <meta itemprop="ratingValue" content="{{ review.rating }}">
+                {%- for i in (1..5) -%}
+                  <span class="rev-star{% if i <= review.rating %} rev-star--full{% else %} rev-star--empty{% endif %}">★</span>
+                {%- endfor -%}
+              </div>
+              <time class="review-card__date" datetime="{{ review.created_at | date: '%Y-%m-%d' }}" itemprop="datePublished">
+                {{ review.created_at | date: '%b %d, %Y' }}
+              </time>
+            </div>
+          </div>
+
+          {%- if review.title != blank -%}
+            <h4 class="review-card__title" itemprop="name">{{ review.title }}</h4>
+          {%- endif -%}
+          <p class="review-card__body" itemprop="reviewBody">{{ review.body }}</p>
+
+          <!-- Photo gallery -->
+          {%- if review.photos != blank -%}
+            <div class="review-card__photos">
+              {%- for photo in review.photos -%}
+                <button class="review-card__photo-btn" data-src="{{ photo }}" aria-label="View photo {{ forloop.index }}">
+                  <img src="{{ photo }}" alt="Review photo {{ forloop.index }}" loading="lazy" width="80" height="80">
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="review-card__footer">
+            <span class="review-card__helpful-label">Helpful?</span>
+            <button class="review-card__helpful-btn" data-review-id="{{ review.id }}" data-action="yes" aria-label="Yes, helpful">
+              👍 <span class="review-card__helpful-count">{{ review.helpful_yes | default: 0 }}</span>
+            </button>
+            <button class="review-card__helpful-btn" data-review-id="{{ review.id }}" data-action="no" aria-label="Not helpful">
+              👎 <span class="review-card__helpful-count">{{ review.helpful_no | default: 0 }}</span>
+            </button>
+          </div>
+        </article>
+      {%- endfor -%}
+
+    {%- else -%}
+      <!-- Empty state — Judge.me / Yotpo widget fallback -->
+      <div class="reviews-empty" id="ReviewsEmpty">
+        {%- if shop.metafields.judgeme.widget != blank -%}
+          {{ shop.metafields.judgeme.widget }}
+        {%- elsif shop.metafields.yotpo.widget != blank -%}
+          {{ shop.metafields.yotpo.widget }}
+        {%- else -%}
+          <div class="reviews-empty__inner">
+            <div class="reviews-empty__icon">⭐</div>
+            <h3>Be the first to review</h3>
+            <p>Share your experience and help others decide.</p>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  <!-- ── Pagination ── -->
+  {%- if review_list.size > 5 -%}
+    <div class="reviews-pagination" id="ReviewsPagination">
+      <button class="reviews-pagination__btn" id="ReviewsPrev" aria-label="Previous reviews" disabled>
+        {%- render 'icon-arrow-left' -%}
+      </button>
+      <span class="reviews-pagination__info" id="ReviewsPaginationInfo">Page 1</span>
+      <button class="reviews-pagination__btn" id="ReviewsNext" aria-label="Next reviews">
+        {%- render 'icon-arrow-right' -%}
+      </button>
+    </div>
+  {%- endif -%}
+
+</div>
+
+<!-- Review photo lightbox -->
+<div class="review-lightbox" id="ReviewLightbox" aria-hidden="true" role="dialog" aria-label="Review photo">
+  <div class="review-lightbox__overlay" id="ReviewLightboxOverlay"></div>
+  <div class="review-lightbox__content">
+    <img src="" alt="Review photo" id="ReviewLightboxImg" class="review-lightbox__img" width="800" height="600">
+    <button class="review-lightbox__close" id="ReviewLightboxClose" aria-label="Close photo">
+      {%- render 'icon-x' -%}
+    </button>
+  </div>
+</div>

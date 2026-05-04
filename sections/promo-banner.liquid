@@ -1,0 +1,100 @@
+<div class="promo-banner section-{{ section.id }}">
+  <div class="promo-banner__inner">
+
+    <div class="promo-banner__content">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="promo-banner__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="promo-banner__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      <div class="promo-banner__actions">
+        {%- if section.settings.button_primary_label != blank -%}
+          <a href="{{ section.settings.button_primary_url | default: '#' }}" class="btn btn--promo-primary">
+            {{ section.settings.button_primary_label }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button_secondary_label != blank -%}
+          <a href="{{ section.settings.button_secondary_url | default: '#' }}" class="btn btn--promo-secondary">
+            {{ section.settings.button_secondary_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="promo-banner__visual" aria-hidden="true">
+      <div class="promo-banner__circles">
+        {%- if section.settings.discount_value != blank -%}
+          <div class="promo-banner__discount">
+            {%- if section.settings.discount_label != blank -%}
+              <span class="promo-banner__discount-label">{{ section.settings.discount_label }}</span>
+            {%- endif -%}
+            <strong class="promo-banner__discount-value">{{ section.settings.discount_value }}</strong>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Promo Banner",
+  "tag": "section",
+  "class": "promo-banner-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Members Get More"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Join and unlock exclusive deals, early sale access, and free express shipping."
+    },
+    {
+      "type": "text",
+      "id": "button_primary_label",
+      "label": "Primary button label",
+      "default": "Join Free Today"
+    },
+    {
+      "type": "url",
+      "id": "button_primary_url",
+      "label": "Primary button URL"
+    },
+    {
+      "type": "text",
+      "id": "button_secondary_label",
+      "label": "Secondary button label",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_secondary_url",
+      "label": "Secondary button URL"
+    },
+    {
+      "type": "text",
+      "id": "discount_value",
+      "label": "Discount value",
+      "default": "25%"
+    },
+    {
+      "type": "text",
+      "id": "discount_label",
+      "label": "Discount label",
+      "default": "Members Discount"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo Banner"
+    }
+  ]
+}
+{% endschema %}

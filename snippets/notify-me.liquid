@@ -1,0 +1,110 @@
+{%- comment -%}
+  Back-in-Stock / Notify Me
+  Shown instead of Add to Cart when variant is unavailable.
+  Submits to Shopify customer contact form + optionally to a third-party API.
+  Usage: {% render 'notify-me', product: product, variant: current_variant %}
+{%- endcomment -%}
+
+{%- assign is_sold_out = false -%}
+{%- unless variant.available -%}
+  {%- assign is_sold_out = true -%}
+{%- endunless -%}
+
+<div
+  class="notify-me{% unless is_sold_out %} notify-me--hidden{% endunless %}"
+  id="NotifyMe"
+  data-product-id="{{ product.id }}"
+  data-variant-id="{{ variant.id }}"
+>
+  <div class="notify-me__inner">
+
+    <div class="notify-me__header">
+      <div class="notify-me__icon" aria-hidden="true">🔔</div>
+      <div>
+        <h4 class="notify-me__title">Notify Me When Available</h4>
+        <p class="notify-me__subtitle">
+          Enter your email and we'll let you know the moment
+          <strong>{{ product.title }}</strong>
+          {%- unless product.has_only_default_variant -%}
+            ({{ variant.title }})
+          {%- endunless -%}
+          is back in stock.
+        </p>
+      </div>
+    </div>
+
+    <div id="NotifyMeForm">
+    {%- form 'customer', id: 'NotifyMeContactForm' -%}
+      <input type="hidden" name="contact[tags]" value="back-in-stock">
+      <input type="hidden" name="contact[note][product_id]" value="{{ product.id }}">
+      <input type="hidden" name="contact[note][variant_id]" id="NotifyVariantId" value="{{ variant.id }}">
+      <input type="hidden" name="contact[note][product_title]" value="{{ product.title | escape }}">
+      <input type="hidden" name="contact[note][variant_title]" value="{{ variant.title | escape }}">
+      <input type="hidden" name="contact[note][product_url]" value="{{ shop.url }}{{ product.url }}">
+
+      <div class="notify-me__form">
+        <div class="notify-me__field">
+          <label for="NotifyEmail" class="visually-hidden">Email address</label>
+          <input
+            type="email"
+            id="NotifyEmail"
+            name="contact[email]"
+            class="notify-me__input"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="notify-me__field notify-me__field--name">
+          <label for="NotifyName" class="visually-hidden">First name (optional)</label>
+          <input
+            type="text"
+            id="NotifyName"
+            name="contact[first_name]"
+            class="notify-me__input"
+            placeholder="First name (optional)"
+            autocomplete="given-name"
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn--primary notify-me__btn"
+          id="NotifyMeSubmit"
+        >
+          🔔 Notify Me
+        </button>
+      </div>
+
+      <!-- Error message -->
+      <div class="notify-me__error" id="NotifyMeError" hidden role="alert"></div>
+
+      <!-- Success state -->
+      {%- if form.posted_successfully? -%}
+        <div class="notify-me__success" role="status">
+          <span class="notify-me__success-icon">✅</span>
+          <strong>You're on the list!</strong> We'll email you at {{ form.email }} the moment this item is back.
+        </div>
+      {%- else -%}
+        <div class="notify-me__success" id="NotifyMeSuccess" hidden role="status">
+          <span class="notify-me__success-icon">✅</span>
+          <strong>You're on the list!</strong> We'll email you the moment this is back in stock.
+        </div>
+      {%- endif -%}
+
+    {%- endform -%}
+
+    </div><!-- /#NotifyMeForm -->
+
+    <!-- Social proof nudge -->
+    {%- assign waitlist_count = product.metafields.luxe.waitlist_count.value -%}
+    {%- if waitlist_count != blank and waitlist_count > 0 -%}
+      <p class="notify-me__social">
+        <span>👥</span>
+        <strong>{{ waitlist_count }}</strong> people are already waiting for this item.
+      </p>
+    {%- endif -%}
+
+  </div><!-- /.notify-me__inner -->
+</div>

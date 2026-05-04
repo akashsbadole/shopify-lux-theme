@@ -1,0 +1,199 @@
+<div class="main-cart section-{{ section.id }}">
+  <div class="main-cart__inner">
+    <h1 class="main-cart__title">Your Cart</h1>
+
+    {%- if cart.item_count > 0 -%}
+      {%- form 'cart', cart, id: 'CartPageForm', class: 'cart-form' -%}
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var giftCheck = document.getElementById('GiftWrapCheck');
+          var giftMsg = document.getElementById('GiftWrapMessage');
+          if (giftCheck && giftMsg) {
+            giftCheck.addEventListener('change', function() {
+              giftMsg.hidden = !this.checked;
+              document.querySelector('.cart-form').requestSubmit();
+            });
+          }
+        });
+      </script>
+        <div class="main-cart__layout">
+
+          <!-- Items -->
+          <div class="main-cart__items">
+            {%- for item in cart.items -%}
+              <div class="cart-page-item" data-key="{{ item.key }}">
+                <a href="{{ item.url }}" class="cart-page-item__img-link">
+                  {%- if item.image -%}
+                    {{ item.image | image_url: width: 200 | image_tag: class: 'cart-page-item__img', alt: item.title, loading: 'lazy' }}
+                  {%- endif -%}
+                </a>
+                <div class="cart-page-item__info">
+                  <a href="{{ item.url }}" class="cart-page-item__title">{{ item.product.title }}</a>
+                  {%- unless item.product.has_only_default_variant -%}
+                    <p class="cart-page-item__variant">{{ item.variant.title }}</p>
+                  {%- endunless -%}
+                  <p class="cart-page-item__price">{{ item.final_price | money }}</p>
+                </div>
+                <div class="cart-page-item__qty-wrap">
+                  <div class="cart-item__qty">
+                    <button type="button" class="cart-item__qty-btn" data-action="decrease" data-key="{{ item.key }}">−</button>
+                    <input type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" class="cart-item__qty-val cart-item__qty-input">
+                    <button type="button" class="cart-item__qty-btn" data-action="increase" data-key="{{ item.key }}">+</button>
+                  </div>
+                  <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0" class="cart-page-item__remove">Remove</a>
+                </div>
+                <p class="cart-page-item__total">{{ item.final_line_price | money }}</p>
+              </div>
+            {%- endfor -%}
+
+            <div class="main-cart__update">
+              <button type="submit" name="update" class="btn btn--outline">Update Cart</button>
+            </div>
+          </div>
+
+          <!-- Gift Wrapping -->
+            {%- if section.settings.enable_gift_wrap -%}
+              <div class="cart-gift-wrap">
+                <label class="cart-gift-wrap__label">
+                  <input type="checkbox" name="attributes[gift_wrap]" value="true" class="cart-gift-wrap__check" id="GiftWrapCheck" {% if cart.attributes.gift_wrap == 'true' %}checked{% endif %}>
+                  <span class="cart-gift-wrap__icon">🎁</span>
+                  <span class="cart-gift-wrap__text">
+                    <strong>{{ section.settings.gift_wrap_label | default: 'Add gift wrapping' }}</strong>
+                    <span class="cart-gift-wrap__price">{{ section.settings.gift_wrap_price | default: 50 | money }}</span>
+                  </span>
+                </label>
+                {%- if section.settings.show_gift_message -%}
+                  <div class="cart-gift-wrap__message" id="GiftWrapMessage" {% if cart.attributes.gift_wrap != 'true' %}hidden{% endif %}>
+                    <label for="GiftMessage" class="visually-hidden">Gift message</label>
+                    <textarea name="attributes[gift_message]" id="GiftMessage" class="cart-gift-wrap__textarea" placeholder="Add a personalized gift message (optional)" rows="3">{{ cart.attributes.gift_message }}</textarea>
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+          <!-- India: GST Invoice Toggle -->
+            {%- if section.settings.enable_gst_toggle -%}
+              <div class="cart-gst">
+                <label class="cart-gst__checkbox-wrap">
+                  <input type="checkbox" class="cart-gst__check" id="GSTCheck" {% if cart.attributes.gst_requested == 'true' %}checked{% endif %}>
+                  <span class="cart-gst__icon">🏢</span>
+                  <span class="cart-gst__text">
+                    <strong>{{ section.settings.gst_label | default: 'Request GST Invoice' }}</strong>
+                    <span class="cart-gst__subtext">Add GSTIN for business purchase</span>
+                  </span>
+                </label>
+                <div class="cart-gst__form" id="GSTForm" {% if cart.attributes.gst_requested != 'true' %}hidden{% endif %}>
+                  <input type="hidden" name="attributes[gst_requested]" id="GSTRequested" value="{% if cart.attributes.gst_requested == 'true' %}true{% else %}false{% endif %}">
+                  <div class="cart-gst__field">
+                    <label for="GSTCompany" class="cart-gst__label">Company Name</label>
+                    <input type="text" name="attributes[gst_company]" id="GSTCompany" class="cart-gst__input" value="{{ cart.attributes.gst_company }}" placeholder="Company name as per GSTIN">
+                  </div>
+                  <div class="cart-gst__field">
+                    <label for="GSTNumber" class="cart-gst__label">GSTIN (15 characters)</label>
+                    <input type="text" name="attributes[gst_number]" id="GSTNumber" class="cart-gst__input" value="{{ cart.attributes.gst_number }}" placeholder="e.g., 07AAPFU1234A1Z5" maxlength="15">
+                  </div>
+                </div>
+              </div>
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  var gstCheck = document.getElementById('GSTCheck');
+                  var gstForm = document.getElementById('GSTForm');
+                  var gstRequested = document.getElementById('GSTRequested');
+                  if (gstCheck && gstForm) {
+                    gstCheck.addEventListener('change', function() {
+                      gstForm.hidden = !this.checked;
+                      if (gstRequested) gstRequested.value = this.checked ? 'true' : 'false';
+                      document.querySelector('.cart-form').requestSubmit();
+                    });
+                  }
+                });
+              </script>
+            {%- endif -%}
+
+          <!-- Summary -->
+          <div class="main-cart__summary">
+            <h2 class="main-cart__summary-title">Order Summary</h2>
+            <div class="cart-totals">
+              <div class="cart-totals__row"><span>Subtotal</span><span>{{ cart.items_subtotal_price | money }}</span></div>
+              {%- if cart.total_discounts > 0 -%}
+                <div class="cart-totals__row cart-totals__row--discount"><span>Discount</span><span>-{{ cart.total_discounts | money }}</span></div>
+              {%- endif -%}
+              {%- if cart.attributes.gift_wrap == 'true' -%}
+                <div class="cart-totals__row"><span>Gift Wrapping</span><span>{{ section.settings.gift_wrap_price | default: 50 | money }}</span></div>
+              {%- endif -%}
+              <div class="cart-totals__row"><span>Shipping</span><span>Calculated at checkout</span></div>
+              <div class="cart-totals__row cart-totals__row--grand">
+                <span>Estimated Total</span>
+                <span>{%- if cart.attributes.gift_wrap == 'true' -%}{{ cart.total_price | plus: section.settings.gift_wrap_price | default: 50 | money }}{%- else -%}{{ cart.total_price | money }}{%- endif -%}</span>
+              </div>
+            </div>
+            <button type="submit" name="checkout" class="btn btn--checkout">Proceed to Checkout</button>
+            {{ form | payment_button }}
+            <a href="{{ routes.all_products_collection_url }}" class="main-cart__continue">← Continue Shopping</a>
+          </div>
+
+        </div>
+      {%- endform -%}
+    {%- else -%}
+      <div class="main-cart__empty">
+        <div class="main-cart__empty-icon">{%- render 'icon-cart' -%}</div>
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added anything yet.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Start Shopping</a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_gift_wrap",
+      "label": "Enable gift wrapping option",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "gift_wrap_label",
+      "label": "Gift wrap label",
+      "default": "Add gift wrapping"
+    },
+    {
+      "type": "range",
+      "id": "gift_wrap_price",
+      "label": "Gift wrap price (cents)",
+      "min": 0,
+      "max": 500,
+      "step": 10,
+      "default": 50,
+      "info": "Price in cents (e.g., 50 = ₹0.50 or $0.50)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gift_message",
+      "label": "Show gift message textarea",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "India: GST Invoice"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_gst_toggle",
+      "label": "Enable GST Invoice toggle",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "gst_label",
+      "label": "GST toggle label",
+      "default": "Request GST Invoice"
+    }
+  ]
+}
+{% endschema %}

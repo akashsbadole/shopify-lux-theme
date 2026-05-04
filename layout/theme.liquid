@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, height=device-height">
+  <meta name="theme-color" content="{{ settings.color_brand_blue }}">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  <meta property="og:type" content="website">
+  {%- if page_description -%}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  {%- if page_image -%}
+    <meta property="og:image" content="{{ page_image | image_url: width: 1200 }}">
+  {%- endif -%}
+
+  <!-- Fonts: Cormorant Garamond + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <!-- Shopify required tags -->
+  {{ content_for_header }}
+
+  <!-- LUXE Theme CSS -->
+  {{ 'luxe-theme.css' | asset_url | stylesheet_tag }}
+
+  <!-- CSS Variables from theme settings -->
+  <style>
+    :root {
+      --color-bg: {{ settings.color_background }};
+      --color-text: {{ settings.color_text }};
+      --color-blue: {{ settings.color_brand_blue }};
+      --color-purple: {{ settings.color_accent_purple }};
+      --color-muted: {{ settings.color_muted }};
+      --color-border: {{ settings.color_border }};
+      --font-size-base: {{ settings.font_size_base }}px;
+    }
+  </style>
+</head>
+
+<body class="luxe-body{% if request.page_type == 'index' %} page-home{% endif %}">
+
+  <!-- Skip to content for accessibility -->
+  <a class="skip-to-content" href="#MainContent">Skip to content</a>
+
+  <!-- Announcement Bar -->
+  {%- if settings.show_announcement and settings.announcement_text != blank -%}
+    {%- render 'announcement-bar' -%}
+  {%- endif -%}
+
+  <!-- Header / Navbar -->
+  {%- section 'header' -%}
+
+  <!-- Main Content -->
+  <main id="MainContent" class="luxe-main" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  <!-- Cart Drawer -->
+  {%- render 'cart-drawer' -%}
+
+  <!-- Quick View Modal -->
+  {%- render 'quick-view' -%}
+
+  <!-- India: Pincode Checker -->
+  {%- if settings.enable_pincode_checker -%}
+    <div class="pincode-checker-container">
+      <button type="button" class="pincode-checker-toggle" id="PincodeCheckerToggle" aria-expanded="false" aria-controls="PincodeCheckerWidget">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>Check Delivery</span>
+      </button>
+      <div class="pincode-checker-widget" id="PincodeCheckerWidget" hidden>
+        {%- render 'pincode-checker' -%}
+        <button type="button" class="pincode-checker-close" id="PincodeCheckerClose" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var toggle = document.getElementById('PincodeCheckerToggle');
+        var widget = document.getElementById('PincodeCheckerWidget');
+        var close = document.getElementById('PincodeCheckerClose');
+        if (toggle && widget) {
+          toggle.addEventListener('click', function() {
+            var expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', !expanded);
+            widget.hidden = expanded;
+          });
+          if (close) {
+            close.addEventListener('click', function() {
+              toggle.setAttribute('aria-expanded', 'false');
+              widget.hidden = true;
+            });
+          }
+        }
+      });
+    </script>
+  {%- endif -%}
+
+  <!-- India: WhatsApp Chat Button -->
+  {%- if settings.enable_whatsapp -%}
+    {%- render 'whatsapp-chat' -%}
+  {%- endif -%}
+
+  <!-- Footer -->
+  {%- section 'footer' -%}
+
+  <!-- Toast Notification -->
+  <div class="luxe-toast" id="luxeToast" role="status" aria-live="polite">
+    <span class="luxe-toast__icon">✓</span>
+    <span class="luxe-toast__msg" id="luxeToastMsg"></span>
+  </div>
+
+  <!-- LUXE Theme JS -->
+  <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
+
+</body>
+</html>

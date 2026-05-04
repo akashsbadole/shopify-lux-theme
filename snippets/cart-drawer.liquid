@@ -1,0 +1,197 @@
+<div class="cart-overlay" id="CartOverlay" aria-hidden="true"></div>
+
+<div
+  class="cart-drawer"
+  id="CartDrawer"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Shopping cart"
+>
+  <div class="cart-drawer__header">
+    <h2 class="cart-drawer__title">My Cart
+      <span class="cart-drawer__count" id="CartItemCount">({{ cart.item_count }})</span>
+    </h2>
+    <button class="cart-drawer__close" id="CartDrawerClose" aria-label="Close cart">
+      {%- render 'icon-x' -%}
+    </button>
+  </div>
+
+  <div class="cart-drawer__body" id="CartDrawerBody">
+    {%- if cart.item_count > 0 -%}
+      {%- render 'cart-items', cart: cart -%}
+    {%- else -%}
+      <div class="cart-drawer__empty" id="CartEmpty">
+        <div class="cart-drawer__empty-icon">{%- render 'icon-cart' -%}</div>
+        <p class="cart-drawer__empty-text">Your cart is empty.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Start Shopping</a>
+      </div>
+    {%- endif -%}
+    
+    <!-- Loading overlay -->
+    <div class="cart-drawer__loading" id="CartLoading" hidden>
+      <div class="cart-spinner"></div>
+    </div>
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+  <div class="cart-drawer__footer" id="CartFooter">
+    <!-- Totals -->
+    <div class="cart-totals" id="CartTotals">
+      <div class="cart-totals__row">
+        <span>Subtotal</span>
+        <span id="CartSubtotal">{{ cart.items_subtotal_price | money }}</span>
+      </div>
+      {%- if cart.total_discounts > 0 -%}
+        <div class="cart-totals__row cart-totals__row--discount">
+          <span>Discount</span>
+          <span>-{{ cart.total_discounts | money }}</span>
+        </div>
+      {%- endif -%}
+      <div class="cart-totals__row cart-totals__row--taxes">
+        <span>Taxes</span>
+        <span>Calculated at checkout</span>
+      </div>
+      <div class="cart-totals__row cart-totals__row--shipping">
+        <span>Shipping</span>
+        <span class="cart-totals__free">
+          {%- if cart.requires_shipping -%}
+            Calculated at checkout
+          {%- else -%}
+            FREE
+          {%- endif -%}
+        </span>
+      </div>
+      <div class="cart-totals__row cart-totals__row--grand">
+        <span>Total</span>
+        <span id="CartTotal">{{ cart.total_price | money }}</span>
+      </div>
+    </div>
+
+    <!-- Checkout -->
+    <form action="{{ routes.cart_url }}" method="post" id="CartCheckoutForm">
+      <button type="submit" name="checkout" class="btn btn--checkout" id="CartCheckoutBtn">
+        Proceed to Checkout
+      </button>
+    </form>
+
+    <!-- Express payment buttons (Shop Pay, Apple Pay, Google Pay) -->
+    {%- if settings.cart_show_express_pay -%}
+      <div class="cart-drawer__express-pay" id="CartExpressPay">
+        {{ form | payment_button }}
+      </div>
+    {%- endif -%}
+
+    <!-- Trust badges -->
+    <div class="cart-trust">
+      <div class="cart-trust__badge">🔒 Secure Checkout</div>
+      <div class="cart-trust__badge">↩️ Easy Returns</div>
+      <div class="cart-trust__badge">🚚 Fast Delivery</div>
+    </div>
+
+  </div>
+  {%- endif -%}
+</div>
+
+<!-- Cart AJAX API Endpoint -->
+<script type="text/javascript">
+  // Expose cart AJAX functions globally
+  window.LuxeCart = {
+    // Fetch cart data via Shopify Section Rendering API
+    fetchCart: function() {
+      return fetch(window.Shopify.routes.root + '?section_id=cart-ajax')
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+          var parser = new DOMParser();
+          return parser.parseFromString(html, 'text/html');
+        });
+    },
+
+    // Add item to cart
+    addItem: function(variantId, quantity, properties) {
+      var formData = {
+        'items': [{
+          'id': variantId,
+          'quantity': quantity,
+          'properties': properties || {}
+        }]
+      };
+      return fetch(window.Shopify.routes.root + 'cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      }).then(function(response) { return response.json(); });
+    },
+
+    // Update cart item quantity
+    updateQuantity: function(line, quantity) {
+      var formData = {
+        'line': line,
+        'quantity': quantity
+      };
+      return fetch(window.Shopify.routes.root + 'cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      }).then(function(response) { return response.json(); });
+    },
+
+    // Remove item from cart
+    removeItem: function(line) {
+      return this.updateQuantity(line, 0);
+    },
+
+    // Get cart
+    getCart: function() {
+      return fetch(window.Shopify.routes.root + 'cart.js')
+        .then(function(response) { return response.json(); });
+    },
+
+    // Open cart drawer
+    open: function() {
+      var drawer = document.getElementById('CartDrawer');
+      var overlay = document.getElementById('CartOverlay');
+      if (drawer) {
+        drawer.setAttribute('aria-hidden', 'false');
+        drawer.classList.add('active');
+        document.body.classList.add('cart-open');
+      }
+      if (overlay) overlay.setAttribute('aria-hidden', 'false');
+    },
+
+    // Close cart drawer
+    close: function() {
+      var drawer = document.getElementById('CartDrawer');
+      var overlay = document.getElementById('CartOverlay');
+      if (drawer) {
+        drawer.setAttribute('aria-hidden', 'true');
+        drawer.classList.remove('active');
+        document.body.classList.remove('cart-open');
+      }
+      if (overlay) overlay.setAttribute('aria-hidden', 'true');
+    },
+
+    // Toggle cart drawer
+    toggle: function() {
+      var drawer = document.getElementById('CartDrawer');
+      if (drawer && drawer.getAttribute('aria-hidden') === 'true') {
+        this.open();
+      } else {
+        this.close();
+      }
+    },
+
+    // Show toast notification
+    showToast: function(message, type) {
+      var toast = document.getElementById('luxeToast');
+      var msg = document.getElementById('luxeToastMsg');
+      if (toast && msg) {
+        msg.textContent = message;
+        toast.classList.add('show', type || '');
+        setTimeout(function() {
+          toast.classList.remove('show', type || '');
+        }, 3000);
+      }
+    }
+  };
+</script>

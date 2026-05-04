@@ -1,0 +1,98 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "Search products...",
+      "submit": "Search",
+      "no_results": "No results for",
+      "results_with_count_and_term": "{{ count }} results for \"{{ terms }}\""
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Cart",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "select_options": "Select options",
+      "quantity": "Quantity",
+      "vendor": "Vendor",
+      "description": "Description",
+      "share": "Share"
+    },
+    "product_card": {
+      "add_to_wishlist": "Add to wishlist",
+      "quick_view": "Quick view"
+    }
+  },
+  "cart": {
+    "title": "My Cart",
+    "empty": "Your cart is empty",
+    "checkout": "Proceed to Checkout",
+    "subtotal": "Subtotal",
+    "taxes": "Taxes",
+    "shipping": "Shipping",
+    "total": "Total",
+    "free_shipping": "FREE",
+    "calculated_at_checkout": "Calculated at checkout",
+    "update": "Update Cart",
+    "continue_shopping": "Continue Shopping",
+    "remove": "Remove"
+  },
+  "collections": {
+    "filtering": {
+      "filter_and_sort": "Filter & Sort",
+      "apply": "Apply",
+      "clear_all": "Clear All",
+      "sort_by": "Sort by",
+      "featured": "Featured",
+      "best_selling": "Best Selling",
+      "az": "A–Z",
+      "za": "Z–A",
+      "price_low_high": "Price: Low to High",
+      "price_high_low": "Price: High to Low",
+      "newest": "Newest"
+    }
+  },
+  "customer": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "forgot_password": "Forgot password?",
+      "no_account": "Don't have an account?",
+      "create_account": "Create one"
+    },
+    "register": {
+      "title": "Create Account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create Account",
+      "have_account": "Already have an account?",
+      "sign_in": "Sign in"
+    },
+    "account": {
+      "title": "My Account",
+      "sign_out": "Sign Out",
+      "order_history": "Order History",
+      "no_orders": "You haven't placed any orders yet.",
+      "account_details": "Account Details",
+      "manage_addresses": "Manage Addresses"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "open_cart": "Open cart",
+    "close_cart": "Close cart",
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

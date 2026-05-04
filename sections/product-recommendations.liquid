@@ -1,0 +1,65 @@
+<div
+  class="product-recommendations section-{{ section.id }}"
+  id="ProductRecommendations"
+  data-product-id="{{ product.id }}"
+  data-limit="{{ section.settings.products_to_show }}"
+  data-url="{{ routes.product_recommendations_url }}"
+>
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="product-recommendations__inner">
+      <div class="section-header">
+        <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      </div>
+      <div class="product-grid product-grid--4-col">
+        {%- for product in recommendations.products -%}
+          {%- render 'product-card', product: product, show_badge: true, show_swatches: true -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+  // Fetch product recommendations via AJAX
+  (function() {
+    var section = document.getElementById('ProductRecommendations');
+    if (!section) return;
+    var productId = section.dataset.productId;
+    var limit = section.dataset.limit;
+    var baseUrl = section.dataset.url;
+
+    fetch(baseUrl + '?product_id=' + productId + '&limit=' + limit + '&section_id={{ section.id }}')
+      .then(function(r) { return r.text(); })
+      .then(function(html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var recs = doc.getElementById('ProductRecommendations');
+        if (recs) section.innerHTML = recs.innerHTML;
+      });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Recommendations",
+  "tag": "section",
+  "class": "product-recommendations-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "You May Also Like"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 8,
+      "step": 2,
+      "default": 4
+    }
+  ]
+}
+{% endschema %}

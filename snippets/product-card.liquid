@@ -1,0 +1,182 @@
+{%- comment -%}
+  Renders a product card.
+  Accepts:
+    - product: {Object} Product Liquid object
+    - show_badge: {Boolean} show NEW/SALE badge
+    - show_swatches: {Boolean} show color option swatches
+    - show_rating: {Boolean} show star rating
+    - lazy_load: {Boolean} lazy load image (default true)
+  Usage:
+    {% render 'product-card', product: product, show_badge: true %}
+{%- endcomment -%}
+
+{%- liquid
+  assign featured_image = product.featured_media.preview_image
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+  assign sold_out = true
+  if product.available
+    assign sold_out = false
+  endif
+-%}
+
+<div class="product-card" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}" data-product-url="{{ product.url }}" data-product-title="{{ product.title | escape }}" data-product-price="{{ product.price }}" data-product-image="{{ product.featured_image | image_url: width: 400 }}">
+
+  <!-- Image -->
+  <div class="product-card__media">
+    <a href="{{ product.url }}" class="product-card__media-link" aria-label="{{ product.title | escape }}">
+      {%- if featured_image -%}
+        {{
+          featured_image
+          | image_url: width: 600
+          | image_tag:
+            class: 'product-card__img',
+            alt: featured_image.alt | default: product.title,
+            width: 600,
+            height: 600,
+            loading: lazy_load | default: 'lazy'
+        }}
+
+        {%- if product.media.size > 1 -%}
+          {{
+            product.media[1].preview_image
+            | image_url: width: 600
+            | image_tag:
+              class: 'product-card__img product-card__img--hover',
+              alt: product.title,
+              width: 600,
+              height: 600,
+              loading: 'lazy'
+          }}
+        {%- endif -%}
+
+      {%- else -%}
+        <div class="product-card__img-placeholder">
+          {%- render 'icon-image' -%}
+        </div>
+      {%- endif -%}
+    </a>
+
+    <!-- Badge -->
+    {%- if show_badge != false -%}
+      {%- if sold_out -%}
+        <span class="product-card__badge product-card__badge--sold-out">Sold Out</span>
+      {%- elsif on_sale -%}
+        {%- assign discount_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+        <span class="product-card__badge product-card__badge--sale">−{{ discount_pct }}%</span>
+      {%- elsif product.tags contains 'new' -%}
+        <span class="product-card__badge product-card__badge--new">New</span>
+      {%- elsif product.tags contains 'hot' -%}
+        <span class="product-card__badge product-card__badge--hot">Hot 🔥</span>
+      {%- endif -%}
+    {%- endif -%}
+
+    <!-- Hover quick actions -->
+    <div class="product-card__actions" aria-hidden="true">
+      <button
+        class="product-card__action-btn"
+        data-action="wishlist"
+        data-product-id="{{ product.id }}"
+        aria-label="Add to wishlist"
+        title="Wishlist"
+      >
+        {%- render 'icon-heart' -%}
+      </button>
+      <button
+        class="product-card__action-btn"
+        aria-label="Quick view"
+        title="Quick view"
+        data-quick-view="{{ product.url }}"
+        data-product-handle="{{ product.handle }}"
+        data-product-id="{{ product.id }}"
+      >
+        {%- render 'icon-eye' -%}
+      </button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="product-card__body">
+
+    <!-- Rating (metafield or app) -->
+    {%- if show_rating != false -%}
+      {%- if product.metafields.reviews.rating.value != blank -%}
+        {%- assign rating = product.metafields.reviews.rating.value -%}
+        <div class="product-card__rating" aria-label="{{ rating }} out of 5 stars">
+          {%- for i in (1..5) -%}
+            <span class="product-card__star{% if i <= rating %} product-card__star--filled{% endif %}">★</span>
+          {%- endfor -%}
+          {%- if product.metafields.reviews.rating_count.value != blank -%}
+            <span class="product-card__rating-count">({{ product.metafields.reviews.rating_count.value }})</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <!-- Title -->
+    <h3 class="product-card__title">
+      <a href="{{ product.url }}">{{ product.title | escape }}</a>
+    </h3>
+
+    <!-- Color swatches -->
+    {%- if show_swatches != false -%}
+      {%- assign color_option = nil -%}
+      {%- for option in product.options_with_values -%}
+        {%- if option.name == 'Color' or option.name == 'Colour' -%}
+          {%- assign color_option = option -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if color_option != nil and color_option.values.size > 1 -%}
+        <div class="product-card__swatches" aria-label="Color options">
+          {%- for value in color_option.values limit: 5 -%}
+            <button
+              class="product-card__swatch{% if forloop.first %} product-card__swatch--active{% endif %}"
+              style="background-color: {{ value | downcase | replace: ' ', '' }};"
+              aria-label="{{ value }}"
+              title="{{ value }}"
+              data-swatch="{{ value }}"
+            ></button>
+          {%- endfor -%}
+          {%- if color_option.values.size > 5 -%}
+            <span class="product-card__swatch-more">+{{ color_option.values.size | minus: 5 }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <!-- Price & CTA -->
+    <div class="product-card__footer">
+      <div class="product-card__price">
+        {%- if sold_out -%}
+          <span class="product-card__price-unavailable">Sold out</span>
+        {%- elsif on_sale -%}
+          <span class="product-card__price-sale">{{ product.price | money }}</span>
+          <span class="product-card__price-compare">{{ product.compare_at_price | money }}</span>
+        {%- else -%}
+          <span class="product-card__price-regular">{{ product.price | money }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- unless sold_out -%}
+        {%- if product.variants.size == 1 -%}
+          <button
+            class="btn btn--add-to-cart"
+            data-variant-id="{{ product.variants.first.id }}"
+            data-product-title="{{ product.title | escape }}"
+            aria-label="Add {{ product.title | escape }} to cart"
+          >
+            Add to Cart
+          </button>
+        {%- else -%}
+          <a href="{{ product.url }}" class="btn btn--select-options">
+            Select Options
+          </a>
+        {%- endif -%}
+      {%- endunless -%}
+    </div>
+  </div>
+
+</div>

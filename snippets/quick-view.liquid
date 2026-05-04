@@ -1,0 +1,125 @@
+{%- comment -%}
+  Quick View Modal
+  Triggered by [data-quick-view] buttons on product cards.
+  Loads product data via AJAX using Shopify Section Rendering API.
+{%- endcomment -%}
+
+<!-- Quick View Overlay -->
+<div
+  class="qv-overlay"
+  id="QuickViewOverlay"
+  aria-hidden="true"
+  role="presentation"
+></div>
+
+<!-- Quick View Modal -->
+<div
+  class="qv-modal"
+  id="QuickViewModal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Quick view"
+  aria-hidden="true"
+>
+  <div class="qv-modal__inner">
+
+    <!-- Close -->
+    <button class="qv-modal__close" id="QuickViewClose" aria-label="Close quick view">
+      {%- render 'icon-x' -%}
+    </button>
+
+    <!-- Content injected by JS -->
+    <div class="qv-modal__body" id="QuickViewBody">
+      <!-- Loading state -->
+      <div class="qv-modal__loading" id="QuickViewLoading">
+        <div class="qv-spinner">
+          <div class="qv-spinner__ring"></div>
+        </div>
+        <p>Loading product...</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Quick View Product Template (filled by JS after AJAX) -->
+<template id="QuickViewTemplate">
+  <div class="qv-product">
+
+    <!-- Gallery -->
+    <div class="qv-product__gallery">
+      <div class="qv-gallery__main" id="QVGalleryMain">
+        <!-- Images injected by JS -->
+      </div>
+      <div class="qv-gallery__thumbs" id="QVGalleryThumbs">
+        <!-- Thumbnails injected by JS -->
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="qv-product__info">
+
+      <p class="qv-product__vendor" id="QVVendor"></p>
+      <h2 class="qv-product__title" id="QVTitle"></h2>
+
+      <!-- Rating -->
+      <div class="qv-product__rating" id="QVRating" hidden></div>
+
+      <!-- Price -->
+      <div class="qv-product__price" id="QVPrice"></div>
+
+      <!-- Urgency badge -->
+      <div class="qv-product__urgency" id="QVUrgency" hidden></div>
+
+      <!-- Options -->
+      <div class="qv-product__options" id="QVOptions"></div>
+
+      <!-- Quantity -->
+      <div class="qv-product__qty-wrap">
+        <label class="qv-product__qty-label">Quantity</label>
+        <div class="qv-product__qty">
+          <button type="button" class="qv-qty-btn" data-action="decrease">−</button>
+          <input type="number" id="QVQty" value="1" min="1" class="qv-qty-input" aria-label="Quantity">
+          <button type="button" class="qv-qty-btn" data-action="increase">+</button>
+        </div>
+      </div>
+
+      <!-- CTA row -->
+      <div class="qv-product__cta">
+        <button
+          class="btn btn--atc"
+          id="QVAddToCart"
+          data-variant-id=""
+          data-product-title=""
+        >
+          <span class="btn__icon">+</span>
+          <span id="QVAddToCartText">Add to Cart</span>
+        </button>
+        <button
+          class="btn btn--wishlist"
+          id="QVWishlist"
+          data-product-id=""
+          aria-label="Add to wishlist"
+        >
+          {%- render 'icon-heart' -%}
+        </button>
+      </div>
+
+      <!-- Express pay placeholder -->
+      <div class="qv-product__express" id="QVExpressPay"></div>
+
+      <!-- Trust row -->
+      <div class="qv-product__trust">
+        <span>🔒 Secure</span>
+        <span>🚚 Free delivery</span>
+        <span>↩️ Easy returns</span>
+      </div>
+
+      <!-- View full details link -->
+      <a href="#" class="qv-product__full-link" id="QVFullLink">
+        View full product details →
+      </a>
+
+    </div>
+  </div>
+</template>

@@ -1,0 +1,291 @@
+<header class="site-header{% if section.settings.header_sticky %} site-header--sticky{% endif %}" id="SiteHeader" role="banner">
+  <div class="site-header__inner">
+
+    <!-- Mobile hamburger -->
+    <button
+      class="site-header__hamburger"
+      id="MobileMenuToggle"
+      aria-expanded="false"
+      aria-controls="MobileMenuDrawer"
+      aria-label="Open menu"
+    >
+      {%- render 'icon-hamburger' -%}
+    </button>
+
+    <!-- Logo -->
+    <a href="{{ routes.root_url }}" class="site-header__logo" aria-label="{{ shop.name }}">
+      {%- if section.settings.logo != blank -%}
+        {{
+          section.settings.logo
+          | image_url: width: 200
+          | image_tag: class: 'site-header__logo-img', alt: shop.name
+        }}
+      {%- else -%}
+        <div class="site-header__logo-default" aria-hidden="true">
+          <div class="logo-icon"></div>
+          <span class="logo-text">{{ shop.name }}</span>
+        </div>
+      {%- endif -%}
+    </a>
+
+    <!-- Desktop nav links -->
+    {%- if section.settings.menu != blank -%}
+      <nav class="site-nav" aria-label="Primary navigation">
+        <ul class="site-nav__list" role="list">
+          {%- for link in linklists[section.settings.menu].links -%}
+            <li class="site-nav__item{% if link.active %} site-nav__item--active{% endif %}{% if link.links != blank %} site-nav__item--has-dropdown{% endif %}">
+              {%- if link.links != blank -%}
+                <button
+                  class="site-nav__link site-nav__link--dropdown"
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  data-mega-trigger="{{ link.title | handleize }}"
+                >
+                  {{ link.title }}
+                  {%- render 'icon-chevron-down' -%}
+                </button>
+                {%- render 'mega-menu', link: link, blocks: section.blocks -%}
+              {%- else -%}
+                <a
+                  href="{{ link.url }}"
+                  class="site-nav__link{% if link.active %} site-nav__link--active{% endif %}"
+                >
+                  {{ link.title }}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <!-- Search -->
+    <div class="site-header__search">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="header-search-form">
+        <label for="HeaderSearchInput" class="visually-hidden">Search</label>
+        <div class="header-search-form__wrap">
+          <button type="submit" class="header-search-form__icon" aria-label="Submit search">
+            {%- render 'icon-search' -%}
+          </button>
+          <input
+            type="search"
+            id="HeaderSearchInput"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ 'general.search.placeholder' | t | default: 'Search products...' }}"
+            autocomplete="off"
+            class="header-search-form__input"
+          >
+          {%- if search.terms != blank -%}
+            <button type="button" class="header-search-form__clear" aria-label="Clear search">
+              {%- render 'icon-x' -%}
+            </button>
+          {%- endif -%}
+        </div>
+        <!-- Predictive search results container -->
+        <div class="predictive-search" id="PredictiveSearchResults" role="listbox" hidden></div>
+      </form>
+    </div>
+
+    <!-- Right actions -->
+    <div class="site-header__actions">
+
+      <!-- Wishlist (links to /pages/wishlist or can be wired to an app) -->
+      <a href="{{ routes.account_url }}" class="site-header__action-btn" aria-label="Wishlist">
+        {%- render 'icon-heart' -%}
+      </a>
+
+      <!-- Account -->
+      {%- if shop.customer_accounts_enabled -%}
+        <a
+          href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+          class="site-header__action-btn"
+          aria-label="{%- if customer -%}Account{%- else -%}Login{%- endif -%}"
+        >
+          {%- render 'icon-account' -%}
+        </a>
+      {%- endif -%}
+
+      <!-- Cart trigger -->
+      <button
+        class="site-header__action-btn site-header__cart-btn"
+        id="CartDrawerToggle"
+        aria-expanded="false"
+        aria-controls="CartDrawer"
+        aria-label="Open cart"
+      >
+        {%- render 'icon-cart' -%}
+        <span class="site-header__cart-badge{% if cart.item_count == 0 %} hidden{% endif %}" id="CartBadge">
+          {{- cart.item_count -}}
+        </span>
+      </button>
+
+    </div>
+  </div><!-- /.site-header__inner -->
+
+  <!-- Mobile Menu Drawer -->
+  <div
+    class="mobile-menu"
+    id="MobileMenuDrawer"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Mobile navigation"
+  >
+    <div class="mobile-menu__overlay" id="MobileMenuOverlay"></div>
+    <div class="mobile-menu__panel">
+      <div class="mobile-menu__header">
+        <a href="{{ routes.root_url }}" class="site-header__logo-default" aria-label="{{ shop.name }}">
+          <div class="logo-icon"></div>
+          <span class="logo-text">{{ shop.name }}</span>
+        </a>
+        <button class="mobile-menu__close" id="MobileMenuClose" aria-label="Close menu">
+          {%- render 'icon-x' -%}
+        </button>
+      </div>
+
+      <div class="mobile-menu__search">
+        <form action="{{ routes.search_url }}" method="get" role="search">
+          <label for="MobileSearchInput" class="visually-hidden">Search</label>
+          <div style="position:relative">
+            <span class="mobile-search-icon">{%- render 'icon-search' -%}</span>
+            <input
+              type="search"
+              id="MobileSearchInput"
+              name="q"
+              placeholder="Search products..."
+              class="mobile-menu__search-input"
+            >
+          </div>
+        </form>
+      </div>
+
+      <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+        <ul class="mobile-menu__list" role="list">
+          {%- for link in linklists[section.settings.menu].links -%}
+            <li class="mobile-menu__item">
+              <a href="{{ link.url }}" class="mobile-menu__link{% if link.active %} mobile-menu__link--active{% endif %}">
+                {{ link.title }}
+                {%- if link.links != blank -%}
+                  <span class="mobile-menu__arrow">{%- render 'icon-chevron-right' -%}</span>
+                {%- endif -%}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      <div class="mobile-menu__footer">
+        {%- if shop.customer_accounts_enabled -%}
+          <a href="{{ routes.account_url }}" class="mobile-menu__link">
+            {%- render 'icon-account' -%} My Account
+          </a>
+        {%- endif -%}
+        <a href="{{ routes.cart_url }}" class="mobile-menu__link">
+          {%- render 'icon-cart' -%} Cart ({{ cart.item_count }})
+        </a>
+      </div>
+    </div><!-- /.mobile-menu__panel -->
+  </div><!-- /.mobile-menu -->
+
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "site-header-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 160
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "header_sticky",
+      "label": "Sticky header",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "Mega Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "nav_link_title",
+          "label": "Nav link title (must match exactly)",
+          "info": "Enter the exact nav link text this mega menu attaches to, e.g. Collections"
+        },
+        {
+          "type": "text",
+          "id": "featured_heading",
+          "label": "Featured column heading",
+          "default": "Featured"
+        },
+        {
+          "type": "collection",
+          "id": "featured_collection",
+          "label": "Featured products collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "featured_image",
+          "label": "Promo image (used if no collection set)"
+        },
+        {
+          "type": "url",
+          "id": "featured_image_url",
+          "label": "Promo image link URL"
+        },
+        {
+          "type": "text",
+          "id": "promo_text",
+          "label": "Promo text overlay",
+          "default": "Shop the collection"
+        },
+        {
+          "type": "text",
+          "id": "promo_btn_label",
+          "label": "Promo button label",
+          "default": "Explore →"
+        },
+        {
+          "type": "text",
+          "id": "highlights_heading",
+          "label": "Highlights column heading",
+          "default": "Highlights"
+        },
+        {
+          "type": "link_list",
+          "id": "highlights_menu",
+          "label": "Highlights link list",
+          "info": "Create a link list in Navigation and select it here"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}

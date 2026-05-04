@@ -1,0 +1,124 @@
+{%- if section.settings.blog != blank -%}
+  {%- assign blog = section.settings.blog -%}
+  <div class="featured-blog section-{{ section.id }}">
+    <div class="featured-blog__inner">
+      <div class="section-header">
+        <h2 class="section-header__title">{{ section.settings.title | default: blog.title }}</h2>
+        {%- if section.settings.show_view_all -%}
+          <a href="{{ blog.url }}" class="section-header__link">{{ section.settings.view_all_label | default: 'View all' }} →</a>
+        {%- endif -%}
+      </div>
+
+      <div class="featured-blog__grid">
+        {%- for article in blog.articles limit: section.settings.post_limit -%}
+          <article class="featured-blog__article" id="Article-{{ article.id }}">
+            {%- if article.image and section.settings.show_image -%}
+              <a href="{{ article.url }}" class="featured-blog__image-link">
+                <img
+                  srcset="{{ article.image | image_url: width: 400 }} 400w,
+                          {{ article.image | image_url: width: 600 }} 600w"
+                  sizes="(min-width: 1200px) calc((1200px - 40px) / 3), (min-width: 750px) calc((750px - 20px) / 2), 100vw"
+                  src="{{ article.image | image_url: width: 600 }}"
+                  alt="{{ article.image.alt | escape }}"
+                  class="featured-blog__image"
+                  loading="{% if forloop.index0 < 3 %}eager{% else %}lazy{% endif %}"
+                  width="{{ article.image.width }}"
+                  height="{{ article.image.height }}"
+                >
+              </a>
+            {%- endif -%}
+
+            <div class="featured-blog__content">
+              <div class="featured-blog__meta">
+                <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+              </div>
+
+              <h3 class="featured-blog__title">
+                <a href="{{ article.url }}">{{ article.title }}</a>
+              </h3>
+
+              {%- if section.settings.show_excerpt -%}
+                <div class="featured-blog__excerpt rte">
+                  {%- if article.excerpt.size > 0 -%}
+                    {{ article.excerpt | truncate: 120 }}
+                  {%- else -%}
+                    {{ article.content | strip_html | truncate: 120 }}
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              <a href="{{ article.url }}" class="featured-blog__link">
+                {{ section.settings.read_more_label | default: 'Read more' }}
+              </a>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Featured Blog",
+  "tag": "section",
+  "class": "featured-blog-section",
+  "settings": [
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "info": "Defaults to blog title if empty"
+    },
+    {
+      "type": "range",
+      "id": "post_limit",
+      "label": "Number of posts",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all label",
+      "default": "View all"
+    },
+    {
+      "type": "text",
+      "id": "read_more_label",
+      "label": "Read more label",
+      "default": "Read more"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Blog"
+    }
+  ]
+}
+{% endschema %}

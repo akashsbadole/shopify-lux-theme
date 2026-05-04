@@ -1,0 +1,284 @@
+{%- comment -%}
+  Size Guide Modal
+  Accepts:
+    - product_type: {String} e.g. 'clothing', 'shoes', 'accessories'
+    - size_guide_metafield: optional metafield override
+  Triggered by [data-size-guide] button on product page.
+{%- endcomment -%}
+
+<!-- Size Guide Overlay -->
+<div class="sg-overlay" id="SizeGuideOverlay" aria-hidden="true"></div>
+
+<!-- Size Guide Modal -->
+<div
+  class="sg-modal"
+  id="SizeGuideModal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="SizeGuideTitle"
+  aria-hidden="true"
+>
+  <div class="sg-modal__inner">
+
+    <div class="sg-modal__header">
+      <h2 class="sg-modal__title" id="SizeGuideTitle">Size Guide</h2>
+      <button class="sg-modal__close" id="SizeGuideClose" aria-label="Close size guide">
+        {%- render 'icon-x' -%}
+      </button>
+    </div>
+
+    <!-- Unit Toggle -->
+    <div class="sg-modal__unit-toggle">
+      <button class="sg-unit-btn sg-unit-btn--active" data-unit="cm" aria-pressed="true">CM</button>
+      <button class="sg-unit-btn" data-unit="inch" aria-pressed="false">INCH</button>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="sg-modal__tabs" role="tablist">
+      {%- assign product_type_lower = product.type | downcase -%}
+
+      {%- if product_type_lower contains 'top' or product_type_lower contains 'shirt'
+          or product_type_lower contains 'jacket' or product_type_lower contains 'dress'
+          or product_type_lower contains 'clothing' or product_type_lower contains 'apparel'
+          or product_type == blank -%}
+        <button class="sg-tab sg-tab--active" role="tab" aria-selected="true" data-tab="tops">Tops</button>
+        <button class="sg-tab" role="tab" aria-selected="false" data-tab="bottoms">Bottoms</button>
+      {%- endif -%}
+
+      {%- if product_type_lower contains 'shoe' or product_type_lower contains 'footwear'
+          or product_type_lower contains 'sneaker' or product_type_lower contains 'boot' -%}
+        <button class="sg-tab sg-tab--active" role="tab" aria-selected="true" data-tab="shoes">Shoes</button>
+      {%- endif -%}
+
+      {%- if product_type_lower contains 'bag' or product_type_lower contains 'accessory'
+          or product_type_lower contains 'accessories' -%}
+        <button class="sg-tab sg-tab--active" role="tab" aria-selected="true" data-tab="accessories">Accessories</button>
+      {%- endif -%}
+    </div>
+
+    <!-- Tops table -->
+    <div class="sg-table-wrap sg-table-wrap--active" data-table="tops">
+      <table class="sg-table" id="SizeTableTops">
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>Chest <span class="sg-unit-label">(cm)</span></th>
+            <th>Waist <span class="sg-unit-label">(cm)</span></th>
+            <th>Hip <span class="sg-unit-label">(cm)</span></th>
+            <th>Shoulder <span class="sg-unit-label">(cm)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>XS</strong></td>
+            <td data-cm="81-86" data-inch="32-34">81–86</td>
+            <td data-cm="61-66" data-inch="24-26">61–66</td>
+            <td data-cm="86-91" data-inch="34-36">86–91</td>
+            <td data-cm="36" data-inch="14.2">36</td>
+          </tr>
+          <tr>
+            <td><strong>S</strong></td>
+            <td data-cm="86-91" data-inch="34-36">86–91</td>
+            <td data-cm="66-71" data-inch="26-28">66–71</td>
+            <td data-cm="91-96" data-inch="36-38">91–96</td>
+            <td data-cm="38" data-inch="15">38</td>
+          </tr>
+          <tr>
+            <td><strong>M</strong></td>
+            <td data-cm="91-96" data-inch="36-38">91–96</td>
+            <td data-cm="71-76" data-inch="28-30">71–76</td>
+            <td data-cm="96-101" data-inch="38-40">96–101</td>
+            <td data-cm="40" data-inch="15.7">40</td>
+          </tr>
+          <tr>
+            <td><strong>L</strong></td>
+            <td data-cm="96-101" data-inch="38-40">96–101</td>
+            <td data-cm="76-81" data-inch="30-32">76–81</td>
+            <td data-cm="101-106" data-inch="40-42">101–106</td>
+            <td data-cm="42" data-inch="16.5">42</td>
+          </tr>
+          <tr>
+            <td><strong>XL</strong></td>
+            <td data-cm="101-106" data-inch="40-42">101–106</td>
+            <td data-cm="81-86" data-inch="32-34">81–86</td>
+            <td data-cm="106-111" data-inch="42-44">106–111</td>
+            <td data-cm="44" data-inch="17.3">44</td>
+          </tr>
+          <tr>
+            <td><strong>XXL</strong></td>
+            <td data-cm="106-111" data-inch="42-44">106–111</td>
+            <td data-cm="86-91" data-inch="34-36">86–91</td>
+            <td data-cm="111-116" data-inch="44-46">111–116</td>
+            <td data-cm="46" data-inch="18.1">46</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bottoms table -->
+    <div class="sg-table-wrap" data-table="bottoms" hidden>
+      <table class="sg-table">
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>Waist <span class="sg-unit-label">(cm)</span></th>
+            <th>Hip <span class="sg-unit-label">(cm)</span></th>
+            <th>Inseam <span class="sg-unit-label">(cm)</span></th>
+            <th>Rise <span class="sg-unit-label">(cm)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>XS / 26</strong></td>
+            <td data-cm="61-66" data-inch="24-26">61–66</td>
+            <td data-cm="86-91" data-inch="34-36">86–91</td>
+            <td data-cm="76" data-inch="30">76</td>
+            <td data-cm="24" data-inch="9.5">24</td>
+          </tr>
+          <tr>
+            <td><strong>S / 28</strong></td>
+            <td data-cm="66-71" data-inch="26-28">66–71</td>
+            <td data-cm="91-96" data-inch="36-38">91–96</td>
+            <td data-cm="76" data-inch="30">76</td>
+            <td data-cm="25" data-inch="9.8">25</td>
+          </tr>
+          <tr>
+            <td><strong>M / 30</strong></td>
+            <td data-cm="71-76" data-inch="28-30">71–76</td>
+            <td data-cm="96-101" data-inch="38-40">96–101</td>
+            <td data-cm="78" data-inch="30.7">78</td>
+            <td data-cm="26" data-inch="10.2">26</td>
+          </tr>
+          <tr>
+            <td><strong>L / 32</strong></td>
+            <td data-cm="76-81" data-inch="30-32">76–81</td>
+            <td data-cm="101-106" data-inch="40-42">101–106</td>
+            <td data-cm="79" data-inch="31.1">79</td>
+            <td data-cm="27" data-inch="10.6">27</td>
+          </tr>
+          <tr>
+            <td><strong>XL / 34</strong></td>
+            <td data-cm="81-86" data-inch="32-34">81–86</td>
+            <td data-cm="106-111" data-inch="42-44">106–111</td>
+            <td data-cm="81" data-inch="31.9">81</td>
+            <td data-cm="28" data-inch="11">28</td>
+          </tr>
+          <tr>
+            <td><strong>XXL / 36</strong></td>
+            <td data-cm="86-91" data-inch="34-36">86–91</td>
+            <td data-cm="111-116" data-inch="44-46">111–116</td>
+            <td data-cm="82" data-inch="32.3">82</td>
+            <td data-cm="29" data-inch="11.4">29</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Shoes table -->
+    <div class="sg-table-wrap" data-table="shoes" hidden>
+      <table class="sg-table">
+        <thead>
+          <tr>
+            <th>IN Size</th>
+            <th>UK</th>
+            <th>EU</th>
+            <th>US (M)</th>
+            <th>US (W)</th>
+            <th>Foot Length <span class="sg-unit-label">(cm)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>5</strong></td><td>4</td><td>37</td><td>5</td><td>6</td><td data-cm="22.5" data-inch="8.9">22.5</td></tr>
+          <tr><td><strong>6</strong></td><td>5</td><td>38</td><td>6</td><td>7</td><td data-cm="23.5" data-inch="9.3">23.5</td></tr>
+          <tr><td><strong>7</strong></td><td>6</td><td>39</td><td>7</td><td>8</td><td data-cm="24.5" data-inch="9.6">24.5</td></tr>
+          <tr><td><strong>8</strong></td><td>7</td><td>41</td><td>8</td><td>9</td><td data-cm="25.5" data-inch="10">25.5</td></tr>
+          <tr><td><strong>9</strong></td><td>8</td><td>42</td><td>9</td><td>10</td><td data-cm="26.5" data-inch="10.4">26.5</td></tr>
+          <tr><td><strong>10</strong></td><td>9</td><td>43</td><td>10</td><td>11</td><td data-cm="27.5" data-inch="10.8">27.5</td></tr>
+          <tr><td><strong>11</strong></td><td>10</td><td>44</td><td>11</td><td>12</td><td data-cm="28.5" data-inch="11.2">28.5</td></tr>
+          <tr><td><strong>12</strong></td><td>11</td><td>46</td><td>12</td><td>13</td><td data-cm="29.5" data-inch="11.6">29.5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Accessories table -->
+    <div class="sg-table-wrap" data-table="accessories" hidden>
+      <table class="sg-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Size</th>
+            <th>Dimensions <span class="sg-unit-label">(cm)</span></th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ring</td>
+            <td>6 / S</td>
+            <td data-cm="16.5mm dia" data-inch="0.65in dia">16.5mm dia</td>
+            <td>Circumference 52mm</td>
+          </tr>
+          <tr>
+            <td>Ring</td>
+            <td>8 / M</td>
+            <td data-cm="18.2mm dia" data-inch="0.72in dia">18.2mm dia</td>
+            <td>Circumference 57mm</td>
+          </tr>
+          <tr>
+            <td>Ring</td>
+            <td>10 / L</td>
+            <td data-cm="19.8mm dia" data-inch="0.78in dia">19.8mm dia</td>
+            <td>Circumference 62mm</td>
+          </tr>
+          <tr>
+            <td>Belt</td>
+            <td>S (28–30)</td>
+            <td data-cm="75cm total" data-inch="29.5in total">75cm total</td>
+            <td>3 adjustment holes</td>
+          </tr>
+          <tr>
+            <td>Belt</td>
+            <td>M (32–34)</td>
+            <td data-cm="85cm total" data-inch="33.5in total">85cm total</td>
+            <td>3 adjustment holes</td>
+          </tr>
+          <tr>
+            <td>Scarf</td>
+            <td>One Size</td>
+            <td data-cm="180 × 70" data-inch="71 × 27.5">180 × 70</td>
+            <td>Unisex fit</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- How to measure -->
+    <div class="sg-modal__how-to">
+      <button class="sg-howto-toggle" id="SizeGuideHowTo" aria-expanded="false">
+        📏 How to measure yourself
+        <span class="sg-howto-icon">+</span>
+      </button>
+      <div class="sg-howto-body" id="SizeGuideHowToBody" hidden>
+        <div class="sg-howto-grid">
+          <div class="sg-howto-item">
+            <strong>Chest</strong>
+            <p>Measure around the fullest part of your chest, keeping the tape horizontal.</p>
+          </div>
+          <div class="sg-howto-item">
+            <strong>Waist</strong>
+            <p>Measure around your natural waistline, the narrowest part of your torso.</p>
+          </div>
+          <div class="sg-howto-item">
+            <strong>Hip</strong>
+            <p>Stand with feet together. Measure around the fullest part of your hips.</p>
+          </div>
+          <div class="sg-howto-item">
+            <strong>Inseam</strong>
+            <p>Measure from the crotch seam down to the bottom of the leg.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="main-account section-{{ section.id }}">
+  <div class="main-account__inner">
+    <div class="main-account__header">
+      <h1 class="main-account__title">My Account</h1>
+      <a href="{{ routes.account_logout_url }}" class="btn btn--outline btn--sm">Sign Out</a>
+    </div>
+    <div class="main-account__layout">
+      <div class="main-account__orders">
+        <h2 class="main-account__section-title">Order History</h2>
+        {%- if customer.orders.size > 0 -%}
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Order</th><th>Date</th><th>Status</th><th>Total</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- for order in customer.orders -%}
+                <tr>
+                  <td><a href="{{ order.customer_url }}">#{{ order.name }}</a></td>
+                  <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
+                  <td><span class="order-status order-status--{{ order.financial_status }}">{{ order.financial_status_label }}</span></td>
+                  <td>{{ order.total_price | money }}</td>
+                  <td><a href="{{ order.customer_url }}" class="btn btn--outline btn--sm">View</a></td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+        {%- else -%}
+          <p class="main-account__empty">You haven't placed any orders yet. <a href="{{ routes.all_products_collection_url }}">Start shopping →</a></p>
+        {%- endif -%}
+      </div>
+      <div class="main-account__details">
+        <h2 class="main-account__section-title">Account Details</h2>
+        <address class="main-account__address">
+          {{ customer.default_address | format_address }}
+        </address>
+        <a href="{{ routes.account_addresses_url }}" class="btn btn--outline btn--sm">Manage Addresses</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}{ "name": "Account", "tag": "section", "settings": [] }{% endschema %}

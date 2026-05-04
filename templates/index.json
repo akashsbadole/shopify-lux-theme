@@ -1,0 +1,106 @@
+{
+  "sections": {
+    "hero_grid": {
+      "type": "hero-grid",
+      "settings": {
+        "heading": "New Season Arrivals",
+        "subheading": "<p>Discover the latest in premium fashion and lifestyle.</p>",
+        "button_label": "Shop Now",
+        "button_url": "/collections/all",
+        "overlay_opacity": 40
+      }
+    },
+    "trust_bar": {
+      "type": "trust-bar",
+      "blocks": {
+        "trust_1": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "🚚",
+            "title": "Free Delivery",
+            "text": "<p>On all orders above $99. Same-day dispatch available.</p>"
+          }
+        },
+        "trust_2": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "🔒",
+            "title": "Secure Payments",
+            "text": "<p>Apple Pay, Google Pay, Shop Pay & all major cards.</p>"
+          }
+        },
+        "trust_3": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "↩️",
+            "title": "Easy Returns",
+            "text": "<p>30-day hassle-free return policy. No questions asked.</p>"
+          }
+        },
+        "trust_4": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "⭐",
+            "title": "Premium Quality",
+            "text": "<p>Curated products with authentic guarantee. 4.9★ rated.</p>"
+          }
+        }
+      },
+      "block_order": ["trust_1","trust_2","trust_3","trust_4"],
+      "settings": {}
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "Featured Products",
+        "collection": "frontpage",
+        "products_per_row": 4,
+        "rows": 2,
+        "show_view_all": true,
+        "show_badges": true,
+        "show_swatches": true
+      }
+    },
+    "product_carousel": {
+      "type": "product-carousel",
+      "settings": {
+        "title": "Trending Now",
+        "collection": "all",
+        "products_to_show": 12,
+        "autoplay": true,
+        "autoplay_speed": 4000
+      }
+    },
+    "promo_banner": {
+      "type": "promo-banner",
+      "settings": {
+        "heading": "Members Get More",
+        "subheading": "<p>Join and unlock exclusive deals, early sale access, and free express shipping on every order.</p>",
+        "button_primary_label": "Join Free Today",
+        "button_primary_url": "/account/register",
+        "button_secondary_label": "Learn More",
+        "button_secondary_url": "/pages/membership",
+        "discount_label": "Members Discount",
+        "discount_value": "25%"
+      }
+    },
+    "image_with_text": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "left",
+        "heading": "Crafted for the Modern Lifestyle",
+        "text": "<p>Every product in our collection is carefully curated for quality, aesthetics, and longevity. We believe in fewer, better things.</p>",
+        "button_label": "Our Story",
+        "button_url": "/pages/about"
+      }
+    }
+  },
+  "order": [
+    "hero_grid",
+    "trust_bar",
+    "featured_collection",
+    "product_carousel",
+    "promo_banner",
+    "image_with_text"
+  ]
+}

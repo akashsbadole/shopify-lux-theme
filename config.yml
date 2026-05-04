@@ -1,0 +1,15 @@
+development:
+  store: YOUR-STORE.myshopify.com
+  password: YOUR-ACCESS-TOKEN
+  theme_id: "YOUR-THEME-ID"
+  ignore_files:
+    - "*.json"
+    - "*.lock"
+
+production:
+  store: YOUR-STORE.myshopify.com
+  password: YOUR-ACCESS-TOKEN
+  theme_id: "YOUR-THEME-ID"
+  ignore_files:
+    - "*.json"
+    - "*.lock"

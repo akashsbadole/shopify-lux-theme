@@ -1,0 +1,48 @@
+{%- comment -%}
+  COD (Cash on Delivery) Badge
+  Shows prominent "COD Available" trust badge near ATC.
+  Usage: {% render 'cod-badge' %}
+{%- endcomment -%}
+
+{%- if section.settings.enable_cod != false -%}
+<div class="cod-badge" id="CODBadge">
+  <span class="cod-badge__icon">💵</span>
+  <span class="cod-badge__text">{{ section.settings.cod_text | default: 'Cash on Delivery Available' }}</span>
+  {%- if section.settings.show_cod_info -%}
+    <button type="button" class="cod-badge__info" aria-label="COD information" id="CODInfoBtn">
+      ?
+    </button>
+  {%- endif -%}
+</div>
+
+{%- if section.settings.show_cod_info -%}
+<div class="cod-info-modal" id="CODInfoModal" hidden>
+  <div class="cod-info-modal__overlay" id="CODInfoOverlay"></div>
+  <div class="cod-info-modal__content" role="dialog" aria-labelledby="CODInfoTitle">
+    <button type="button" class="cod-info-modal__close" id="CODInfoClose" aria-label="Close">×</button>
+    <h3 id="CODInfoTitle">Cash on Delivery</h3>
+    <p>Pay with cash when your order is delivered to your doorstep. No advance payment required.</p>
+    <ul>
+      <li>✅ No online payment needed</li>
+      <li>✅ Pay only on delivery</li>
+      <li>✅ Easy returns available</li>
+    </ul>
+    <p><small>Note: COD available on orders up to ₹{{ section.settings.cod_limit | default: 50000 }}</small></p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('CODInfoBtn');
+    var modal = document.getElementById('CODInfoModal');
+    var close = document.getElementById('CODInfoClose');
+    var overlay = document.getElementById('CODInfoOverlay');
+    if (btn && modal) {
+      btn.addEventListener('click', function() { modal.hidden = false; });
+      close.addEventListener('click', function() { modal.hidden = true; });
+      overlay.addEventListener('click', function() { modal.hidden = true; });
+    }
+  });
+</script>
+{%- endif -%}
+{%- endif -%}

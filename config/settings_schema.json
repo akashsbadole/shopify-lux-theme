@@ -1,0 +1,346 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "LUXE",
+    "theme_version": "1.0.0",
+    "theme_author": "LUXE Commerce",
+    "theme_documentation_url": "https://luxe.com/docs",
+    "theme_support_url": "https://luxe.com/support"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Page background",
+        "default": "#F7FAFC"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Primary text",
+        "default": "#0E1D34"
+      },
+      {
+        "type": "color",
+        "id": "color_brand_blue",
+        "label": "Brand Blue",
+        "default": "#003B73"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_purple",
+        "label": "Accent Purple (CTA buttons)",
+        "default": "#8A2BE2"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Muted / secondary text",
+        "default": "#5a6a80"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border color",
+        "default": "#D8E1EC"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "label": "Base font size",
+        "min": 12,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "default": 15
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "header_sticky",
+        "label": "Sticky header",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_announcement",
+        "label": "Show announcement bar",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "announcement_text",
+        "label": "Announcement text",
+        "default": "✨ Free shipping on orders over $99 · Use code LUXE20 for 20% off"
+      },
+      {
+        "type": "url",
+        "id": "announcement_url",
+        "label": "Announcement link"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          { "value": "drawer", "label": "Slide-out drawer" },
+          { "value": "page", "label": "Cart page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_express_pay",
+        "label": "Show express payment buttons",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "text",
+        "id": "footer_tagline",
+        "label": "Footer tagline",
+        "default": "Curated premium products, delivered to your doorstep."
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_show_newsletter",
+        "label": "Show newsletter signup",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "footer_newsletter_label",
+        "label": "Newsletter button label",
+        "default": "Subscribe"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_payment_icons",
+        "label": "Show payment icons",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_instagram_url",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook_url",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "social_twitter_url",
+        "label": "Twitter / X"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image"
+      }
+    ]
+  },
+  {
+    "name": "India-Specific Features",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cash on Delivery (COD)"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cod",
+        "label": "Enable COD Badge on product page",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cod_text",
+        "label": "COD badge text",
+        "default": "Cash on Delivery Available"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cod_info",
+        "label": "Show COD info tooltip",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cod_limit",
+        "label": "COD limit (₹)",
+        "min": 1000,
+        "max": 9000,
+        "step": 1000,
+        "default": 5000
+      },
+      {
+        "type": "header",
+        "content": "EMI Calculator"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_emi",
+        "label": "Enable EMI Calculator on product page",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "emi_label",
+        "label": "EMI label",
+        "default": "Starting at"
+      },
+      {
+        "type": "text",
+        "id": "emi_tenures",
+        "label": "EMI tenures (comma-separated)",
+        "default": "3,6,9,12"
+      },
+      {
+        "type": "range",
+        "id": "emi_min_amount",
+        "label": "Minimum price for EMI (₹)",
+        "min": 1000,
+        "max": 9000,
+        "step": 1000,
+        "default": 3000
+      },
+      {
+        "type": "checkbox",
+        "id": "show_emi_info",
+        "label": "Show EMI info tooltip",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "emi_note",
+        "label": "EMI note",
+        "default": "No Cost EMI available on selected cards"
+      },
+      {
+        "type": "header",
+        "content": "Pincode Delivery Checker"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_pincode_checker",
+        "label": "Enable Pincode Checker",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "default_delivery_days",
+        "label": "Default delivery days",
+        "min": 1,
+        "max": 14,
+        "step": 1,
+        "default": 5
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cod_availability",
+        "label": "Show COD availability in results",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_alert",
+        "label": "Show 'Notify me' option for unserviceable pincodes",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "WhatsApp Chat"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_whatsapp",
+        "label": "Enable WhatsApp Chat Button",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "WhatsApp number (with country code)",
+        "default": "919999999999"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_message",
+        "label": "Default message",
+        "default": "Hi! I'm interested in"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_label",
+        "label": "Button label",
+        "default": "Chat with us"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_whatsapp_label",
+        "label": "Show label on button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_notification_badge",
+        "label": "Show notification badge",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "GST Invoice"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_gst_toggle",
+        "label": "Enable GST Invoice toggle in cart",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gst_label",
+        "label": "GST toggle label",
+        "default": "Request GST Invoice"
+      },
+      {
+        "type": "text",
+        "id": "gst_sublabel",
+        "label": "GST toggle sublabel",
+        "default": "Add GSTIN for business purchase"
+      }
+    ]
+  }
+]

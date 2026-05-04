@@ -1,0 +1,203 @@
+<div
+  class="flash-sale section-{{ section.id }}"
+  id="FlashSale{{ section.id }}"
+  data-end="{{ section.settings.end_date }}"
+  data-timezone="{{ section.settings.timezone | default: 'UTC' }}"
+>
+  <div class="flash-sale__inner">
+
+    {%- if section.settings.show_badge -%}
+      <div class="flash-sale__badge" aria-hidden="true">
+        {{ section.settings.badge_text | default: '⚡ FLASH SALE' }}
+      </div>
+    {%- endif -%}
+
+    <div class="flash-sale__content">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="flash-sale__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="flash-sale__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <!-- Countdown clock -->
+    <div class="flash-sale__countdown" id="FSCountdown{{ section.id }}" role="timer" aria-live="polite" aria-label="Sale ends in">
+      <div class="flash-sale__unit">
+        <span class="flash-sale__val" id="FSDays{{ section.id }}">00</span>
+        <span class="flash-sale__lbl">Days</span>
+      </div>
+      <span class="flash-sale__sep" aria-hidden="true">:</span>
+      <div class="flash-sale__unit">
+        <span class="flash-sale__val" id="FSHours{{ section.id }}">00</span>
+        <span class="flash-sale__lbl">Hours</span>
+      </div>
+      <span class="flash-sale__sep" aria-hidden="true">:</span>
+      <div class="flash-sale__unit">
+        <span class="flash-sale__val" id="FSMins{{ section.id }}">00</span>
+        <span class="flash-sale__lbl">Mins</span>
+      </div>
+      <span class="flash-sale__sep" aria-hidden="true">:</span>
+      <div class="flash-sale__unit">
+        <span class="flash-sale__val" id="FSSecs{{ section.id }}">00</span>
+        <span class="flash-sale__lbl">Secs</span>
+      </div>
+    </div>
+
+    {%- if section.settings.button_label != blank -%}
+      <a
+        href="{{ section.settings.button_url | default: routes.all_products_collection_url }}"
+        class="flash-sale__btn btn"
+      >
+        {{ section.settings.button_label }}
+      </a>
+    {%- endif -%}
+
+  </div><!-- /.flash-sale__inner -->
+</div>
+
+<script>
+(function() {
+  var sectionId = '{{ section.id }}';
+  var endDateStr = '{{ section.settings.end_date }}';
+  var section = document.getElementById('FlashSale' + sectionId);
+  if (!section || !endDateStr) return;
+
+  var endTime = new Date(endDateStr).getTime();
+  if (isNaN(endTime)) return;
+
+  var daysEl  = document.getElementById('FSDays'  + sectionId);
+  var hoursEl = document.getElementById('FSHours' + sectionId);
+  var minsEl  = document.getElementById('FSMins'  + sectionId);
+  var secsEl  = document.getElementById('FSSecs'  + sectionId);
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    var now  = Date.now();
+    var diff = endTime - now;
+
+    if (diff <= 0) {
+      // Expired — hide section gracefully
+      section.classList.add('flash-sale--expired');
+      section.style.transition = 'opacity 0.8s ease, max-height 0.8s ease';
+      section.style.opacity = '0';
+      section.style.maxHeight = '0';
+      section.style.overflow = 'hidden';
+      setTimeout(function() { section.remove(); }, 900);
+      clearInterval(timer);
+      return;
+    }
+
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+
+    if (daysEl)  daysEl.textContent  = pad(d);
+    if (hoursEl) hoursEl.textContent = pad(h);
+    if (minsEl)  minsEl.textContent  = pad(m);
+    if (secsEl)  secsEl.textContent  = pad(s);
+
+    // Hide days unit if < 1 day left
+    var daysUnit = daysEl && daysEl.closest('.flash-sale__unit');
+    if (daysUnit) daysUnit.style.display = d === 0 ? 'none' : '';
+    var sepAfterDays = daysUnit && daysUnit.nextElementSibling;
+    if (sepAfterDays && sepAfterDays.classList.contains('flash-sale__sep')) {
+      sepAfterDays.style.display = d === 0 ? 'none' : '';
+    }
+  }
+
+  // Check if already expired before rendering
+  if (Date.now() >= endTime) { section.remove(); return; }
+
+  tick();
+  var timer = setInterval(tick, 1000);
+  window.addEventListener('beforeunload', function() { clearInterval(timer); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Flash Sale Timer",
+  "tag": "section",
+  "class": "flash-sale-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Flash Sale — Limited Time Only!"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Up to 40% off selected items. Hurry — offer expires soon."
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End date & time (ISO 8601)",
+      "info": "Format: 2026-12-31T23:59:59. Use your store timezone.",
+      "default": "2026-12-31T23:59:59"
+    },
+    {
+      "type": "text",
+      "id": "timezone",
+      "label": "Timezone label",
+      "default": "UTC",
+      "info": "Display only. Actual countdown uses browser time."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "⚡ FLASH SALE"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        { "value": "gradient", "label": "Blue-Purple Gradient" },
+        { "value": "dark",     "label": "Dark Navy" },
+        { "value": "fire",     "label": "Fire (Red-Orange)" },
+        { "value": "minimal",  "label": "Minimal Light" }
+      ],
+      "default": "gradient"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop the Sale →"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Flash Sale Timer",
+      "settings": {
+        "heading": "Flash Sale — Limited Time Only!",
+        "subheading": "Up to 40% off selected items. Hurry — offer expires soon.",
+        "end_date": "2026-12-31T23:59:59",
+        "style": "gradient",
+        "show_badge": true,
+        "badge_text": "⚡ FLASH SALE",
+        "button_label": "Shop the Sale →"
+      }
+    }
+  ]
+}
+{% endschema %}

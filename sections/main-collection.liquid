@@ -1,0 +1,350 @@
+{%- assign products_per_row = section.settings.products_per_row | default: 4 -%}
+{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+
+<div class="main-collection section-{{ section.id }}" id="MainCollection">
+  <div class="main-collection__inner">
+
+    <!-- Collection header -->
+    <div class="collection-header">
+      <div class="collection-header__info">
+        {%- if collection.image -%}
+          <div class="collection-header__img-wrap">
+            {{
+              collection.image
+              | image_url: width: 1400
+              | image_tag:
+                class: 'collection-header__img',
+                alt: collection.title,
+                fetchpriority: 'high'
+            }}
+            <div class="collection-header__overlay"></div>
+          </div>
+        {%- endif -%}
+        <div class="collection-header__text">
+          <h1 class="collection-header__title">{{ collection.title }}</h1>
+          {%- if section.settings.show_product_count -%}
+            <p class="collection-header__count">{{ collection.products_count }} products</p>
+          {%- endif -%}
+          {%- if collection.description != blank -%}
+            <div class="collection-header__desc rte">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Filters & Sort bar -->
+      {%- if section.settings.show_filter or section.settings.show_sort -%}
+        <div class="collection-toolbar">
+          {%- if section.settings.show_filter -%}
+            <button class="collection-toolbar__filter-btn" id="FilterToggle" aria-expanded="false" aria-controls="FilterPanel">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+              Filter &amp; Sort
+            </button>
+          {%- endif -%}
+
+          {%- if section.settings.show_sort -%}
+            <div class="collection-toolbar__sort">
+              <label for="SortBy" class="visually-hidden">Sort by</label>
+              <select name="sort_by" id="SortBy" class="collection-toolbar__sort-select" data-default="{{ sort_by }}">
+                {%- assign sort_options = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-descending' | split: ',' -%}
+                {%- for option in sort_options -%}
+                  {%- assign option_label = option -%}
+                  {%- case option -%}
+                    {%- when 'manual' -%}{%- assign option_label = 'Featured' -%}
+                    {%- when 'best-selling' -%}{%- assign option_label = 'Best Selling' -%}
+                    {%- when 'title-ascending' -%}{%- assign option_label = 'A–Z' -%}
+                    {%- when 'title-descending' -%}{%- assign option_label = 'Z–A' -%}
+                    {%- when 'price-ascending' -%}{%- assign option_label = 'Price: Low to High' -%}
+                    {%- when 'price-descending' -%}{%- assign option_label = 'Price: High to Low' -%}
+                    {%- when 'created-descending' -%}{%- assign option_label = 'Newest' -%}
+                  {%- endcase -%}
+                  <option value="{{ option }}"{% if sort_by == option %} selected{% endif %}>{{ option_label }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+
+          <!-- Grid layout toggle -->
+          <div class="collection-toolbar__view" aria-label="Grid layout">
+            <button class="collection-toolbar__view-btn{% if products_per_row == 3 %} active{% endif %}" data-cols="3" aria-label="3 columns">
+              <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="3.5" height="3.5"/><rect x="4.25" y="0" width="3.5" height="3.5"/><rect x="8.5" y="0" width="3.5" height="3.5"/><rect x="0" y="4.25" width="3.5" height="3.5"/><rect x="4.25" y="4.25" width="3.5" height="3.5"/><rect x="8.5" y="4.25" width="3.5" height="3.5"/><rect x="0" y="8.5" width="3.5" height="3.5"/><rect x="4.25" y="8.5" width="3.5" height="3.5"/><rect x="8.5" y="8.5" width="3.5" height="3.5"/></svg>
+            </button>
+            <button class="collection-toolbar__view-btn{% if products_per_row == 4 %} active{% endif %}" data-cols="4" aria-label="4 columns">
+              <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="2.5" height="2.5"/><rect x="3.17" y="0" width="2.5" height="2.5"/><rect x="6.33" y="0" width="2.5" height="2.5"/><rect x="9.5" y="0" width="2.5" height="2.5"/><rect x="0" y="3.17" width="2.5" height="2.5"/><rect x="3.17" y="3.17" width="2.5" height="2.5"/><rect x="6.33" y="3.17" width="2.5" height="2.5"/><rect x="9.5" y="3.17" width="2.5" height="2.5"/></svg>
+            </button>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Filter panel (inline) -->
+    {%- if section.settings.show_filter and collection.filters.size > 0 -%}
+      <div class="filter-panel" id="FilterPanel" hidden>
+        <div class="filter-panel__inner">
+          {%- for filter in collection.filters -%}
+            <details class="filter-group" {% if filter.active_values.size > 0 %}open{% endif %}>
+              <summary class="filter-group__summary">
+                {{ filter.label }}
+                {%- if filter.active_values.size > 0 -%}
+                  <span class="filter-group__badge">{{ filter.active_values.size }}</span>
+                {%- endif -%}
+              </summary>
+              <div class="filter-group__body">
+                {%- case filter.type -%}
+                  {%- when 'list' -%}
+                    {%- for value in filter.values -%}
+                      <label class="filter-option">
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value }}"
+                          {% if value.active %}checked{% endif %}
+                          class="filter-option__check"
+                        >
+                        <span class="filter-option__label">{{ value.label }} ({{ value.count }})</span>
+                      </label>
+                    {%- endfor -%}
+                  {%- when 'price_range' -%}
+                    <div class="filter-price">
+                      <label>
+                        <span>Min</span>
+                        <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency }}" class="filter-price__input">
+                      </label>
+                      <label>
+                        <span>Max</span>
+                        <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency }}" class="filter-price__input">
+                      </label>
+                    </div>
+                {%- endcase -%}
+              </div>
+            </details>
+          {%- endfor -%}
+          <div class="filter-panel__actions">
+            <button type="button" id="ApplyFilters" class="btn btn--primary btn--sm">Apply</button>
+            <a href="{{ collection.url }}" class="btn btn--outline btn--sm">Clear All</a>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Product grid -->
+    <div class="product-grid product-grid--{{ products_per_row }}-col" id="CollectionGrid">
+      {%- paginate collection.products by section.settings.products_per_page -%}
+        {%- if collection.products.size > 0 -%}
+          {%- for product in collection.products -%}
+            {%- render 'product-card', product: product, show_badge: true, show_swatches: true, lazy_load: forloop.index > products_per_row -%}
+          {%- endfor -%}
+        {%- else -%}
+          <div class="collection-empty">
+            <p>No products found. <a href="{{ routes.all_products_collection_url }}">View all products</a></p>
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+
+    <!-- Load More / Infinite Scroll -->
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      {%- if paginate.pages > 1 -%}
+        <div class="collection-pagination" id="CollectionPagination" data-page="1" data-total="{{ paginate.pages }}" data-url="{{ request.path }}">
+          {%- if section.settings.pagination_style == 'load_more' -%}
+            <button class="btn btn--outline load-more-btn" id="LoadMoreBtn">
+              Load More ({{ collection.products_count }} products)
+            </button>
+          {%- elsif section.settings.pagination_style == 'infinite' -%}
+            <div class="infinite-scroll-loader" id="InfiniteScrollLoader" hidden>
+              <div class="infinite-spinner"></div>
+              <span>Loading more products...</span>
+            </div>
+          {%- else -%}
+            <nav class="pagination" aria-label="Pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="pagination__btn pagination__btn--prev" aria-label="Previous page">
+                  {%- render 'icon-arrow-left' -%}
+                </a>
+              {%- endif -%}
+
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" class="pagination__page" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+                {%- elsif part.title == paginate.current_page -%}
+                  <span class="pagination__page pagination__page--current" aria-current="page">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="pagination__ellipsis">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="pagination__btn pagination__btn--next" aria-label="Next page">
+                  {%- render 'icon-arrow-right' -%}
+                </a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+  </div>
+</div>
+
+<script>
+  // Sort
+  var sortEl = document.getElementById('SortBy');
+  if (sortEl) {
+    sortEl.addEventListener('change', function() {
+      var url = new URL(window.location);
+      url.searchParams.set('sort_by', this.value);
+      window.location = url.toString();
+    });
+  }
+  // Filter toggle
+  var filterBtn = document.getElementById('FilterToggle');
+  var filterPanel = document.getElementById('FilterPanel');
+  if (filterBtn && filterPanel) {
+    filterBtn.addEventListener('click', function() {
+      var open = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !open);
+      filterPanel.hidden = open;
+    });
+  }
+  // Apply filters
+  var applyBtn = document.getElementById('ApplyFilters');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', function() {
+      var url = new URL(window.location);
+      document.querySelectorAll('.filter-option__check:checked').forEach(function(cb) {
+        url.searchParams.append(cb.name, cb.value);
+      });
+      window.location = url.toString();
+    });
+  }
+  // Grid columns toggle
+  document.querySelectorAll('.collection-toolbar__view-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var cols = this.dataset.cols;
+      var grid = document.getElementById('CollectionGrid');
+      grid.className = grid.className.replace(/product-grid--\d-col/, 'product-grid--' + cols + '-col');
+      document.querySelectorAll('.collection-toolbar__view-btn').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+
+  // Load More / Infinite Scroll
+  (function() {
+    var pagination = document.getElementById('CollectionPagination');
+    var loadMoreBtn = document.getElementById('LoadMoreBtn');
+    var infiniteLoader = document.getElementById('InfiniteScrollLoader');
+    if (!pagination) return;
+
+    var style = '{{ section.settings.pagination_style }}';
+    if (style === 'standard') return;
+
+    var currentPage = 1;
+    var totalPages = parseInt(pagination.dataset.total) || 1;
+    var grid = document.getElementById('CollectionGrid');
+    var isLoading = false;
+
+    function loadNextPage() {
+      if (isLoading || currentPage >= totalPages) return;
+      isLoading = true;
+
+      if (loadMoreBtn) loadMoreBtn.disabled = true;
+      if (infiniteLoader) infiniteLoader.hidden = false;
+
+      var nextPage = currentPage + 1;
+      var url = new URL(window.location.href);
+      url.searchParams.set('page', nextPage);
+
+      fetch(url.href)
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+          var newProducts = doc.querySelectorAll('#CollectionGrid .product-card');
+          newProducts.forEach(function(product) {
+            grid.appendChild(product);
+          });
+          currentPage = nextPage;
+          isLoading = false;
+          if (loadMoreBtn) loadMoreBtn.disabled = false;
+          if (infiniteLoader) infiniteLoader.hidden = true;
+          if (currentPage >= totalPages) {
+            if (loadMoreBtn) loadMoreBtn.textContent = 'No more products';
+            if (infiniteLoader) infiniteLoader.hidden = true;
+          }
+        })
+        .catch(function() {
+          isLoading = false;
+          if (loadMoreBtn) loadMoreBtn.disabled = false;
+          if (infiniteLoader) infiniteLoader.hidden = true;
+        });
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', loadNextPage);
+    }
+
+    if (style === 'infinite') {
+      var observer = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) loadNextPage();
+      }, { rootMargin: '200px' });
+      observer.observe(pagination);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection",
+  "tag": "section",
+  "class": "main-collection-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Products per row (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter",
+      "label": "Show filter panel",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sort dropdown",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "pagination_style",
+      "label": "Pagination style",
+      "options": [
+        { "value": "standard", "label": "Standard (page numbers)" },
+        { "value": "load_more", "label": "Load More Button" },
+        { "value": "infinite", "label": "Infinite Scroll" }
+      ],
+      "default": "standard"
+    }
+  ]
+}
+{% endschema %}

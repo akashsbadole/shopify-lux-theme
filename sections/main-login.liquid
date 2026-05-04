@@ -1,0 +1,22 @@
+<div class="main-login section-{{ section.id }}">
+  <div class="auth-form-wrap">
+    <h1 class="auth-form__title">Sign In</h1>
+    {%- form 'customer_login', id: 'LoginForm' -%}
+      {%- if form.errors -%}
+        <div class="auth-form__error">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+      <div class="auth-form__field">
+        <label for="LoginEmail">Email</label>
+        <input type="email" id="LoginEmail" name="customer[email]" autocomplete="email" required>
+      </div>
+      <div class="auth-form__field">
+        <label for="LoginPassword">Password</label>
+        <input type="password" id="LoginPassword" name="customer[password]" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn--primary btn--full">Sign In</button>
+      <a href="{{ routes.account_recover_url }}" class="auth-form__link">Forgot password?</a>
+    {%- endform -%}
+    <p class="auth-form__switch">Don't have an account? <a href="{{ routes.account_register_url }}">Create one</a></p>
+  </div>
+</div>
+{% schema %}{ "name": "Login", "tag": "section", "settings": [] }{% endschema %}

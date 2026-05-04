@@ -1,0 +1,197 @@
+{%- assign blog = blog -%}
+
+<div class="main-blog section-{{ section.id }}" id="MainBlog">
+  <div class="main-blog__inner">
+
+    <div class="section-header">
+      <h1 class="section-header__title">{{ blog.title }}</h1>
+      {%- if section.settings.show_rss -%}
+        <a href="{{ blog.url }}.atom" class="section-header__rss" aria-label="RSS Feed">RSS</a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_description and blog.description != blank -%}
+      <div class="blog-description rte">{{ blog.description }}</div>
+    {%- endif -%}
+
+    {%- if blog.articles.size > 0 -%}
+      <div class="blog-grid blog-grid--{{ section.settings.layout }}">
+        {%- case section.settings.layout -%}
+          {%- when 'list' -%}
+            {%- for article in blog.articles -%}
+              <article class="blog-card blog-card--list" id="Article-{{ article.id }}">
+                {%- if article.image -%}
+                  <a href="{{ article.url }}" class="blog-card__image-link">
+                    <img
+                      srcset="{{ article.image | image_url: width: 400 }} 400w,
+                              {{ article.image | image_url: width: 600 }} 600w,
+                              {{ article.image | image_url: width: 800 }} 800w"
+                      sizes="(min-width: 1200px) 600px, (min-width: 750px) 50vw, 100vw"
+                      src="{{ article.image | image_url: width: 600 }}"
+                      alt="{{ article.image.alt | escape }}"
+                      class="blog-card__image"
+                      loading="{% if forloop.index0 == 0 %}eager{% else %}lazy{% endif %}"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                  </a>
+                {%- endif -%}
+
+                <div class="blog-card__content">
+                  <div class="blog-card__meta">
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                    {%- if section.settings.show_author -%}
+                      <span class="blog-card__author">by {{ article.author }}</span>
+                    {%- endif -%}
+                  </div>
+
+                  <h2 class="blog-card__title">
+                    <a href="{{ article.url }}">{{ article.title }}</a>
+                  </h2>
+
+                  {%- if section.settings.show_excerpt -%}
+                    <div class="blog-card__excerpt rte">
+                      {%- if article.excerpt.size > 0 -%}
+                        {{ article.excerpt }}
+                      {%- else -%}
+                        {{ article.content | strip_html | truncate: 150 }}
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+
+                  <a href="{{ article.url }}" class="blog-card__link">
+                    {{ section.settings.read_more_label | default: 'Read more' }}
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </article>
+            {%- endfor -%}
+
+          {%- when 'grid' -%}
+            {%- for article in blog.articles -%}
+              <article class="blog-card blog-card--grid" id="Article-{{ article.id }}">
+                {%- if article.image -%}
+                  <a href="{{ article.url }}" class="blog-card__image-link">
+                    <img
+                      srcset="{{ article.image | image_url: width: 400 }} 400w,
+                              {{ article.image | image_url: width: 600 }} 600w"
+                      sizes="(min-width: 1200px) calc((1200px - 60px) / 3), (min-width: 750px) 50vw, 100vw"
+                      src="{{ article.image | image_url: width: 600 }}"
+                      alt="{{ article.image.alt | escape }}"
+                      class="blog-card__image"
+                      loading="{% if forloop.index0 < 3 %}eager{% else %}lazy{% endif %}"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                  </a>
+                {%- endif -%}
+
+                <div class="blog-card__content">
+                  <div class="blog-card__meta">
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                  </div>
+
+                  <h2 class="blog-card__title">
+                    <a href="{{ article.url }}">{{ article.title }}</a>
+                  </h2>
+
+                  {%- if section.settings.show_excerpt -%}
+                    <div class="blog-card__excerpt rte">
+                      {%- if article.excerpt.size > 0 -%}
+                        {{ article.excerpt | truncate: 100 }}
+                      {%- else -%}
+                        {{ article.content | strip_html | truncate: 100 }}
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+
+                  <a href="{{ article.url }}" class="blog-card__link">
+                    {{ section.settings.read_more_label | default: 'Read more' }}
+                  </a>
+                </div>
+              </article>
+            {%- endfor -%}
+        {%- endcase -%}
+      </div>
+
+      {%- if section.settings.enable_pagination -%}
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endif -%}
+
+    {%- else -%}
+      <div class="blog-empty">
+        <p>{{ section.settings.empty_message | default: 'No articles yet.' }}</p>
+        <a href="{{ routes.root_url }}" class="btn btn--primary">{{ section.settings.back_home_label | default: 'Back to Home' }}</a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Blog",
+  "tag": "section",
+  "class": "main-blog-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "grid", "label": "Grid" },
+        { "value": "list", "label": "List" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rss",
+      "label": "Show RSS link",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show blog description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "read_more_label",
+      "label": "Read more label",
+      "default": "Read more"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pagination",
+      "label": "Enable pagination",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "empty_message",
+      "label": "Empty state message",
+      "default": "No articles yet."
+    },
+    {
+      "type": "text",
+      "id": "back_home_label",
+      "label": "Back to home button label",
+      "default": "Back to Home"
+    }
+  ]
+}
+{% endschema %}

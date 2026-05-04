@@ -1,0 +1,159 @@
+<div class="hero-grid section-{{ section.id }}">
+  <div class="hero-grid__inner">
+
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign block_class = 'hero-grid__tile'
+        if forloop.first
+          assign block_class = block_class | append: ' hero-grid__tile--large'
+        endif
+      -%}
+
+      <div class="{{ block_class }}" {{ block.shopify_attributes }}>
+        <a
+          href="{{ block.settings.link | default: '#' }}"
+          class="hero-grid__tile-link"
+          aria-label="{{ block.settings.heading | default: 'View collection' | escape }}"
+        >
+          {%- if block.settings.image != blank -%}
+            {%- assign loading_attr = 'lazy' -%}
+            {%- assign fetchpriority_attr = 'auto' -%}
+            {%- if forloop.first -%}
+              {%- assign loading_attr = 'eager' -%}
+              {%- assign fetchpriority_attr = 'high' -%}
+            {%- endif -%}
+            {{
+              block.settings.image
+              | image_url: width: 1400
+              | image_tag:
+                class: 'hero-grid__tile-img',
+                alt: block.settings.image.alt | default: block.settings.heading,
+                loading: loading_attr,
+                fetchpriority: fetchpriority_attr
+            }}
+          {%- else -%}
+            {%- assign gradient_index = forloop.index | modulo: 3 -%}
+            <div class="hero-grid__tile-placeholder hero-grid__tile-placeholder--{{ gradient_index }}"></div>
+          {%- endif -%}
+
+          <div class="hero-grid__tile-overlay" style="opacity: {{ section.settings.overlay_opacity | default: 40 }}%"></div>
+
+          {%- if block.settings.badge != blank -%}
+            <span class="hero-grid__tile-badge">{{ block.settings.badge }}</span>
+          {%- endif -%}
+
+          <div class="hero-grid__tile-label">
+            {%- if block.settings.heading != blank -%}
+              <h2 class="hero-grid__tile-heading">{{ block.settings.heading }}</h2>
+            {%- endif -%}
+
+            {%- if block.settings.price != blank -%}
+              <div class="hero-grid__tile-price">
+                {%- if block.settings.price_prefix != blank -%}
+                  <span>{{ block.settings.price_prefix }}</span>
+                {%- endif -%}
+                <strong>{{ block.settings.price }}</strong>
+              </div>
+            {%- endif -%}
+          </div>
+        </a>
+      </div>
+    {%- endfor -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero Grid",
+  "tag": "section",
+  "class": "hero-grid-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hero_tile",
+      "name": "Hero tile",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "New Arrivals"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge text",
+          "default": "New Season"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price / label",
+          "default": "$29.99+"
+        },
+        {
+          "type": "text",
+          "id": "price_prefix",
+          "label": "Price prefix",
+          "default": "Starting at"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Grid",
+      "blocks": [
+        {
+          "type": "hero_tile",
+          "settings": {
+            "heading": "Summer Collection",
+            "badge": "New Season",
+            "price": "$29.99+",
+            "price_prefix": "Starting at"
+          }
+        },
+        {
+          "type": "hero_tile",
+          "settings": {
+            "heading": "Premium Watches",
+            "badge": "Hot 🔥",
+            "price": "$199+"
+          }
+        },
+        {
+          "type": "hero_tile",
+          "settings": {
+            "heading": "Luxury Fragrances",
+            "badge": "Sale 30%",
+            "price": "$49"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

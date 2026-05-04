@@ -1,0 +1,80 @@
+{%- comment -%}
+  Cart AJAX Section
+  Returns cart content for AJAX updates without page refresh.
+  Used by LuxeCart.fetchCart() in cart-drawer.liquid
+{%- endcomment -%}
+
+<div class="cart-ajax" id="CartAjaxContent">
+  {%- if cart.item_count > 0 -%}
+    <!-- Cart items -->
+    {%- render 'cart-items', cart: cart -%}
+
+    <!-- Cart footer with totals -->
+    <div class="cart-drawer__footer" id="CartFooter">
+      <div class="cart-totals" id="CartTotals">
+        <div class="cart-totals__row">
+          <span>Subtotal</span>
+          <span id="CartSubtotal">{{ cart.items_subtotal_price | money }}</span>
+        </div>
+        {%- if cart.total_discounts > 0 -%}
+          <div class="cart-totals__row cart-totals__row--discount">
+            <span>Discount</span>
+            <span>-{{ cart.total_discounts | money }}</span>
+          </div>
+        {%- endif -%}
+        <div class="cart-totals__row cart-totals__row--taxes">
+          <span>Taxes</span>
+          <span>Calculated at checkout</span>
+        </div>
+        <div class="cart-totals__row cart-totals__row--shipping">
+          <span>Shipping</span>
+          <span class="cart-totals__free">
+            {%- if cart.requires_shipping -%}
+              Calculated at checkout
+            {%- else -%}
+              FREE
+            {%- endif -%}
+          </span>
+        </div>
+        <div class="cart-totals__row cart-totals__row--grand">
+          <span>Total</span>
+          <span id="CartTotal">{{ cart.total_price | money }}</span>
+        </div>
+      </div>
+
+      <form action="{{ routes.cart_url }}" method="post" id="CartCheckoutForm">
+        <button type="submit" name="checkout" class="btn btn--checkout" id="CartCheckoutBtn">
+          Proceed to Checkout
+        </button>
+      </form>
+
+      <div class="cart-trust">
+        <div class="cart-trust__badge">🔒 Secure Checkout</div>
+        <div class="cart-trust__badge">↩️ Easy Returns</div>
+        <div class="cart-trust__badge">🚚 Fast Delivery</div>
+      </div>
+    </div>
+
+  {%- else -%}
+    <!-- Empty cart -->
+    <div class="cart-drawer__empty" id="CartEmpty">
+      <div class="cart-drawer__empty-icon">{%- render 'icon-cart' -%}</div>
+      <p class="cart-drawer__empty-text">Your cart is empty.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Start Shopping</a>
+    </div>
+  {%- endif -%}
+</div>
+
+<script type="text/javascript">
+  // Update cart counts in header
+  var cartCount = {{ cart.item_count }};
+  var cartTotal = {{ cart.total_price }};
+  
+  // Dispatch custom event for other components to listen
+  window.dispatchEvent(new CustomEvent('cart:updated', { 
+    detail: { 
+      itemCount: cartCount, 
+      totalPrice: cartTotal 
+    } 
+  }));
+</script>

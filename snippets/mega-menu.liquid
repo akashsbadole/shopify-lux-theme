@@ -1,0 +1,148 @@
+{%- comment -%}
+  Mega Menu
+  Renders inside the header nav for links that have mega menu blocks configured.
+  Uses header section blocks of type 'mega_menu' keyed by nav link handle.
+  Each block can have: featured image, promo text, and highlights links list.
+{%- endcomment -%}
+
+{%- comment -%}
+  Usage inside header.liquid nav loop:
+  {% render 'mega-menu', link: link, blocks: section.blocks %}
+{%- endcomment -%}
+
+{%- assign has_mega = false -%}
+{%- for block in blocks -%}
+  {%- if block.type == 'mega_menu' and block.settings.nav_link_title == link.title -%}
+    {%- assign has_mega = true -%}
+    {%- assign mega_block = block -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if has_mega and link.links != blank -%}
+  <div
+    class="mega-menu"
+    id="MegaMenu-{{ link.title | handleize }}"
+    role="region"
+    aria-label="{{ link.title }} menu"
+    hidden
+  >
+    <div class="mega-menu__inner">
+
+      <!-- Col 1: Sub-navigation links (from Shopify link list) -->
+      <div class="mega-menu__links">
+        <p class="mega-menu__col-heading">{{ link.title }}</p>
+        <ul class="mega-menu__link-list" role="list">
+          {%- for child_link in link.links -%}
+            <li>
+              <a
+                href="{{ child_link.url }}"
+                class="mega-menu__link{% if child_link.active %} mega-menu__link--active{% endif %}"
+              >
+                {{ child_link.title }}
+                {%- if child_link.links != blank -%}
+                  <span class="mega-menu__link-arrow">→</span>
+                {%- endif -%}
+              </a>
+              {%- if child_link.links != blank -%}
+                <ul class="mega-menu__sub-links" role="list">
+                  {%- for grandchild in child_link.links -%}
+                    <li>
+                      <a href="{{ grandchild.url }}" class="mega-menu__sub-link">{{ grandchild.title }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <!-- Col 2: Featured product / image -->
+      {%- if mega_block.settings.featured_image != blank or mega_block.settings.featured_collection != blank -%}
+        <div class="mega-menu__featured">
+          <p class="mega-menu__col-heading">{{ mega_block.settings.featured_heading | default: 'Featured' }}</p>
+
+          {%- if mega_block.settings.featured_collection != blank -%}
+            {%- assign feat_col = collections[mega_block.settings.featured_collection] -%}
+            {%- if feat_col != blank -%}
+              <div class="mega-menu__products">
+                {%- for product in feat_col.products limit: 3 -%}
+                  <a href="{{ product.url }}" class="mega-menu__product-card">
+                    <div class="mega-menu__product-img">
+                      {%- if product.featured_image -%}
+{{
+                          product.featured_image
+                          | image_url: width: 200
+                          | image_tag:
+                            alt: product.title,
+                            loading: 'lazy',
+                            width: 100,
+                            height: 100
+                      }}
+                      {%- endif -%}
+                    </div>
+                    <div class="mega-menu__product-info">
+                      <p class="mega-menu__product-title">{{ product.title | truncate: 30 }}</p>
+                      <p class="mega-menu__product-price">{{ product.price | money }}</p>
+                    </div>
+                  </a>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          {%- elsif mega_block.settings.featured_image != blank -%}
+            <a href="{{ mega_block.settings.featured_image_url | default: link.url }}" class="mega-menu__promo-img-link">
+              {{
+                mega_block.settings.featured_image
+                | image_url: width: 400
+                | image_tag:
+                  class: 'mega-menu__promo-img',
+                  alt: mega_block.settings.featured_heading | default: link.title,
+                  loading: 'lazy'
+              }}
+              {%- if mega_block.settings.promo_text != blank -%}
+                <div class="mega-menu__promo-overlay">
+                  <p class="mega-menu__promo-text">{{ mega_block.settings.promo_text }}</p>
+                  {%- if mega_block.settings.promo_btn_label != blank -%}
+                    <span class="mega-menu__promo-btn">{{ mega_block.settings.promo_btn_label }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <!-- Col 3: Highlights / deals -->
+      {%- if mega_block.settings.highlights_menu != blank -%}
+        <div class="mega-menu__highlights">
+          <p class="mega-menu__col-heading">{{ mega_block.settings.highlights_heading | default: 'Highlights' }}</p>
+          <ul class="mega-menu__highlight-list" role="list">
+            {%- for hl_link in linklists[mega_block.settings.highlights_menu].links -%}
+              <li class="mega-menu__highlight-item">
+                <a href="{{ hl_link.url }}" class="mega-menu__highlight-link">
+                  {%- if mega_block.settings.highlight_emoji_{{ forloop.index }} != blank -%}
+                    <span class="mega-menu__highlight-emoji">{{ mega_block.settings['highlight_emoji_' | append: forloop.index] }}</span>
+                  {%- endif -%}
+                  <span>{{ hl_link.title }}</span>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+{%- elsif link.links != blank -%}
+  <!-- Standard dropdown (no mega block configured) -->
+  <ul class="site-nav__dropdown" role="list">
+    {%- for child_link in link.links -%}
+      <li>
+        <a href="{{ child_link.url }}" class="site-nav__dropdown-link{% if child_link.active %} active{% endif %}">
+          {{ child_link.title }}
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

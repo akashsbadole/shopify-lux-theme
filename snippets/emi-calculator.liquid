@@ -1,0 +1,85 @@
+{%- comment -%}
+  EMI Calculator
+  Shows "From ₹X/month" below price using No Cost EMI logic.
+  Usage: {% render 'emi-calculator', price: product.price %}
+{%- endcomment -%}
+
+{%- assign emi_price = price | default: product.price -%}
+
+{%- if section.settings.enable_emi != false and emi_price >= section.settings.emi_min_amount -%}
+<div class="emi-calculator" id="EMICalculator" data-price="{{ emi_price }}">
+  <span class="emi-calculator__label">{{ section.settings.emi_label | default: 'Starting at' }}</span>
+  
+  <div class="emi-calculator__options">
+    {%- for tenure in section.settings.emi_tenures | split: ',' -%}
+      {%- assign months = tenure | strip | times: 1 -%}
+      {%- assign emi = emi_price | divided_by: months -%}
+      <button 
+        class="emi-calculator__btn{% if forloop.first %} emi-calculator__btn--active{% endif %}"
+        data-tenure="{{ months }}"
+        aria-label="{{ months }} months EMI"
+      >
+        <span class="emi-calculator__months">{{ months }}</span>
+        <span class="emi-calculator__amt">₹{{ emi | round }}</span>
+      </button>
+    {%- endfor -%}
+  </div>
+  
+  {%- if section.settings.show_emi_info -%}
+    <p class="emi-calculator__note">
+      {{ section.settings.emi_note | default: 'No Cost EMI available on selected cards' }}
+      <a href="#" class="emi-calculator__link" id="EMIInfoLink">Details</a>
+    </p>
+  {%- endif -%}
+</div>
+
+{%- if section.settings.show_emi_info -%}
+<div class="emi-info-modal" id="EMIInfoModal" hidden>
+  <div class="emi-info-modal__overlay" id="EMIInfoOverlay"></div>
+  <div class="emi-info-modal__content" role="dialog" aria-labelledby="EMIInfoTitle">
+    <button type="button" class="emi-info-modal__close" id="EMIInfoClose" aria-label="Close">×</button>
+    <h3 id="EMIInfoTitle">No Cost EMI</h3>
+    <p>Buy now with easy monthly installments at no extra cost. Available on select credit cards.</p>
+    <div class="emi-info-modal__cards">
+      <span>🏦 HDFC Bank</span>
+      <span>🏦 ICICI Bank</span>
+      <span>🏦 SBI Card</span>
+      <span>🏦 Axis Bank</span>
+    </div>
+    <ul>
+      <li>✅ No interest cost</li>
+      <li>✅ No processing fee</li>
+      <li>✅ Instant approval</li>
+    </ul>
+    <p><small>*Terms and conditions apply. Bank terms may vary.</small></p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calculator = document.getElementById('EMICalculator');
+    var buttons = calculator ? calculator.querySelectorAll('.emi-calculator__btn') : [];
+    var infoLink = document.getElementById('EMIInfoLink');
+    var modal = document.getElementById('EMIInfoModal');
+    var close = document.getElementById('EMIInfoClose');
+    var overlay = document.getElementById('EMIInfoOverlay');
+
+    buttons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        buttons.forEach(function(b) { b.classList.remove('emi-calculator__btn--active'); });
+        btn.classList.add('emi-calculator__btn--active');
+      });
+    });
+
+    if (infoLink && modal) {
+      infoLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.hidden = false;
+      });
+      close.addEventListener('click', function() { modal.hidden = true; });
+      overlay.addEventListener('click', function() { modal.hidden = true; });
+    }
+  });
+</script>
+{%- endif -%}
+{%- endif -%}

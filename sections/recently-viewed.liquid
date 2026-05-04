@@ -1,0 +1,66 @@
+<div
+  class="recently-viewed section-{{ section.id }}"
+  id="RecentlyViewed"
+  data-limit="{{ section.settings.products_to_show }}"
+  style="display:none"
+>
+  <div class="recently-viewed__inner">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ section.settings.title | default: 'Recently Viewed' }}</h2>
+    </div>
+    <div class="recently-viewed__track-wrap">
+      <div class="recently-viewed__track" id="RecentlyViewedTrack">
+        <!-- Populated by JS from localStorage -->
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- if request.page_type == 'product' -%}
+  <!-- Store current product in recently viewed -->
+  <script>
+    (function() {
+      var product = {
+        id: {{ product.id | json }},
+        title: {{ product.title | json }},
+        url: {{ product.url | json }},
+        price: {{ product.price | json }},
+        compare_at_price: {{ product.compare_at_price | json }},
+        image: {{ product.featured_image | image_url: width: 400 | json }},
+        vendor: {{ product.vendor | json }},
+        available: {{ product.available | json }}
+      };
+      window.__luxe_track_product__ = product;
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Recently Viewed",
+  "tag": "section",
+  "class": "recently-viewed-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Recently Viewed"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently Viewed"
+    }
+  ]
+}
+{% endschema %}

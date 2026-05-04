@@ -1,0 +1,20 @@
+{
+  "current": {
+    "color_background": "#F7FAFC",
+    "color_text": "#0E1D34",
+    "color_brand_blue": "#003B73",
+    "color_accent_purple": "#8A2BE2",
+    "color_muted": "#5a6a80",
+    "color_border": "#D8E1EC",
+    "font_size_base": 15,
+    "header_sticky": true,
+    "show_announcement": true,
+    "announcement_text": "✨ Free shipping on orders over $99 · Use code LUXE20 for 20% off",
+    "cart_type": "drawer",
+    "cart_show_express_pay": true,
+    "footer_tagline": "Curated premium products, delivered to your doorstep.",
+    "footer_show_newsletter": true,
+    "footer_newsletter_label": "Subscribe",
+    "show_payment_icons": true
+  }
+}

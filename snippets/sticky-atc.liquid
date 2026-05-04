@@ -1,0 +1,86 @@
+{%- comment -%}
+  Sticky Add to Cart Bar
+  Appears when #AddToCartBtn scrolls out of viewport.
+  Shows: product image, title, price, variant selector shortcut, ATC button.
+{%- endcomment -%}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<div
+  class="sticky-atc"
+  id="StickyATC"
+  aria-hidden="true"
+  role="region"
+  aria-label="Quick add to cart"
+>
+  <div class="sticky-atc__inner">
+
+    <!-- Product thumbnail -->
+    <div class="sticky-atc__img">
+      {%- if product.featured_image -%}
+        {{
+          product.featured_image
+          | image_url: width: 120
+          | image_tag:
+            alt: product.title,
+            loading: 'lazy',
+            width: 60,
+            height: 60
+        }}
+      {%- endif -%}
+    </div>
+
+    <!-- Info -->
+    <div class="sticky-atc__info">
+      <p class="sticky-atc__title">{{ product.title | truncate: 50 }}</p>
+      <div class="sticky-atc__price" id="StickyATCPrice">
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="sticky-atc__price-sale">{{ current_variant.price | money }}</span>
+          <span class="sticky-atc__price-compare">{{ current_variant.compare_at_price | money }}</span>
+        {%- else -%}
+          <span class="sticky-atc__price-regular">{{ current_variant.price | money }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Variant quick-select (show only if simple option like size/color) -->
+    {%- unless product.has_only_default_variant -%}
+      {%- for option in product.options_with_values limit: 1 -%}
+        {%- assign opt_lower = option.name | downcase -%}
+        {%- if opt_lower == 'size' or opt_lower == 'colour' or opt_lower == 'color' -%}
+          <div class="sticky-atc__option">
+            <label for="StickyVariantSelect" class="visually-hidden">{{ option.name }}</label>
+            <select id="StickyVariantSelect" class="sticky-atc__select" aria-label="{{ option.name }}">
+              {%- for variant in product.variants -%}
+                <option
+                  value="{{ variant.id }}"
+                  {% if variant == current_variant %}selected{% endif %}
+                  {% unless variant.available %}disabled{% endunless %}
+                >
+                  {{ variant.title }}
+                  {%- unless variant.available %} — Sold out{%- endunless -%}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endunless -%}
+
+    <!-- ATC Button -->
+    <button
+      class="btn btn--primary sticky-atc__btn{% unless current_variant.available %} btn--disabled{% endunless %}"
+      id="StickyATCBtn"
+      data-variant-id="{{ current_variant.id }}"
+      {% unless current_variant.available %}disabled{% endunless %}
+      aria-label="Add {{ product.title | escape }} to cart"
+    >
+      {%- if current_variant.available -%}
+        Add to Cart
+      {%- else -%}
+        Sold Out
+      {%- endif -%}
+    </button>
+
+  </div><!-- /.sticky-atc__inner -->
+</div>

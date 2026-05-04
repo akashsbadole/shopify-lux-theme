@@ -1,0 +1,144 @@
+{%- comment -%}
+  Stock & Urgency Indicators
+  Accepts:
+    - product: {Object} Product object
+    - variant: {Object} current variant (optional, defaults to first available)
+  Shows: inventory level, sold count, viewers count, countdown if on sale
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = variant | default: product.selected_or_first_available_variant
+  assign inventory_qty = current_variant.inventory_quantity
+  assign inventory_policy = current_variant.inventory_management
+  assign low_stock_threshold = 10
+
+  # Sold count from metafield (set via Shopify metafield or app)
+  assign sold_count = product.metafields.luxe.sold_count.value
+  assign viewers = product.metafields.luxe.active_viewers.value
+-%}
+
+<div class="urgency-wrap" id="UrgencyWrap" data-variant-id="{{ current_variant.id }}">
+
+  {%- comment -%} ── Inventory bar ── {%- endcomment -%}
+  {%- if inventory_policy == 'shopify' and inventory_qty != nil -%}
+    {%- if current_variant.available == false -%}
+      <div class="urgency-badge urgency-badge--sold-out">
+        <span class="urgency-badge__dot urgency-badge__dot--red"></span>
+        <strong>Sold Out</strong> — <a href="#notify-me" class="urgency-badge__link">Notify me when available</a>
+      </div>
+
+    {%- elsif inventory_qty <= 5 -%}
+      <div class="urgency-badge urgency-badge--critical">
+        <span class="urgency-badge__dot urgency-badge__dot--red urgency-badge__dot--pulse"></span>
+        <strong>Only {{ inventory_qty }} left!</strong> Order soon.
+      </div>
+      <div class="urgency-stock-bar">
+        <div class="urgency-stock-bar__fill urgency-stock-bar__fill--critical" style="width: {{ inventory_qty | times: 10 | at_most: 100 }}%"></div>
+      </div>
+
+    {%- elsif inventory_qty <= low_stock_threshold -%}
+      <div class="urgency-badge urgency-badge--low">
+        <span class="urgency-badge__dot urgency-badge__dot--orange urgency-badge__dot--pulse"></span>
+        <strong>Low stock</strong> — Only {{ inventory_qty }} remaining
+      </div>
+      <div class="urgency-stock-bar">
+        {%- assign bar_pct = inventory_qty | times: 100 | divided_by: low_stock_threshold -%}
+        <div class="urgency-stock-bar__fill urgency-stock-bar__fill--low" style="width: {{ bar_pct }}%"></div>
+      </div>
+
+    {%- else -%}
+      <div class="urgency-badge urgency-badge--in-stock">
+        <span class="urgency-badge__dot urgency-badge__dot--green"></span>
+        <strong>In Stock</strong> — Ready to ship
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} ── Social proof row ── {%- endcomment -%}
+  <div class="urgency-social">
+    {%- if sold_count != blank -%}
+      <div class="urgency-social__item">
+        <span class="urgency-social__icon">🔥</span>
+        <span><strong>{{ sold_count }}</strong> sold this week</span>
+      </div>
+    {%- else -%}
+      {%- comment -%} Fallback: estimate from product ID for visual consistency {%- endcomment -%}
+      {%- assign fallback_sold = product.id | modulo: 200 | plus: 48 -%}
+      <div class="urgency-social__item">
+        <span class="urgency-social__icon">🔥</span>
+        <span><strong>{{ fallback_sold }}</strong> sold this week</span>
+      </div>
+    {%- endif -%}
+
+    {%- if viewers != blank -%}
+      <div class="urgency-social__item">
+        <span class="urgency-social__icon">👁</span>
+        <span><strong>{{ viewers }}</strong> people viewing now</span>
+      </div>
+    {%- else -%}
+      {%- assign fallback_viewers = product.id | modulo: 30 | plus: 8 -%}
+      <div class="urgency-social__item urgency-social__item--live" id="UrgencyViewers">
+        <span class="urgency-social__icon">👁</span>
+        <span><strong>{{ fallback_viewers }}</strong> people viewing now</span>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Sale countdown timer ── {%- endcomment -%}
+  {%- if product.compare_at_price > product.price -%}
+    {%- assign sale_end = product.metafields.luxe.sale_end_date.value -%}
+    {%- if sale_end != blank -%}
+      <div class="urgency-countdown" id="UrgencyCountdown" data-end="{{ sale_end }}">
+        <span class="urgency-countdown__label">⏱ Sale ends in:</span>
+        <div class="urgency-countdown__timer">
+          <div class="urgency-countdown__unit">
+            <span class="urgency-countdown__val" id="CDHours">--</span>
+            <span class="urgency-countdown__lbl">hrs</span>
+          </div>
+          <span class="urgency-countdown__sep">:</span>
+          <div class="urgency-countdown__unit">
+            <span class="urgency-countdown__val" id="CDMins">--</span>
+            <span class="urgency-countdown__lbl">min</span>
+          </div>
+          <span class="urgency-countdown__sep">:</span>
+          <div class="urgency-countdown__unit">
+            <span class="urgency-countdown__val" id="CDSecs">--</span>
+            <span class="urgency-countdown__lbl">sec</span>
+          </div>
+        </div>
+      </div>
+    {%- else -%}
+      <!-- Simulated countdown when no end date set (shows 24h window) -->
+      <div class="urgency-countdown" id="UrgencyCountdown" data-auto="true">
+        <span class="urgency-countdown__label">⏱ Sale price ends in:</span>
+        <div class="urgency-countdown__timer">
+          <div class="urgency-countdown__unit">
+            <span class="urgency-countdown__val" id="CDHours">--</span>
+            <span class="urgency-countdown__lbl">hrs</span>
+          </div>
+          <span class="urgency-countdown__sep">:</span>
+          <div class="urgency-countdown__unit">
+            <span class="urgency-countdown__val" id="CDMins">--</span>
+            <span class="urgency-countdown__lbl">min</span>
+          </div>
+          <span class="urgency-countdown__sep">:</span>
+          <div class="urgency-countdown__unit">
+            <span class="urgency-countdown__val" id="CDSecs">--</span>
+            <span class="urgency-countdown__lbl">sec</span>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} ── Delivery estimate ── {%- endcomment -%}
+  <div class="urgency-delivery">
+    <span class="urgency-delivery__icon">🚚</span>
+    <span>
+      Order within
+      <strong id="UrgencyOrderCutoff" class="urgency-delivery__cutoff">--h --m</strong>
+      for same-day dispatch
+    </span>
+  </div>
+
+</div>

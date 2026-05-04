@@ -1,0 +1,114 @@
+{%- assign collection = collections[section.settings.collection] -%}
+{%- assign products_per_row = section.settings.products_per_row | default: 4 -%}
+{%- assign limit = products_per_row | times: section.settings.rows | default: 8 -%}
+
+<div class="featured-collection section-{{ section.id }}">
+  <div class="featured-collection__inner">
+
+    {%- if section.settings.title != blank or section.settings.show_view_all -%}
+      <div class="section-header">
+        {%- if section.settings.title != blank -%}
+          <h2 class="section-header__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.show_view_all and collection != blank -%}
+          <a href="{{ collection.url }}" class="section-header__link">
+            View All <span aria-hidden="true">→</span>
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if collection == blank or collection.products_count == 0 -%}
+      {%- comment -%} Empty state in theme editor {%- endcomment -%}
+      <div class="product-grid product-grid--{{ products_per_row }}-col">
+        {%- for i in (1..limit) -%}
+          <div class="product-card product-card--placeholder">
+            <div class="product-card__media product-card__media--placeholder">
+              <div class="placeholder-img"></div>
+            </div>
+            <div class="product-card__body">
+              <div class="placeholder-text placeholder-text--sm"></div>
+              <div class="placeholder-text placeholder-text--md"></div>
+              <div class="placeholder-text placeholder-text--xs"></div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="product-grid product-grid--{{ products_per_row }}-col">
+        {%- for product in collection.products limit: limit -%}
+          {%- render 'product-card',
+            product: product,
+            show_badge: section.settings.show_badges,
+            show_swatches: section.settings.show_swatches,
+            show_rating: true,
+            lazy_load: forloop.index > products_per_row
+          -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "tag": "section",
+  "class": "featured-collection-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section heading",
+      "default": "Featured Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Products per row",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Rows",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' link",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show product badges",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatches",
+      "label": "Show color swatches",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}

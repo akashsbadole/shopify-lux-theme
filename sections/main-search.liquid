@@ -1,0 +1,111 @@
+<div class="main-search section-{{ section.id }}">
+  <div class="main-search__inner">
+
+    <div class="main-search__header">
+      <h1 class="main-search__title">
+        {%- if search.performed -%}
+          Results for &ldquo;{{ search.terms | escape }}&rdquo;
+        {%- else -%}
+          Search
+        {%- endif -%}
+      </h1>
+
+      <form action="{{ routes.search_url }}" method="get" role="search" class="main-search__form">
+        <input type="hidden" name="type" value="product">
+        <div class="main-search__form-wrap">
+          <label for="MainSearchInput" class="visually-hidden">Search</label>
+          <button type="submit" class="main-search__submit" aria-label="Search">
+            {%- render 'icon-search' -%}
+          </button>
+          <input
+            type="search"
+            id="MainSearchInput"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="Search products..."
+            class="main-search__input"
+            autofocus
+          >
+          {%- if search.performed -%}
+            <a href="{{ routes.search_url }}" class="main-search__clear" aria-label="Clear search">
+              {%- render 'icon-x' -%}
+            </a>
+          {%- endif -%}
+        </div>
+      </form>
+    </div>
+
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <div class="main-search__no-results">
+          <p>No results found for &ldquo;{{ search.terms | escape }}&rdquo;.</p>
+          <p class="main-search__suggestions">Try checking for typos or using more general terms.</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Browse All Products</a>
+        </div>
+      {%- else -%}
+        <p class="main-search__count">
+          {{ search.results_count }} result{{ search.results_count | pluralize: '', 's' }} for &ldquo;{{ search.terms | escape }}&rdquo;
+        </p>
+        <div class="product-grid product-grid--{{ section.settings.products_per_row }}-col">
+          {%- paginate search.results by section.settings.products_per_page -%}
+            {%- for result in search.results -%}
+              {%- if result.object_type == 'product' -%}
+                {%- render 'product-card', product: result, show_badge: true, show_swatches: true -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endpaginate -%}
+        </div>
+
+        {%- paginate search.results by section.settings.products_per_page -%}
+          {%- if paginate.pages > 1 -%}
+            <nav class="pagination" aria-label="Search results pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="pagination__btn">← Previous</a>
+              {%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" class="pagination__page">{{ part.title }}</a>
+                {%- elsif part.title == paginate.current_page -%}
+                  <span class="pagination__page pagination__page--current">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="pagination__ellipsis">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="pagination__btn">Next →</a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- endpaginate -%}
+      {%- endif -%}
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Products per row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Results per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,428 @@
+{%- assign product = product -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
+
+<div class="main-product section-{{ section.id }}" id="MainProduct" data-product-id="{{ product.id }}">
+  <div class="main-product__inner">
+
+    <!-- Gallery -->
+    <div class="main-product__gallery" id="ProductGallery">
+      <!-- Thumbnails -->
+      {%- if product.media.size > 1 -%}
+        <div class="product-gallery__thumbs" id="ProductThumbs" role="list">
+          {%- for media in product.media -%}
+            <button
+              class="product-gallery__thumb{% if media == featured_media %} product-gallery__thumb--active{% endif %}"
+              data-media-id="{{ media.id }}"
+              aria-label="View image {{ forloop.index }}"
+            >
+              {{
+                media.preview_image
+                | image_url: width: 120
+                | image_tag: alt: media.alt | default: product.title, loading: 'lazy'
+              }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <!-- Main image -->
+      <div class="product-gallery__main" id="ProductMainImage">
+        <div
+          class="product-gallery__slide{% if section.settings.enable_zoom %} product-gallery__slide--zoomable{% endif %}"
+          data-media-id="{{ featured_media.id }}"
+          id="ProductActiveMedia"
+        >
+          {%- if featured_media != blank -%}
+            {%- if featured_media.media_type == 'video' -%}
+              {{
+                featured_media
+                | video_tag:
+                  image_size: '1000x',
+                  loop: true,
+                  muted: true,
+                  autoplay: true,
+                  class: 'product-gallery__video'
+              }}
+            {%- elsif featured_media.media_type == 'model' -%}
+              {{ featured_media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-gallery__model' }}
+            {%- else -%}
+              {{
+                featured_media
+                | image_url: width: 1000
+                | image_tag:
+                  class: 'product-gallery__img',
+                  id: 'ProductFeaturedImage',
+                  alt: featured_media.alt | default: product.title,
+                  fetchpriority: 'high',
+                  loading: 'eager'
+              }}
+            {%- endif -%}
+          {%- else -%}
+            <div class="product-gallery__placeholder">{%- render 'icon-image' -%}</div>
+          {%- endif -%}
+
+          <!-- Navigation arrows for multiple images -->
+          {%- if product.media.size > 1 -%}
+            <button class="product-gallery__nav product-gallery__nav--prev" id="GalleryPrev" aria-label="Previous image">
+              {%- render 'icon-arrow-left' -%}
+            </button>
+            <button class="product-gallery__nav product-gallery__nav--next" id="GalleryNext" aria-label="Next image">
+              {%- render 'icon-arrow-right' -%}
+            </button>
+          {%- endif -%}
+        </div>
+      </div>
+    </div><!-- /.main-product__gallery -->
+
+    <!-- Product info -->
+    <div class="main-product__info">
+
+      <!-- Vendor -->
+      {%- if section.settings.show_vendor and product.vendor != blank -%}
+        <p class="main-product__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+
+      <!-- Title -->
+      <h1 class="main-product__title">{{ product.title }}</h1>
+
+      <!-- Rating -->
+      {%- if section.settings.show_rating -%}
+        {%- if product.metafields.reviews.rating.value != blank -%}
+          <div class="main-product__rating" aria-label="{{ product.metafields.reviews.rating.value }} out of 5">
+            {%- assign rating_val = product.metafields.reviews.rating.value | round -%}
+            {%- for i in (1..5) -%}
+              <span class="product-card__star{% if i <= rating_val %} product-card__star--filled{% endif %}">★</span>
+            {%- endfor -%}
+            {%- if product.metafields.reviews.rating_count.value -%}
+              <span class="main-product__rating-count">({{ product.metafields.reviews.rating_count.value }} reviews)</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+
+      <!-- Price -->
+      <div class="main-product__price" id="ProductPrice">
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="main-product__price-sale">{{ current_variant.price | money }}</span>
+          <span class="main-product__price-compare">{{ current_variant.compare_at_price | money }}</span>
+          {%- assign discount_pct = current_variant.compare_at_price | minus: current_variant.price | times: 100 | divided_by: current_variant.compare_at_price -%}
+          <span class="main-product__price-badge">Save {{ discount_pct }}%</span>
+        {%- else -%}
+          <span class="main-product__price-regular">{{ current_variant.price | money }}</span>
+        {%- endif -%}
+      </div>
+
+      <!-- India: EMI Calculator -->
+      {%- if section.settings.enable_emi != false -%}
+        {%- render 'emi-calculator', price: current_variant.price -%}
+      {%- endif -%}
+
+      <!-- India: COD Badge -->
+      {%- if section.settings.enable_cod != false -%}
+        {%- render 'cod-badge' -%}
+      {%- endif -%}
+
+      <!-- Variants -->
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <div class="main-product__option" data-option-index="{{ forloop.index0 }}">
+            <label class="main-product__option-label">
+              {{ option.name }}:
+              <span class="main-product__option-selected" id="SelectedOption{{ forloop.index }}">{{ option.selected_value }}</span>
+            </label>
+
+            {%- assign option_name_lower = option.name | downcase -%}
+            {%- if option_name_lower == 'size' -%}
+              <button
+                type="button"
+                class="main-product__size-guide-btn"
+                data-size-guide
+                aria-controls="SizeGuideModal"
+              >
+                📏 Size Guide
+              </button>
+            {%- endif -%}
+            {%- if option_name_lower == 'color' or option_name_lower == 'colour' -%}
+              <!-- Color swatches -->
+              <div class="main-product__swatches" role="radiogroup" aria-label="{{ option.name }}">
+                {%- for value in option.values -%}
+                  <button
+                    class="main-product__swatch{% if option.selected_value == value %} main-product__swatch--active{% endif %}"
+                    style="background-color: {{ value | downcase | replace: ' ', '' }};"
+                    data-value="{{ value | escape }}"
+                    data-option-index="{{ forloop.parentloop.index0 }}"
+                    aria-label="{{ value }}"
+                    title="{{ value }}"
+                    role="radio"
+                  ></button>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              <!-- Pill buttons -->
+              <div class="main-product__option-values" role="radiogroup" aria-label="{{ option.name }}">
+                {%- for value in option.values -%}
+                  <button
+                    class="main-product__option-btn{% if option.selected_value == value %} main-product__option-btn--active{% endif %}"
+                    data-value="{{ value | escape }}"
+                    data-option-index="{{ forloop.parentloop.index0 }}"
+                    role="radio"
+                  >{{ value }}</button>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      <!-- Hidden variant selector (for form submission) -->
+      {%- form 'product', product, id: 'ProductForm', novalidate: true -%}
+        <input type="hidden" name="id" id="ProductVariantId" value="{{ current_variant.id }}">
+
+        <!-- Quantity -->
+        <div class="main-product__qty-wrap">
+          <label class="main-product__qty-label" for="ProductQty">Quantity</label>
+          <div class="main-product__qty">
+            <button type="button" class="main-product__qty-btn" data-action="decrease" aria-label="Decrease quantity">−</button>
+            <input
+              type="number"
+              id="ProductQty"
+              name="quantity"
+              value="1"
+              min="1"
+              class="main-product__qty-input"
+              aria-label="Quantity"
+            >
+            <button type="button" class="main-product__qty-btn" data-action="increase" aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+
+        <!-- Add to cart -->
+        <div class="main-product__atc-wrap{% unless current_variant.available %} main-product__atc-wrap--hidden{% endunless %}" id="ATCWrap">
+          <button
+            type="submit"
+            name="add"
+            class="btn btn--atc{% unless current_variant.available %} btn--disabled{% endunless %}"
+            id="AddToCartBtn"
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span class="btn__icon">+</span>
+            <span id="AddToCartText">
+              {%- if current_variant.available -%}Add to Cart{%- else -%}Sold Out{%- endif -%}
+            </span>
+          </button>
+
+          <!-- Wishlist -->
+          <button
+            type="button"
+            class="btn btn--wishlist"
+            data-product-id="{{ product.id }}"
+            aria-label="Add to wishlist"
+          >
+            {%- render 'icon-heart' -%}
+          </button>
+        </div>
+
+        <!-- Dynamic checkout (Shop Pay, Apple Pay etc.) -->
+        {{ form | payment_button }}
+
+      {%- endform -%}
+
+      <!-- Notify Me (shown when variant is sold out) -->
+      {%- render 'notify-me', product: product, variant: current_variant -%}
+
+      <!-- Urgency Indicators -->
+      {%- render 'urgency-indicators', product: product, variant: current_variant -%}
+
+      <!-- Trust badges inline -->
+      <div class="main-product__trust">
+        <div class="main-product__trust-badge">🔒 Secure checkout</div>
+        <div class="main-product__trust-badge">🚚 Free delivery over $99</div>
+        <div class="main-product__trust-badge">↩️ 30-day returns</div>
+      </div>
+
+      <!-- Description -->
+      {%- if product.description != blank -%}
+        <div class="main-product__desc" id="ProductDescription">
+          <button class="main-product__desc-toggle" aria-expanded="true" aria-controls="ProductDescBody">
+            Description <span class="main-product__desc-toggle-icon">−</span>
+          </button>
+          <div class="main-product__desc-body rte" id="ProductDescBody">
+            {{ product.description }}
+          </div>
+        </div>
+      {%- endif -%}
+
+      <!-- Share -->
+      {%- if section.settings.show_share -%}
+        <div class="main-product__share">
+          <span class="main-product__share-label">Share:</span>
+          <a
+            href="https://www.facebook.com/sharer.php?u={{ shop.url }}{{ product.url }}"
+            target="_blank"
+            rel="noopener"
+            class="main-product__share-btn"
+            aria-label="Share on Facebook"
+          >FB</a>
+          <a
+            href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ product.url }}&text={{ product.title | url_encode }}"
+            target="_blank"
+            rel="noopener"
+            class="main-product__share-btn"
+            aria-label="Share on Twitter"
+          >TW</a>
+        </div>
+      {%- endif -%}
+
+    </div><!-- /.main-product__info -->
+  </div><!-- /.main-product__inner -->
+</div>
+
+{%- render 'sticky-atc', product: product -%}
+
+{%- render 'size-guide', product: product -%}
+
+<script>
+  // Expose variant data for JS
+  window.__luxe_variants__ = {{ product.variants | json }};
+
+  // Variant switching & gallery sync
+  document.addEventListener('DOMContentLoaded', function() {
+    var productData = {{ product.variants | json }};
+    var options = document.querySelectorAll('[data-option-index]');
+    var variantInput = document.getElementById('ProductVariantId');
+    var priceEl = document.getElementById('ProductPrice');
+    var addBtn = document.getElementById('AddToCartBtn');
+    var addBtnText = document.getElementById('AddToCartText');
+
+    options.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (!this.dataset.value) return;
+        var idx = parseInt(this.dataset.optionIndex);
+        var val = this.dataset.value;
+
+        // Update active state
+        var siblings = document.querySelectorAll('[data-option-index="' + idx + '"]');
+        siblings.forEach(function(s) { s.classList.remove('main-product__swatch--active', 'main-product__option-btn--active'); s.setAttribute('aria-checked', 'false'); });
+        this.classList.add(this.classList.contains('main-product__swatch') ? 'main-product__swatch--active' : 'main-product__option-btn--active');
+        this.setAttribute('aria-checked', 'true');
+
+        // Update label
+        var label = document.getElementById('SelectedOption' + (idx + 1));
+        if (label) label.textContent = val;
+
+        // Find matching variant
+        luxeFindVariant(productData, variantInput, priceEl, addBtn, addBtnText);
+      });
+    });
+
+    // Qty controls
+    var qtyInput = document.getElementById('ProductQty');
+    document.querySelectorAll('.main-product__qty-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var delta = this.dataset.action === 'increase' ? 1 : -1;
+        var val = Math.max(1, parseInt(qtyInput.value || 1) + delta);
+        qtyInput.value = val;
+      });
+    });
+
+    // Thumbnail gallery
+    var thumbs = document.querySelectorAll('.product-gallery__thumb');
+    thumbs.forEach(function(thumb) {
+      thumb.addEventListener('click', function() {
+        thumbs.forEach(function(t) { t.classList.remove('product-gallery__thumb--active'); });
+        this.classList.add('product-gallery__thumb--active');
+        // In a real theme, update main image src here
+      });
+    });
+
+    // Description accordion
+    var descToggle = document.querySelector('.main-product__desc-toggle');
+    if (descToggle) {
+      descToggle.addEventListener('click', function() {
+        var body = document.getElementById('ProductDescBody');
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !expanded);
+        body.style.display = expanded ? 'none' : '';
+        this.querySelector('.main-product__desc-toggle-icon').textContent = expanded ? '+' : '−';
+      });
+    }
+  });
+
+  function luxeFindVariant(variants, input, priceEl, btn, btnText) {
+    var selectedOptions = [];
+    document.querySelectorAll('[data-option-index]').forEach(function(el) {
+      if (el.getAttribute('aria-checked') === 'true' || el.classList.contains('main-product__swatch--active') || el.classList.contains('main-product__option-btn--active')) {
+        selectedOptions[parseInt(el.dataset.optionIndex)] = el.dataset.value;
+      }
+    });
+
+    var match = variants.find(function(v) {
+      return v.options.every(function(opt, i) { return opt === selectedOptions[i]; });
+    });
+
+    if (match) {
+      input.value = match.id;
+      if (priceEl) priceEl.querySelector('.main-product__price-regular, .main-product__price-sale').textContent = luxeFormatMoney(match.price);
+      if (btn) {
+        btn.disabled = !match.available;
+        btn.classList.toggle('btn--disabled', !match.available);
+      }
+      if (btnText) btnText.textContent = match.available ? 'Add to Cart' : 'Sold Out';
+    }
+  }
+
+  function luxeFormatMoney(cents) {
+    return '$' + (cents / 100).toFixed(2);
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "class": "main-product-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share buttons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "India-Specific Features"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_emi",
+      "label": "Show EMI Calculator",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_cod",
+      "label": "Show COD Badge",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

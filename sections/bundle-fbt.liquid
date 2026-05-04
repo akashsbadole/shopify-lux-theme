@@ -1,0 +1,208 @@
+{%- comment -%}
+  Bundle / Frequently Bought Together
+  Shows below Add-to-Cart on the product page.
+  Products sourced from:
+    1. product.metafields.luxe.bundle_products (comma-separated handles)
+    2. Section setting: manually picked collection
+    3. Fallback: product.collections[0] (first 3 products)
+{%- endcomment -%}
+
+{%- liquid
+  assign bundle_handles = product.metafields.luxe.bundle_products.value
+  assign bundle_collection = section.settings.bundle_collection | default: ''
+-%}
+
+{%- comment -%} Build product array from metafield handles {%- endcomment -%}
+{%- if bundle_handles != blank -%}
+  {%- assign handle_list = bundle_handles | split: ',' -%}
+  {%- assign bundle_items = '' -%}
+  {%- for h in handle_list limit: 3 -%}
+    {%- assign h = h | strip -%}
+    {%- assign bp = all_products[h] -%}
+    {%- if bp != blank and bp.id != product.id -%}
+      {%- unless forloop.first -%}{%- assign bundle_items = bundle_items | append: '||' -%}{%- endunless -%}
+      {%- assign bundle_items = bundle_items | append: h -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment -%} Fallback: use first collection {%- endcomment -%}
+{%- assign fallback_col = product.collections.first -%}
+
+{%- comment -%} Only render if we have products to show {%- endcomment -%}
+{%- if bundle_handles != blank or bundle_collection != blank or fallback_col != blank -%}
+
+<div class="bundle-section section-{{ section.id }}" id="BundleSection" data-product-id="{{ product.id }}">
+  <div class="bundle-section__inner">
+
+    <div class="bundle-section__header">
+      <h3 class="bundle-section__title">{{ section.settings.title | default: 'Frequently Bought Together' }}</h3>
+    </div>
+
+    <div class="bundle-layout">
+
+      <!-- Main product (always included) -->
+      <div class="bundle-layout__products" id="BundleProducts">
+
+        <!-- Current product card -->
+        <div class="bundle-item bundle-item--main" data-product-id="{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-price="{{ product.price }}">
+          <label class="bundle-item__check-wrap">
+            <input type="checkbox" class="bundle-item__check" checked disabled aria-label="{{ product.title }} (required)">
+          </label>
+          <div class="bundle-item__img">
+            {%- if product.featured_image -%}
+              {{ product.featured_image | image_url: width: 200 | image_tag: alt: product.title, loading: 'lazy', width: 100, height: 100 }}
+            {%- else -%}
+              <div class="bundle-item__img-placeholder">{%- render 'icon-image' -%}</div>
+            {%- endif -%}
+          </div>
+          <div class="bundle-item__info">
+            <p class="bundle-item__title">{{ product.title | truncate: 40 }}</p>
+            {%- unless product.has_only_default_variant -%}
+              <p class="bundle-item__variant">{{ product.selected_or_first_available_variant.title }}</p>
+            {%- endunless -%}
+            <p class="bundle-item__price">{{ product.price | money }}</p>
+          </div>
+          <span class="bundle-item__required-label">This item</span>
+        </div>
+
+        <!-- Bundle products -->
+        {%- if bundle_handles != blank -%}
+          {%- for h in handle_list limit: 3 -%}
+            {%- assign h_clean = h | strip -%}
+            {%- assign bp = all_products[h_clean] -%}
+            {%- if bp != blank and bp.id != product.id -%}
+              {%- assign bp_variant = bp.selected_or_first_available_variant -%}
+              <span class="bundle-plus" aria-hidden="true">+</span>
+              <div class="bundle-item" data-product-id="{{ bp.id }}" data-variant-id="{{ bp_variant.id }}" data-price="{{ bp.price }}">
+                <label class="bundle-item__check-wrap">
+                  <input type="checkbox" class="bundle-item__check" checked aria-label="Include {{ bp.title | escape }}">
+                </label>
+                <div class="bundle-item__img">
+                  {%- if bp.featured_image -%}
+                    {{ bp.featured_image | image_url: width: 200 | image_tag: alt: bp.title, loading: 'lazy', width: 100, height: 100 }}
+                  {%- else -%}
+                    <div class="bundle-item__img-placeholder">{%- render 'icon-image' -%}</div>
+                  {%- endif -%}
+                </div>
+                <div class="bundle-item__info">
+                  <a href="{{ bp.url }}" class="bundle-item__title">{{ bp.title | truncate: 40 }}</a>
+                  {%- unless bp.has_only_default_variant -%}
+                    <p class="bundle-item__variant">{{ bp_variant.title }}</p>
+                  {%- endunless -%}
+                  <p class="bundle-item__price">{{ bp.price | money }}</p>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+        {%- elsif fallback_col != blank -%}
+          {%- assign shown = 0 -%}
+          {%- for col_prod in fallback_col.products -%}
+            {%- if shown >= 2 -%}{%- break -%}{%- endif -%}
+            {%- if col_prod.id == product.id -%}{%- continue -%}{%- endif -%}
+            {%- assign bp_variant = col_prod.selected_or_first_available_variant -%}
+            <span class="bundle-plus" aria-hidden="true">+</span>
+            <div class="bundle-item" data-product-id="{{ col_prod.id }}" data-variant-id="{{ bp_variant.id }}" data-price="{{ col_prod.price }}">
+              <label class="bundle-item__check-wrap">
+                <input type="checkbox" class="bundle-item__check" checked aria-label="Include {{ col_prod.title | escape }}">
+              </label>
+              <div class="bundle-item__img">
+                {%- if col_prod.featured_image -%}
+                  {{ col_prod.featured_image | image_url: width: 200 | image_tag: alt: col_prod.title, loading: 'lazy', width: 100, height: 100 }}
+                {%- else -%}
+                  <div class="bundle-item__img-placeholder">{%- render 'icon-image' -%}</div>
+                {%- endif -%}
+              </div>
+              <div class="bundle-item__info">
+                <a href="{{ col_prod.url }}" class="bundle-item__title">{{ col_prod.title | truncate: 40 }}</a>
+                {%- unless col_prod.has_only_default_variant -%}
+                  <p class="bundle-item__variant">{{ bp_variant.title }}</p>
+                {%- endunless -%}
+                <p class="bundle-item__price">{{ col_prod.price | money }}</p>
+              </div>
+            </div>
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+      </div><!-- /.bundle-layout__products -->
+
+      <!-- Summary + CTA -->
+      <div class="bundle-layout__summary" id="BundleSummary">
+        <div class="bundle-summary__prices">
+          <div class="bundle-summary__row">
+            <span>Total</span>
+            <span id="BundleTotalOriginal" class="bundle-summary__original"></span>
+          </div>
+          <div class="bundle-summary__row bundle-summary__row--total">
+            <span>Bundle price</span>
+            <span id="BundleTotalPrice" class="bundle-summary__price"></span>
+          </div>
+          {%- if section.settings.bundle_discount > 0 -%}
+            <div class="bundle-summary__savings">
+              🎉 You save <strong id="BundleSavings"></strong> ({{ section.settings.bundle_discount }}% off)
+            </div>
+          {%- endif -%}
+        </div>
+
+        <button
+          class="btn btn--primary btn--full"
+          id="BundleAddBtn"
+          data-discount="{{ section.settings.bundle_discount | default: 0 }}"
+        >
+          <span class="btn__icon">🛍️</span>
+          Add Bundle to Cart
+        </button>
+
+        <p class="bundle-summary__note">{{ section.settings.bundle_note | default: 'Items added separately to cart' }}</p>
+      </div>
+
+    </div><!-- /.bundle-layout -->
+  </div>
+</div>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bundle / FBT",
+  "tag": "section",
+  "class": "bundle-section-wrap",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section heading",
+      "default": "Frequently Bought Together"
+    },
+    {
+      "type": "collection",
+      "id": "bundle_collection",
+      "label": "Fallback collection",
+      "info": "Used when no bundle products metafield is set on the product"
+    },
+    {
+      "type": "range",
+      "id": "bundle_discount",
+      "label": "Bundle discount %",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "default": 10,
+      "info": "0 = no discount shown"
+    },
+    {
+      "type": "text",
+      "id": "bundle_note",
+      "label": "Note below button",
+      "default": "Items added separately to cart"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle / FBT"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,13 @@
+<div class="announcement-bar" role="region" aria-label="Announcement">
+  <div class="announcement-bar__inner">
+    <p class="announcement-bar__text">
+      {%- if settings.announcement_url != blank -%}
+        <a href="{{ settings.announcement_url }}" class="announcement-bar__link">
+          {{ settings.announcement_text }}
+        </a>
+      {%- else -%}
+        {{ settings.announcement_text }}
+      {%- endif -%}
+    </p>
+  </div>
+</div>

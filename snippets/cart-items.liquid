@@ -1,0 +1,77 @@
+<ul class="cart-items" id="CartItemsList" role="list">
+  {%- for item in cart.items -%}
+    <li class="cart-item" data-key="{{ item.key }}" data-line="{{ forloop.index }}">
+
+      <a href="{{ item.url }}" class="cart-item__img-link" tabindex="-1" aria-hidden="true">
+        {%- if item.image -%}
+          {{
+            item.image
+            | image_url: width: 120
+            | image_tag:
+              class: 'cart-item__img',
+              alt: item.image.alt,
+              width: 80,
+              height: 80,
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          <div class="cart-item__img cart-item__img--placeholder">
+            {%- render 'icon-image' -%}
+          </div>
+        {%- endif -%}
+      </a>
+
+      <div class="cart-item__info">
+        <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title }}</a>
+
+        {%- unless item.product.has_only_default_variant -%}
+          <p class="cart-item__variant">{{ item.variant.title }}</p>
+        {%- endunless -%}
+
+        {%- if item.discounts.size > 0 -%}
+          {%- for discount in item.discounts -%}
+            <p class="cart-item__discount">{{ discount.title }}</p>
+          {%- endfor -%}
+        {%- endif -%}
+
+        <!-- Quantity controls with AJAX -->
+        <div class="cart-item__qty-wrap">
+          <div class="cart-item__qty" role="group" aria-label="Quantity for {{ item.product.title }}">
+            <button
+              class="cart-item__qty-btn"
+              data-action="decrease"
+              data-line="{{ forloop.index }}"
+              data-key="{{ item.key }}"
+              aria-label="Decrease quantity"
+            >−</button>
+            <span class="cart-item__qty-val" data-line="{{ forloop.index }}">{{ item.quantity }}</span>
+            <button
+              class="cart-item__qty-btn"
+              data-action="increase"
+              data-line="{{ forloop.index }}"
+              data-key="{{ item.key }}"
+              aria-label="Increase quantity"
+            >+</button>
+          </div>
+
+          <button
+            class="cart-item__remove"
+            data-line="{{ forloop.index }}"
+            data-key="{{ item.key }}"
+            aria-label="Remove {{ item.product.title }}"
+          >
+            {%- render 'icon-trash' -%}
+          </button>
+        </div>
+      </div>
+
+      <div class="cart-item__price-wrap">
+        {%- if item.original_price != item.final_price -%}
+          <span class="cart-item__original-price">{{ item.original_price | money }}</span>
+        {%- endif -%}
+        <span class="cart-item__final-price" data-line="{{ forloop.index }}">{{ item.final_line_price | money }}</span>
+      </div>
+
+    </li>
+  {%- endfor -%}
+</ul>

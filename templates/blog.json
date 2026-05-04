@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "layout": "grid",
+        "show_rss": true,
+        "show_description": true,
+        "show_author": true,
+        "show_excerpt": true,
+        "read_more_label": "Read more",
+        "enable_pagination": true
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,65 @@
+<div class="trust-bar section-{{ section.id }}">
+  <div class="trust-bar__inner">
+    {%- for block in section.blocks -%}
+      <div class="trust-bar__item" {{ block.shopify_attributes }}>
+        {%- if block.settings.icon != blank -%}
+          <div class="trust-bar__icon" aria-hidden="true">{{ block.settings.icon }}</div>
+        {%- endif -%}
+        <div class="trust-bar__content">
+          {%- if block.settings.title != blank -%}
+            <h3 class="trust-bar__title">{{ block.settings.title }}</h3>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <p class="trust-bar__text">{{ block.settings.text }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Trust Bar",
+  "tag": "section",
+  "class": "trust-bar-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Emoji icon",
+          "default": "🚚"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Free Delivery"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Description",
+          "default": "On orders above $99"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Bar",
+      "blocks": [
+        { "type": "trust_item", "settings": { "icon": "🚚", "title": "Free Delivery", "text": "On all orders above $99" } },
+        { "type": "trust_item", "settings": { "icon": "🔒", "title": "Secure Payments", "text": "256-bit SSL encryption" } },
+        { "type": "trust_item", "settings": { "icon": "↩️", "title": "Easy Returns", "text": "30-day return policy" } },
+        { "type": "trust_item", "settings": { "icon": "⭐", "title": "Premium Quality", "text": "Authenticity guaranteed" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
