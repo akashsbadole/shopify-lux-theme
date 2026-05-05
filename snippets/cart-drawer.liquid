@@ -1,4 +1,4 @@
-<div class="cart-overlay" id="CartOverlay" aria-hidden="true"></div>
+<div class="cart-overlay" id="CartOverlay" aria-hidden="true" style="display:block;"></div>
 
 <div
   class="cart-drawer"
@@ -7,8 +7,9 @@
   role="dialog"
   aria-modal="true"
   aria-label="Shopping cart"
+  style="display:flex !important; visibility:visible !important;"
 >
-  <div class="cart-drawer__header">
+  <div class="cart-drawer__header" style="visibility:visible;">
     <h2 class="cart-drawer__title">My Cart
       <span class="cart-drawer__count" id="CartItemCount">({{ cart.item_count }})</span>
     </h2>
@@ -17,7 +18,7 @@
     </button>
   </div>
 
-  <div class="cart-drawer__body" id="CartDrawerBody">
+  <div class="cart-drawer__body" id="CartDrawerBody" style="visibility:visible;">
     {%- if cart.item_count > 0 -%}
       {%- render 'cart-items', cart: cart -%}
     {%- else -%}
@@ -35,7 +36,7 @@
   </div>
 
   {%- if cart.item_count > 0 -%}
-  <div class="cart-drawer__footer" id="CartFooter">
+  <div class="cart-drawer__footer" id="CartFooter" style="visibility:visible;">
     <!-- Totals -->
     <div class="cart-totals" id="CartTotals">
       <div class="cart-totals__row">
@@ -156,7 +157,10 @@
         drawer.classList.add('active');
         document.body.classList.add('cart-open');
       }
-      if (overlay) overlay.setAttribute('aria-hidden', 'false');
+      if (overlay) {
+        overlay.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('active');
+      }
     },
 
     // Close cart drawer
@@ -168,7 +172,10 @@
         drawer.classList.remove('active');
         document.body.classList.remove('cart-open');
       }
-      if (overlay) overlay.setAttribute('aria-hidden', 'true');
+      if (overlay) {
+        overlay.setAttribute('aria-hidden', 'true');
+        overlay.classList.remove('active');
+      }
     },
 
     // Toggle cart drawer
@@ -187,9 +194,11 @@
       var msg = document.getElementById('luxeToastMsg');
       if (toast && msg) {
         msg.textContent = message;
-        toast.classList.add('show', type || '');
+        toast.classList.add('show');
+        if (type) toast.classList.add(type);
         setTimeout(function() {
-          toast.classList.remove('show', type || '');
+          toast.classList.remove('show');
+          if (type) toast.classList.remove(type);
         }, 3000);
       }
     }

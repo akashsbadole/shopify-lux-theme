@@ -1,0 +1,492 @@
+{%- style -%}
+  .brand-story {
+    padding: {{ section.settings.padding_y }}px 20px;
+    background: {{ section.settings.bg_color }};
+  }
+  .brand-story__inner {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: {% if section.settings.image_position == 'left' %}1fr 1fr{% else %}1fr 1fr{% endif %};
+    gap: {{ section.settings.gap }}px;
+    align-items: center;
+  }
+  .brand-story__image {
+    position: relative;
+    border-radius: {{ section.settings.border_radius }}px;
+    overflow: hidden;
+  }
+  .brand-story__image img {
+    width: 100%;
+    height: {{ section.settings.image_height }}px;
+    object-fit: cover;
+  }
+  .brand-story__image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    color: white;
+  }
+  .brand-story__image-text {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .brand-story__content {
+    padding: {{ section.settings.content_padding }}px;
+  }
+  .brand-story__tag {
+    display: inline-block;
+    font-size: {{ section.settings.tag_size }}px;
+    font-weight: 600;
+    color: {{ section.settings.accent_color }};
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .brand-story__title {
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .brand-story__text {
+    font-size: {{ section.settings.text_size }}px;
+    color: {{ section.settings.text_color }};
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .brand-story__stats {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.stats_columns }}, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .brand-story__stat {
+    text-align: center;
+  }
+  .brand-story__stat-number {
+    font-size: {{ section.settings.stat_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.accent_color }};
+    display: block;
+  }
+  .brand-story__stat-label {
+    font-size: 13px;
+    color: {{ section.settings.text_color }};
+    margin-top: 4px;
+  }
+  .brand-story__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: {{ section.settings.btn_bg }};
+    color: {{ section.settings.btn_color }};
+    font-size: {{ section.settings.btn_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: {{ section.settings.btn_radius }}px;
+    transition: all 0.3s ease;
+  }
+  .brand-story__cta:hover {
+    background: {{ section.settings.btn_hover_bg }};
+    transform: translateY(-2px);
+  }
+  .brand-story__features {
+    margin-top: 24px;
+  }
+  .brand-story__feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .brand-story__feature-icon {
+    width: 32px;
+    height: 32px;
+    background: {{ section.settings.accent_color }}15;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ section.settings.accent_color }};
+    font-size: 14px;
+  }
+  .brand-story__feature-text {
+    font-size: 14px;
+    color: {{ section.settings.text_color }};
+  }
+  @media (max-width: 900px) {
+    .brand-story__inner {
+      grid-template-columns: 1fr;
+    }
+    .brand-story__image img {
+      height: 300px;
+    }
+    .brand-story__stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+{%- endstyle -%}
+
+<div class="brand-story" id="BrandStory">
+  <div class="brand-story__inner">
+    <div class="brand-story__image">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 800 | image_tag: class: 'brand-story__img', loading: 'lazy' }}
+      {%- else -%}
+        <div style="width:100%; height: {{ section.settings.image_height }}px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">
+          {%- render 'icon-image' -%}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.image_caption != blank -%}
+        <div class="brand-story__image-overlay">
+          <span class="brand-story__image-text">{{ section.settings.image_caption }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+    
+    <div class="brand-story__content">
+      {%- if section.settings.tag != blank -%}
+        <span class="brand-story__tag">{{ section.settings.tag }}</span>
+      {%- endif -%}
+      
+      {%- if section.settings.title != blank -%}
+        <h2 class="brand-story__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      
+      {%- if section.settings.description != blank -%}
+        <div class="brand-story__text">{{ section.settings.description }}</div>
+      {%- endif -%}
+      
+      {%- if section.settings.show_stats -%}
+        <div class="brand-story__stats">
+          <div class="brand-story__stat">
+            <span class="brand-story__stat-number">{{ section.settings.stat_1_value }}</span>
+            <span class="brand-story__stat-label">{{ section.settings.stat_1_label }}</span>
+          </div>
+          <div class="brand-story__stat">
+            <span class="brand-story__stat-number">{{ section.settings.stat_2_value }}</span>
+            <span class="brand-story__stat-label">{{ section.settings.stat_2_label }}</span>
+          </div>
+          <div class="brand-story__stat">
+            <span class="brand-story__stat-number">{{ section.settings.stat_3_value }}</span>
+            <span class="brand-story__stat-label">{{ section.settings.stat_3_label }}</span>
+          </div>
+        </div>
+      {%- endif -%}
+      
+      {%- if section.settings.feature_1 != blank or section.settings.feature_2 != blank -%}
+        <div class="brand-story__features">
+          {%- if section.settings.feature_1 != blank -%}
+            <div class="brand-story__feature">
+              <span class="brand-story__feature-icon">✓</span>
+              <span class="brand-story__feature-text">{{ section.settings.feature_1 }}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.feature_2 != blank -%}
+            <div class="brand-story__feature">
+              <span class="brand-story__feature-icon">✓</span>
+              <span class="brand-story__feature-text">{{ section.settings.feature_2 }}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.feature_3 != blank -%}
+            <div class="brand-story__feature">
+              <span class="brand-story__feature-icon">✓</span>
+              <span class="brand-story__feature-text">{{ section.settings.feature_3 }}</span>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      
+      {%- if section.settings.cta_text != blank -%}
+        <a href="{{ section.settings.cta_link | default: '#' }}" class="brand-story__cta">
+          {{ section.settings.cta_text }}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "tag": "section",
+  "class": "brand-story-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_caption",
+      "label": "Image caption"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image height (px)",
+      "min": 300,
+      "max": 600,
+      "step": 50,
+      "default": 450
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Tagline",
+      "default": "OUR STORY"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Crafting Quality Since 2015"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>We started with a simple mission: to create premium products that combine exceptional quality with timeless design. Every piece in our collection is carefully crafted using the finest materials and attention to detail.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show statistics",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "stats_columns",
+      "label": "Stats columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "stat_1_value",
+      "label": "Stat 1 value",
+      "default": "10+"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "label": "Stat 1 label",
+      "default": "Years Experience"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_value",
+      "label": "Stat 2 value",
+      "default": "50K+"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "label": "Stat 2 label",
+      "default": "Happy Customers"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_value",
+      "label": "Stat 3 value",
+      "default": "100+"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "label": "Stat 3 label",
+      "default": "Products"
+    },
+    {
+      "type": "text",
+      "id": "feature_1",
+      "label": "Feature 1",
+      "default": "Free Shipping on Orders $99+"
+    },
+    {
+      "type": "text",
+      "id": "feature_2",
+      "label": "Feature 2",
+      "default": "30-Day Hassle-Free Returns"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Feature 3",
+      "default": "Secure Payment Options"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Learn More About Us"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Section padding (px)",
+      "min": 40,
+      "max": 120,
+      "step": 8,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap (px)",
+      "min": 24,
+      "max": 80,
+      "step": 8,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius (px)",
+      "min": 0,
+      "max": 32,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Content padding (px)",
+      "min": 16,
+      "max": 48,
+      "step": 8,
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#f9fafb"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#667eea"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#4a5568"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#667eea"
+    },
+    {
+      "type": "color",
+      "id": "btn_color",
+      "label": "Button color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_hover_bg",
+      "label": "Button hover background",
+      "default": "#5a67d8"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (px)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size (px)",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "tag_size",
+      "label": "Tag size (px)",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "stat_size",
+      "label": "Stat size (px)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "btn_size",
+      "label": "Button size (px)",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "btn_radius",
+      "label": "Button radius (px)",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Story"
+    }
+  ]
+}
+{% endschema %}

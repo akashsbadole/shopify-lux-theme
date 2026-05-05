@@ -3,76 +3,85 @@
 {%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
 
 <div class="main-product section-{{ section.id }}" id="MainProduct" data-product-id="{{ product.id }}">
+  <!-- Breadcrumbs -->
+  <nav class="main-product__breadcrumbs" aria-label="Breadcrumb">
+    <ol class="breadcrumbs__list">
+      <li class="breadcrumbs__item">
+        <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
+        <span class="breadcrumbs__separator" aria-hidden="true">›</span>
+      </li>
+      {%- if collection -%}
+      <li class="breadcrumbs__item">
+        <a href="{{ collection.url }}" class="breadcrumbs__link">{{ collection.title }}</a>
+        <span class="breadcrumbs__separator" aria-hidden="true">›</span>
+      </li>
+      {%- endif -%}
+      <li class="breadcrumbs__item">
+        <span class="breadcrumbs__current">{{ product.title | truncate: 30 }}</span>
+      </li>
+    </ol>
+  </nav>
+
   <div class="main-product__inner">
 
     <!-- Gallery -->
-    <div class="main-product__gallery" id="ProductGallery">
+    <div class="main-product__gallery" id="ProductGallery" data-media-count="{{ product.media.size }}">
+      <!-- Main image area with all media -->
+      <div class="product-gallery__main" id="ProductMainImage">
+        {%- for media in product.media -%}
+          <div 
+            class="product-gallery__slide{% if media == featured_media %} product-gallery__slide--active{% endif %}{% if section.settings.enable_zoom %} product-gallery__slide--zoomable{% endif %}"
+            data-media-id="{{ media.id }}"
+            data-index="{{ forloop.index0 }}"
+            {%- if media != featured_media -%}style="display:none;"{%- endif -%}
+          >
+            {%- if media.media_type == 'video' -%}
+              {{ media | video_tag: image_size: '1000x', loop: true, muted: true, autoplay: false, class: 'product-gallery__video' }}
+            {%- elsif media.media_type == 'model' -%}
+              {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-gallery__model' }}
+            {%- else -%}
+              {%- if forloop.first -%}
+              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, loading: 'eager' }}
+            {%- else -%}
+              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, loading: 'lazy' }}
+            {%- endif -%}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+        {%- if product.media.size == 0 -%}
+          <div class="product-gallery__slide product-gallery__slide--active">
+            <div class="product-gallery__placeholder">{%- render 'icon-image' -%}</div>
+          </div>
+        {%- endif -%}
+
+        <!-- Navigation arrows -->
+        {%- if product.media.size > 1 -%}
+          <button class="product-gallery__nav product-gallery__nav--prev" id="GalleryPrev" aria-label="Previous image">
+            {%- render 'icon-arrow-left' -%}
+          </button>
+          <button class="product-gallery__nav product-gallery__nav--next" id="GalleryNext" aria-label="Next image">
+            {%- render 'icon-arrow-right' -%}
+          </button>
+        {%- endif -%}
+      </div>
+
       <!-- Thumbnails -->
       {%- if product.media.size > 1 -%}
         <div class="product-gallery__thumbs" id="ProductThumbs" role="list">
           {%- for media in product.media -%}
             <button
               class="product-gallery__thumb{% if media == featured_media %} product-gallery__thumb--active{% endif %}"
-              data-media-id="{{ media.id }}"
+              data-index="{{ forloop.index0 }}"
               aria-label="View image {{ forloop.index }}"
             >
-              {{
-                media.preview_image
-                | image_url: width: 120
-                | image_tag: alt: media.alt | default: product.title, loading: 'lazy'
-              }}
+              {%- if media.media_type == 'video' -%}
+                <div class="product-gallery__thumb-video-icon">▶</div>
+              {%- endif -%}
+              {{ media.preview_image | image_url: width: 120 | image_tag: alt: media.alt | default: product.title, loading: 'lazy' }}
             </button>
           {%- endfor -%}
         </div>
       {%- endif -%}
-
-      <!-- Main image -->
-      <div class="product-gallery__main" id="ProductMainImage">
-        <div
-          class="product-gallery__slide{% if section.settings.enable_zoom %} product-gallery__slide--zoomable{% endif %}"
-          data-media-id="{{ featured_media.id }}"
-          id="ProductActiveMedia"
-        >
-          {%- if featured_media != blank -%}
-            {%- if featured_media.media_type == 'video' -%}
-              {{
-                featured_media
-                | video_tag:
-                  image_size: '1000x',
-                  loop: true,
-                  muted: true,
-                  autoplay: true,
-                  class: 'product-gallery__video'
-              }}
-            {%- elsif featured_media.media_type == 'model' -%}
-              {{ featured_media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-gallery__model' }}
-            {%- else -%}
-              {{
-                featured_media
-                | image_url: width: 1000
-                | image_tag:
-                  class: 'product-gallery__img',
-                  id: 'ProductFeaturedImage',
-                  alt: featured_media.alt | default: product.title,
-                  fetchpriority: 'high',
-                  loading: 'eager'
-              }}
-            {%- endif -%}
-          {%- else -%}
-            <div class="product-gallery__placeholder">{%- render 'icon-image' -%}</div>
-          {%- endif -%}
-
-          <!-- Navigation arrows for multiple images -->
-          {%- if product.media.size > 1 -%}
-            <button class="product-gallery__nav product-gallery__nav--prev" id="GalleryPrev" aria-label="Previous image">
-              {%- render 'icon-arrow-left' -%}
-            </button>
-            <button class="product-gallery__nav product-gallery__nav--next" id="GalleryNext" aria-label="Next image">
-              {%- render 'icon-arrow-right' -%}
-            </button>
-          {%- endif -%}
-        </div>
-      </div>
     </div><!-- /.main-product__gallery -->
 
     <!-- Product info -->
@@ -112,6 +121,19 @@
           <span class="main-product__price-regular">{{ current_variant.price | money }}</span>
         {%- endif -%}
       </div>
+
+      <!-- Inventory Status -->
+      {%- if section.settings.show_inventory != false and current_variant.inventory_quantity > 0 -%}
+        <div class="main-product__inventory" id="ProductInventory">
+          {%- if current_variant.inventory_quantity <= 10 -%}
+            <span class="main-product__inventory--low">🔥 Only {{ current_variant.inventory_quantity }} left!</span>
+          {%- elsif current_variant.inventory_quantity <= 30 -%}
+            <span class="main-product__inventory--medium">Fast selling - {{ current_variant.inventory_quantity }} left</span>
+          {%- else -%}
+            <span class="main-product__inventory--high">In Stock</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
 
       <!-- India: EMI Calculator -->
       {%- if section.settings.enable_emi != false -%}
@@ -212,6 +234,16 @@
             </span>
           </button>
 
+          {%- if section.settings.enable_buy_now and current_variant.available -%}
+          <button
+            type="button"
+            class="btn btn--buy-now"
+            onclick="document.getElementById('ProductForm').submit(); window.location.href='{{ routes.cart_url }}?checkout=1';"
+          >
+            Buy Now
+          </button>
+          {%- endif -%}
+
           <!-- Wishlist -->
           <button
             type="button"
@@ -241,46 +273,103 @@
         <div class="main-product__trust-badge">↩️ 30-day returns</div>
       </div>
 
-      <!-- Description -->
+      <!-- Description with tabs -->
       {%- if product.description != blank -%}
         <div class="main-product__desc" id="ProductDescription">
-          <button class="main-product__desc-toggle" aria-expanded="true" aria-controls="ProductDescBody">
-            Description <span class="main-product__desc-toggle-icon">−</span>
-          </button>
-          <div class="main-product__desc-body rte" id="ProductDescBody">
-            {{ product.description }}
+          <div class="desc-tabs">
+            <button class="desc-tab desc-tab--active" data-tab="desc">Description</button>
+            <button class="desc-tab" data-tab="shipping">Shipping</button>
+            <button class="desc-tab" data-tab="returns">Returns</button>
+          </div>
+          <div class="desc-content desc-content--active" id="ProductDescBody">
+            <div class="rte">
+              {{ product.description }}
+            </div>
+            <div class="desc-features">
+              {%- if product.metafields.custom.features != blank -%}
+                <ul class="features-list">
+                  {%- assign features = product.metafields.custom.features | split: '|' -%}
+                  {%- for feature in features -%}
+                    <li>✓ {{ feature }}</li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+          </div>
+          <div class="desc-content" id="ShippingInfo">
+            <div class="shipping-info">
+              <div class="shipping-item">
+                <span class="shipping-icon">🚚</span>
+                <div class="shipping-details">
+                  <h4>Free Shipping</h4>
+                  <p>On orders above $99. Standard delivery in 5-7 business days.</p>
+                </div>
+              </div>
+              <div class="shipping-item">
+                <span class="shipping-icon">⚡</span>
+                <div class="shipping-details">
+                  <h4>Express Delivery</h4>
+                  <p>Get it in 2-3 business days with express shipping.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="desc-content" id="ReturnsInfo">
+            <div class="returns-info">
+              <div class="returns-item">
+                <span class="returns-icon">↩️</span>
+                <div class="returns-details">
+                  <h4>30-Day Returns</h4>
+                  <p>Hassle-free returns within 30 days of delivery.</p>
+                </div>
+              </div>
+              <div class="returns-item">
+                <span class="returns-icon">💬</span>
+                <div class="returns-details">
+                  <h4>Easy Process</h4>
+                  <p>Simply request a return and we'll handle the rest.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       {%- endif -%}
 
-      <!-- Share -->
+      <!-- Share (outside description, after it) -->
       {%- if section.settings.show_share -%}
         <div class="main-product__share">
           <span class="main-product__share-label">Share:</span>
-          <a
-            href="https://www.facebook.com/sharer.php?u={{ shop.url }}{{ product.url }}"
-            target="_blank"
-            rel="noopener"
-            class="main-product__share-btn"
-            aria-label="Share on Facebook"
-          >FB</a>
-          <a
-            href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ product.url }}&text={{ product.title | url_encode }}"
-            target="_blank"
-            rel="noopener"
-            class="main-product__share-btn"
-            aria-label="Share on Twitter"
-          >TW</a>
+          <a href="https://www.facebook.com/sharer.php?u={{ shop.url }}{{ product.url }}" target="_blank" rel="noopener" class="main-product__share-btn" aria-label="Share on Facebook">FB</a>
+          <a href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ product.url }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener" class="main-product__share-btn" aria-label="Share on Twitter">TW</a>
         </div>
       {%- endif -%}
 
-    </div><!-- /.main-product__info -->
-  </div><!-- /.main-product__inner -->
+      <!-- Frequently Bought Together -->
+      {%- if section.settings.show_fbt -%}
+        {%- section 'bundle-fbt' -%}
+      {%- endif -%}
+
+    </div>
+  </div>
 </div>
 
 {%- render 'sticky-atc', product: product -%}
 
 {%- render 'size-guide', product: product -%}
+
+<style>
+  .main-product__atc-wrap { display: flex; gap: 12px; align-items: stretch; margin: 24px 0; }
+  .btn--atc { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: #1a1a2e; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+  .btn--atc:hover { background: #2d2d4a; transform: translateY(-2px); }
+  .btn--buy-now { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+  .btn--buy-now:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+  .btn--wishlist { padding: 16px; background: #f5f5f5; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; color: #666; }
+  .btn--wishlist:hover { background: #ffe5e5; color: #e74c3c; }
+  @media (max-width: 480px) {
+    .main-product__atc-wrap { flex-wrap: wrap; }
+    .btn--atc, .btn--buy-now { width: 100%; flex: none; }
+  }
+</style>
 
 <script>
   // Expose variant data for JS
@@ -326,26 +415,123 @@
       });
     });
 
-    // Thumbnail gallery
+    // Gallery navigation
+    var gallery = document.getElementById('ProductGallery');
     var thumbs = document.querySelectorAll('.product-gallery__thumb');
-    thumbs.forEach(function(thumb) {
+    var prevBtn = document.getElementById('GalleryPrev');
+    var nextBtn = document.getElementById('GalleryNext');
+    var slides = gallery.querySelectorAll('.product-gallery__slide');
+    var currentIndex = 0;
+
+    function updateGallery(index) {
+      if (index < 0) index = slides.length - 1;
+      if (index >= slides.length) index = 0;
+      currentIndex = index;
+
+      // Update active thumbnail
+      thumbs.forEach(function(t, i) {
+        t.classList.toggle('product-gallery__thumb--active', i === index);
+      });
+
+      // Show/hide slides
+      slides.forEach(function(slide, i) {
+        if (i === index) {
+          slide.classList.add('product-gallery__slide--active');
+          slide.style.display = '';
+        } else {
+          slide.classList.remove('product-gallery__slide--active');
+          slide.style.display = 'none';
+        }
+      });
+    }
+
+    // Thumbnail click
+    thumbs.forEach(function(thumb, index) {
       thumb.addEventListener('click', function() {
-        thumbs.forEach(function(t) { t.classList.remove('product-gallery__thumb--active'); });
-        this.classList.add('product-gallery__thumb--active');
-        // In a real theme, update main image src here
+        updateGallery(index);
       });
     });
 
-    // Description accordion
-    var descToggle = document.querySelector('.main-product__desc-toggle');
-    if (descToggle) {
-      descToggle.addEventListener('click', function() {
-        var body = document.getElementById('ProductDescBody');
-        var expanded = this.getAttribute('aria-expanded') === 'true';
-        this.setAttribute('aria-expanded', !expanded);
-        body.style.display = expanded ? 'none' : '';
-        this.querySelector('.main-product__desc-toggle-icon').textContent = expanded ? '+' : '−';
+    // Prev/Next buttons
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        updateGallery(currentIndex - 1);
       });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        updateGallery(currentIndex + 1);
+      });
+    }
+
+    // Description tabs
+    var descTabs = document.querySelectorAll('.desc-tab');
+    var descContents = document.querySelectorAll('.desc-content');
+    descTabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var target = this.dataset.tab;
+        
+        // Update tabs
+        descTabs.forEach(function(t) { t.classList.remove('desc-tab--active'); });
+        this.classList.add('desc-tab--active');
+        
+        // Update content
+        descContents.forEach(function(content) {
+          content.classList.remove('desc-content--active');
+          if (content.id === target + 'Info' || (target === 'desc' && content.id === 'ProductDescBody')) {
+            content.classList.add('desc-content--active');
+          }
+        });
+      });
+    });
+
+    // Write Review Form
+    var writeReviewBtn = document.getElementById('WriteReviewBtn');
+    var writeReviewForm = document.getElementById('WriteReviewForm');
+    var cancelReviewBtn = document.getElementById('CancelReviewBtn');
+    var reviewStars = document.querySelectorAll('.review-form__star');
+    var reviewRating = document.getElementById('ReviewRating');
+    var reviewForm = document.getElementById('ReviewForm');
+
+    if (writeReviewBtn && writeReviewForm) {
+      writeReviewBtn.addEventListener('click', function() {
+        writeReviewForm.hidden = false;
+        writeReviewBtn.hidden = true;
+      });
+
+      if (cancelReviewBtn) {
+        cancelReviewBtn.addEventListener('click', function() {
+          writeReviewForm.hidden = true;
+          writeReviewBtn.hidden = false;
+        });
+      }
+
+      reviewStars.forEach(function(star) {
+        star.addEventListener('click', function() {
+          var rating = parseInt(this.dataset.rating);
+          reviewRating.value = rating;
+          reviewStars.forEach(function(s, i) {
+            s.classList.toggle('active', i < rating);
+          });
+        });
+      });
+
+      if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var name = document.getElementById('ReviewerName').value;
+          var rating = document.getElementById('ReviewRating').value;
+          var title = document.getElementById('ReviewTitle').value;
+          var body = document.getElementById('ReviewBody').value;
+          
+          alert('Thank you for your review! In a real store, this would be saved to your reviews app (Judge.me, Yotpo, etc.).\n\nName: ' + name + '\nRating: ' + rating + '/5\nTitle: ' + title);
+          
+          writeReviewForm.hidden = true;
+          writeReviewBtn.hidden = false;
+          reviewForm.reset();
+          reviewStars.forEach(function(s) { s.classList.remove('active'); });
+        });
+      }
     }
   });
 
@@ -408,6 +594,18 @@
       "default": true
     },
     {
+      "type": "checkbox",
+      "id": "show_inventory",
+      "label": "Show inventory status",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_fbt",
+      "label": "Show Frequently Bought Together",
+      "default": true
+    },
+    {
       "type": "header",
       "content": "India-Specific Features"
     },
@@ -421,6 +619,12 @@
       "type": "checkbox",
       "id": "enable_cod",
       "label": "Show COD Badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_buy_now",
+      "label": "Show Buy Now button",
       "default": true
     }
   ]

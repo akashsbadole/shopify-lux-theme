@@ -12,14 +12,14 @@
         {%- if block.settings.image != blank -%}
           {{ block.settings.image | image_url: width: 1920 | image_tag: class: 'hero-slider__img', loading: 'eager', fetchpriority: 'high' }}
         {%- else -%}
-          <img 
-            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80" 
-            alt="Hero slide {{ forloop.index }}"
-            class="hero-slider__img"
-            loading="eager"
-            width="1920"
-            height="600"
-          >
+           <img 
+             src="{{ 'hero-slider-default.jpg' | asset_url }}" 
+             alt="Hero slide {{ forloop.index }}"
+             class="hero-slider__img"
+             loading="eager"
+             width="1920"
+             height="600"
+           >
         {%- endif -%}
         
         <div class="hero-slider__overlay" style="opacity: {{ block.settings.overlay_opacity | default: 40 | divided_by: 100.0 }};"></div>

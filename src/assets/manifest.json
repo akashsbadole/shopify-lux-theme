@@ -1,0 +1,21 @@
+{
+  "name": "Luxe Premium Store",
+  "short_name": "Luxe",
+  "description": "Premium products, curated for the modern lifestyle",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7FAFC",
+  "theme_color": "#8A2BE2",
+  "icons": [
+    {
+      "src": "/cdn/shop/t/7/assets/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/cdn/shop/t/7/assets/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

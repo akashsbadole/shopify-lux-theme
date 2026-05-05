@@ -2,6 +2,23 @@
 {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
 
 <div class="main-collection section-{{ section.id }}" id="MainCollection">
+  <!-- Breadcrumbs -->
+  <nav class="collection-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="collection-breadcrumbs__list">
+      <li class="collection-breadcrumbs__item">
+        <a href="{{ routes.root_url }}" class="collection-breadcrumbs__link">Home</a>
+        <span class="collection-breadcrumbs__sep">›</span>
+      </li>
+      <li class="collection-breadcrumbs__item">
+        <a href="{{ routes.collections_url }}" class="collection-breadcrumbs__link">Collections</a>
+        <span class="collection-breadcrumbs__sep">›</span>
+      </li>
+      <li class="collection-breadcrumbs__item">
+        <span class="collection-breadcrumbs__current">{{ collection.title }}</span>
+      </li>
+    </ol>
+  </nav>
+
   <div class="main-collection__inner">
 
     <!-- Collection header -->
@@ -63,13 +80,16 @@
             </div>
           {%- endif -%}
 
-          <!-- Grid layout toggle -->
-          <div class="collection-toolbar__view" aria-label="Grid layout">
+          <!-- Grid/List layout toggle -->
+          <div class="collection-toolbar__view" aria-label="Grid or list view">
             <button class="collection-toolbar__view-btn{% if products_per_row == 3 %} active{% endif %}" data-cols="3" aria-label="3 columns">
               <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="3.5" height="3.5"/><rect x="4.25" y="0" width="3.5" height="3.5"/><rect x="8.5" y="0" width="3.5" height="3.5"/><rect x="0" y="4.25" width="3.5" height="3.5"/><rect x="4.25" y="4.25" width="3.5" height="3.5"/><rect x="8.5" y="4.25" width="3.5" height="3.5"/><rect x="0" y="8.5" width="3.5" height="3.5"/><rect x="4.25" y="8.5" width="3.5" height="3.5"/><rect x="8.5" y="8.5" width="3.5" height="3.5"/></svg>
             </button>
             <button class="collection-toolbar__view-btn{% if products_per_row == 4 %} active{% endif %}" data-cols="4" aria-label="4 columns">
               <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="2.5" height="2.5"/><rect x="3.17" y="0" width="2.5" height="2.5"/><rect x="6.33" y="0" width="2.5" height="2.5"/><rect x="9.5" y="0" width="2.5" height="2.5"/><rect x="0" y="3.17" width="2.5" height="2.5"/><rect x="3.17" y="3.17" width="2.5" height="2.5"/><rect x="6.33" y="3.17" width="2.5" height="2.5"/><rect x="9.5" y="3.17" width="2.5" height="2.5"/></svg>
+            </button>
+            <button class="collection-toolbar__view-btn" data-cols="list" aria-label="List view">
+              <svg width="14" height="14" viewBox="0 0 14 12" fill="currentColor"><rect x="0" y="0" width="14" height="2"/><rect x="0" y="5" width="14" height="2"/><rect x="0" y="10" width="14" height="2"/></svg>
             </button>
           </div>
         </div>
@@ -217,12 +237,24 @@
       window.location = url.toString();
     });
   }
-  // Grid columns toggle
+  // Grid/List view toggle
   document.querySelectorAll('.collection-toolbar__view-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var cols = this.dataset.cols;
       var grid = document.getElementById('CollectionGrid');
-      grid.className = grid.className.replace(/product-grid--\d-col/, 'product-grid--' + cols + '-col');
+      var cards = grid.querySelectorAll('.product-card');
+      
+      // Remove all view classes
+      grid.classList.remove('product-grid--2-col', 'product-grid--3-col', 'product-grid--4-col', 'product-grid--list');
+      
+      if (cols === 'list') {
+        grid.classList.add('product-grid--list');
+        cards.forEach(function(card) { card.classList.add('product-card--list'); });
+      } else {
+        grid.classList.add('product-grid--' + cols + '-col');
+        cards.forEach(function(card) { card.classList.remove('product-card--list'); });
+      }
+      
       document.querySelectorAll('.collection-toolbar__view-btn').forEach(function(b) { b.classList.remove('active'); });
       this.classList.add('active');
     });

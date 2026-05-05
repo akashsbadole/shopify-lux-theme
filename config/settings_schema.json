@@ -172,6 +172,39 @@
     ]
   },
   {
+    "name": "Reviews Apps",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Judge.me Settings"
+      },
+      {
+        "type": "paragraph",
+        "content": "Install Judge.me from Shopify App Store. The widget will automatically appear on product pages."
+      },
+      {
+        "type": "header",
+        "content": "Loox Settings"
+      },
+      {
+        "type": "text",
+        "id": "loox_app_id",
+        "label": "Loox App ID",
+        "info": "Find your App ID in Loox settings > Installation"
+      },
+      {
+        "type": "header",
+        "content": "Yotpo Settings"
+      },
+      {
+        "type": "text",
+        "id": "yotpo_app_key",
+        "label": "Yotpo App Key",
+        "info": "Find your App Key in Yotpo settings > Installation"
+      }
+    ]
+  },
+  {
     "name": "Homepage Sections",
     "settings": [
       {

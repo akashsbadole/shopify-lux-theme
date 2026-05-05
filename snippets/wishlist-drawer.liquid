@@ -1,0 +1,61 @@
+<div class="wishlist-overlay" id="WishlistOverlay" aria-hidden="true"></div>
+
+<div class="wishlist-drawer" id="WishlistDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Wishlist">
+  <div class="wishlist-drawer__header">
+    <h2 class="wishlist-drawer__title">My Wishlist</h2>
+    <button class="wishlist-drawer__close" id="WishlistDrawerClose" aria-label="Close wishlist">
+      {%- render 'icon-x' -%}
+    </button>
+  </div>
+  <div class="wishlist-drawer__body" id="WishlistDrawerBody">
+    <div class="wishlist-empty" id="WishlistEmpty" style="display:none">
+      <div class="wishlist-empty-icon">{%- render 'icon-heart' -%}</div>
+      <p>Your wishlist is empty.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">Browse Products</a>
+    </div>
+    <div class="wishlist-products" id="WishlistProducts"></div>
+  </div>
+</div>
+
+<style>
+.wishlist-overlay {
+  position: fixed; inset: 0; background: rgba(14,29,52,0.5); z-index: 200;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.wishlist-overlay.active { opacity: 1; pointer-events: all; }
+.wishlist-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 400px;
+  background: var(--color-bg); z-index: 201;
+  transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  display: flex; flex-direction: column;
+  border-left: 1px solid var(--color-border);
+}
+.wishlist-drawer.active { transform: translateX(0); }
+.wishlist-drawer__header {
+  padding: 18px 24px; border-bottom: 1px solid var(--color-border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--color-white); flex-shrink: 0;
+}
+.wishlist-drawer__title { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: var(--color-navy); }
+.wishlist-drawer__close {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-navy); transition: all var(--transition);
+}
+.wishlist-drawer__close:hover { border-color: var(--color-purple); color: var(--color-purple); }
+.wishlist-drawer__body { flex: 1; overflow-y: auto; padding: 16px 24px; }
+.wishlist-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 16px; text-align: center; color: var(--color-muted); }
+.wishlist-empty-icon { color: var(--color-border); opacity: 0.5; width: 48px; height: 48px; }
+.wishlist-empty-icon svg { width: 100%; height: 100%; }
+.wishlist-products { display: flex; flex-direction: column; gap: 16px; }
+.wishlist-item { display: flex; gap: 12px; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.wishlist-item__img { width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); }
+.wishlist-item__info { flex: 1; }
+.wishlist-item__title { font-size: 14px; font-weight: 500; color: var(--color-navy); text-decoration: none; display: block; margin-bottom: 4px; }
+.wishlist-item__price { font-size: 14px; color: var(--color-muted); }
+.wishlist-item__remove { font-size: 12px; color: var(--color-muted); text-decoration: underline; cursor: pointer; border: none; background: none; }
+@media (max-width: 600px) {
+  .wishlist-drawer { width: 100%; }
+}
+</style>

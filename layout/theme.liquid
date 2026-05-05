@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, height=device-height">
   <meta name="theme-color" content="{{ settings.color_brand_blue }}">
 
+  <!-- Performance: Preconnect to Google Fonts CDN -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="//fonts.gstatic.com">
+  <link rel="dns-prefetch" href="//cdn.shopify.com">
+  
+  <!-- Performance: Preload critical CSS -->
+  <link rel="preload" as="style" href="{{ 'google-fonts.css' | asset_url }}">
+
+  <!-- Security: Content Security Policy (basic - Shopify handles most) -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
   {%- if settings.favicon != blank -%}
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
   {%- endif -%}
@@ -32,18 +43,82 @@
     <meta property="og:image" content="{{ page_image | image_url: width: 1200 }}">
   {%- endif -%}
 
-  <!-- Fonts: Cormorant Garamond + DM Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | escape }}">
+  {%- if page_description -%}
+    <meta name="twitter:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  {%- if page_image -%}
+    <meta name="twitter:image" content="{{ page_image | image_url: width: 1200 }}">
+  {%- endif -%}
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  <!-- Robots -->
+  {%- if template.directory == 'customers' -%}
+    <meta name="robots" content="noindex">
+  {%- else -%}
+    <meta name="robots" content="index,follow">
+  {%- endif -%}
+
+  <!-- Geo Tags -->
+  <meta name="geo.region" content="{{ shop.address.country_code }}">
+  <meta name="geo.placename" content="{{ shop.address.city }}">
+  {%- if shop.phone -%}
+    <meta name="contact" content="{{ shop.phone }}">
+  {%- endif -%}
 
   <!-- Shopify required tags -->
   {{ content_for_header }}
 
-  <!-- LUXE Theme CSS -->
-  {{ 'luxe-theme.css' | asset_url | stylesheet_tag }}
+  <!-- Judge.me Reviews Integration -->
+  {%- if template contains 'product' or template contains 'collection' -%}
+    <script>
+      window.jdgm = window.jdgm || {};
+      window.jdgm_settings = {
+        widget: 1,
+        preview: 1,
+        hide_main_widget_on_low_reviews: 0,
+        gdpr: 1,
+        timezone: 'Asia/Kolkata'
+      };
+    </script>
+    <script async src="https://cdn.judge.me/widget_v2.js"></script>
+  {%- endif -%}
 
-  <!-- CSS Variables from theme settings -->
+  <!-- Loox Reviews Integration (Alternative) -->
+  {%- if template == 'product' -%}
+    {%- if settings.loox_app_id != blank -%}
+      <script>
+        !function (o, t, e, a) {
+          o._Loox = o._Loox || [];
+          var i = t.createElement(e);
+          i.async = !0, i.crossorigin = "anonymous", i.src = a;
+          var c = t.getElementsByTagName(e)[0];
+          c.parentNode.insertBefore(i, c);
+        }(window, document, "script", "//cdn.loox.io/widget.js");
+      </script>
+      <script>
+        window.LooxSettings = { appId: "{{ settings.loox_app_id }}" };
+      </script>
+    {%- endif -%}
+  {%- endif -%}
+
+  <!-- Yotpo Reviews Integration (Alternative) -->
+  {%- if template == 'product' -%}
+    {%- if settings.yotpo_app_key != blank -%}
+      <script>
+        (function(){function a(){var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"==document.location.protocol?"https://":"http://")+"static.yotpo.com/widget/"+b+"/widget.js";var b="{{ settings.yotpo_app_key }}";var c=document.getElementsByTagName("script")[0];c.parentNode.insertBefore(a,c)}window.addEventListener?window.addEventListener("load",a,!1):window.attachEvent("onload",a)})();
+      </script>
+    {%- endif -%}
+  {%- endif -%}
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="{{ 'manifest.json' | asset_url }}" crossorigin="use-credentials">
+
+  <!-- Critical CSS inlined for faster first paint -->
   <style>
     :root {
       --color-bg: {{ settings.color_background }};
@@ -54,7 +129,18 @@
       --color-border: {{ settings.color_border }};
       --font-size-base: {{ settings.font_size_base }}px;
     }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--color-bg); color: var(--color-navy); }
+    .site-header { position: relative; }
+    .luxe-main { min-height: 60vh; }
   </style>
+
+  <!-- LUXE Theme CSS -->
+  {{ 'luxe-theme.css' | asset_url | stylesheet_tag }}
+
+  <!-- SEO: Schema.org Structured Data -->
+  {%- render 'structured-data' -%}
 </head>
 
 <body class="luxe-body{% if request.page_type == 'index' %} page-home{% endif %}">
@@ -77,6 +163,9 @@
 
   <!-- Cart Drawer -->
   {%- render 'cart-drawer' -%}
+
+  <!-- Wishlist Drawer -->
+  {%- render 'wishlist-drawer' -%}
 
   <!-- Quick View Modal -->
   {%- render 'quick-view' -%}
@@ -139,6 +228,44 @@
 
   <!-- LUXE Theme JS -->
   <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
+
+  <!-- Tab Title - Shows custom message when user leaves tab -->
+  <script>
+    (function() {
+      var originalTitle = document.title;
+      var awayTitle = "😮 Come back! Don't miss our deals!";
+      var isAway = false;
+      var interval;
+
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          isAway = true;
+          interval = setTimeout(function() {
+            document.title = awayTitle;
+          }, 2000);
+        } else {
+          isAway = false;
+          clearTimeout(interval);
+          document.title = originalTitle;
+        }
+      });
+
+      document.addEventListener('blur', function() {
+        if (!document.hidden) {
+          interval = setTimeout(function() {
+            if (!document.hasFocus()) {
+              document.title = awayTitle;
+            }
+          }, 2000);
+        }
+      });
+
+      document.addEventListener('focus', function() {
+        clearTimeout(interval);
+        document.title = originalTitle;
+      });
+    })();
+  </script>
 
 </body>
 </html>

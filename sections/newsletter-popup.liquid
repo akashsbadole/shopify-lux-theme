@@ -1,0 +1,124 @@
+<div class="newsletter-section section-{{ section.id }}" id="NewsletterSection">
+  <div class="newsletter-section__inner">
+    <div class="newsletter-section__content">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="newsletter-section__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="newsletter-section__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      
+      {%- form 'customer', id: 'NewsletterForm', class: 'newsletter-section__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="newsletter-section__input-wrap">
+          <input 
+            type="email" 
+            name="contact[email]" 
+            placeholder="{{ section.settings.placeholder | default: 'Enter your email' }}"
+            class="newsletter-section__input"
+            required
+          >
+          <button type="submit" class="btn btn--primary newsletter-section__btn">
+            {{ section.settings.button_label | default: 'Subscribe' }}
+          </button>
+        </div>
+        {%- if form.posted_successfully -%}
+          <p class="newsletter-section__success">{{ section.settings.success_message | default: 'Thanks for subscribing!' }}</p>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <p class="newsletter-section__error">{{ form.errors.messages.email }}</p>
+        {%- endif -%}
+      {%- endform -%}
+      
+      {%- if section.settings.show_social -%}
+        <div class="newsletter-section__social">
+          <span class="newsletter-section__social-label">Follow us:</span>
+          <div class="newsletter-section__social-links">
+            {%- if settings.social_facebook_url != blank -%}<a href="{{ settings.social_facebook_url }}" class="newsletter-section__social-link" aria-label="Facebook">Facebook</a>{%- endif -%}
+            {%- if settings.social_instagram_url != blank -%}<a href="{{ settings.social_instagram_url }}" class="newsletter-section__social-link" aria-label="Instagram">Instagram</a>{%- endif -%}
+            {%- if settings.social_twitter_url != blank -%}<a href="{{ settings.social_twitter_url }}" class="newsletter-section__social-link" aria-label="Twitter">Twitter</a>{%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+      
+      {%- if section.settings.show_disclaimer -%}
+        <p class="newsletter-section__disclaimer">{{ section.settings.disclaimer | default: 'We respect your privacy. Unsubscribe anytime.' }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<style>
+.newsletter-section { padding: 80px 20px; background: linear-gradient(135deg, #f8f5ff 0%, #f0f4ff 100%); }
+.newsletter-section__inner { max-width: 700px; margin: 0 auto; text-align: center; }
+.newsletter-section__heading { font-size: 36px; font-weight: 700; color: var(--color-navy); margin-bottom: 12px; }
+.newsletter-section__subheading { font-size: 17px; color: var(--color-muted); margin-bottom: 32px; }
+.newsletter-section__input-wrap { display: flex; gap: 12px; max-width: 500px; margin: 0 auto; }
+.newsletter-section__input { flex: 1; height: 52px; padding: 0 20px; border: 2px solid var(--color-border); border-radius: var(--radius-full); font-size: 15px; transition: border-color var(--transition); }
+.newsletter-section__input:focus { border-color: var(--color-purple); outline: none; }
+.newsletter-section__btn { white-space: nowrap; padding: 0 32px; }
+.newsletter-section__success { margin-top: 16px; color: var(--color-success); font-weight: 500; }
+.newsletter-section__error { margin-top: 16px; color: var(--color-sale); }
+.newsletter-section__social { margin-top: 28px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.newsletter-section__social-label { font-size: 13px; color: var(--color-muted); }
+.newsletter-section__social-links { display: flex; gap: 16px; }
+.newsletter-section__social-link { font-size: 13px; color: var(--color-purple); font-weight: 500; }
+.newsletter-section__disclaimer { margin-top: 16px; font-size: 12px; color: var(--color-muted); }
+@media (max-width: 600px) {
+  .newsletter-section { padding: 48px 16px; }
+  .newsletter-section__heading { font-size: 26px; }
+  .newsletter-section__input-wrap { flex-direction: column; }
+  .newsletter-section__btn { width: 100%; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Newsletter Signup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join Our Newsletter"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Subscribe to get special offers, free giveaways, and new arrivals."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social links",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_disclaimer",
+      "label": "Show privacy disclaimer",
+      "default": true
+    }
+  ],
+  "presets": [{ "name": "Newsletter Signup" }]
+}
+{% endschema %}

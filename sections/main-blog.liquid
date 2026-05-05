@@ -10,9 +10,81 @@
       {%- endif -%}
     </div>
 
+    {%- if section.settings.show_search or section.settings.show_tags -%}
+      <div class="blog-toolbar">
+        {%- if section.settings.show_search -%}
+          <div class="blog-search">
+            <form action="{{ blog.url }}" method="get" class="blog-search__form">
+              <input type="text" name="q" placeholder="Search articles..." class="blog-search__input" value="{{ search.terms | escape }}">
+              <button type="submit" class="blog-search__btn" aria-label="Search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              </button>
+            </form>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_tags and blog.all_tags.size > 0 -%}
+          <div class="blog-tags">
+            <button class="blog-tags__toggle" id="BlogTagsToggle" aria-expanded="false" aria-controls="BlogTagsList">
+              Filter by Tag
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="blog-tags__list" id="BlogTagsList" hidden>
+              <a href="{{ blog.url }}" class="blog-tags__link{% unless current_tags %} blog-tags__link--active{% endunless %}">All</a>
+              {%- for tag in blog.all_tags limit: 20 -%}
+                <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="blog-tags__link{% if current_tags contains tag %} blog-tags__link--active{% endif %}">{{ tag }}</a>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
     {%- if section.settings.show_description and blog.description != blank -%}
       <div class="blog-description rte">{{ blog.description }}</div>
     {%- endif -%}
+
+    <style>
+      .blog-toolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+      .blog-search { flex: 1; min-width: 200px; max-width: 400px; }
+      .blog-search__form { display: flex; align-items: center; background: var(--color-bg-alt); border-radius: 8px; overflow: hidden; border: 1px solid var(--color-border); }
+      .blog-search__input { flex: 1; padding: 12px 16px; border: none; background: transparent; font-size: 14px; color: var(--color-text); }
+      .blog-search__input::placeholder { color: var(--color-muted); }
+      .blog-search__btn { padding: 12px 16px; background: transparent; border: none; cursor: pointer; color: var(--color-muted); transition: color 0.2s; }
+      .blog-search__btn:hover { color: var(--color-text); }
+      .blog-tags { position: relative; }
+      .blog-tags__toggle { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--color-text); cursor: pointer; transition: all 0.2s; }
+      .blog-tags__toggle:hover { border-color: var(--color-primary); }
+      .blog-tags__toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+      .blog-tags__list { position: absolute; top: calc(100% + 8px); left: 0; display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 10; min-width: 300px; }
+      .blog-tags__link { padding: 6px 12px; font-size: 13px; color: var(--color-text); background: var(--color-bg-alt); border-radius: 20px; text-decoration: none; transition: all 0.2s; }
+      .blog-tags__link:hover { background: var(--color-primary); color: white; }
+      .blog-tags__link--active { background: var(--color-primary); color: white; }
+      @media (max-width: 768px) {
+        .blog-toolbar { flex-direction: column; align-items: stretch; }
+        .blog-search { max-width: 100%; }
+      }
+    </style>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var tagsToggle = document.getElementById('BlogTagsToggle');
+        var tagsList = document.getElementById('BlogTagsList');
+        if (tagsToggle && tagsList) {
+          tagsToggle.addEventListener('click', function() {
+            var expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !expanded);
+            tagsList.hidden = expanded;
+          });
+          document.addEventListener('click', function(e) {
+            if (!tagsToggle.contains(e.target) && !tagsList.contains(e.target)) {
+              tagsToggle.setAttribute('aria-expanded', 'false');
+              tagsList.hidden = true;
+            }
+          });
+        }
+      });
+    </script>
 
     {%- if blog.articles.size > 0 -%}
       <div class="blog-grid blog-grid--{{ section.settings.layout }}">
@@ -114,14 +186,55 @@
         {%- endcase -%}
       </div>
 
-      {%- if section.settings.enable_pagination and paginate -%}
-        {%- render 'pagination', paginate: paginate -%}
-      {%- endif -%}
+
 
     {%- else -%}
       <div class="blog-empty">
         <p>{{ section.settings.empty_message | default: 'No articles yet.' }}</p>
         <a href="{{ routes.root_url }}" class="btn btn--primary">{{ section.settings.back_home_label | default: 'Back to Home' }}</a>
+      </div>
+    {%- endif -%}
+
+    <!-- Article Tags & Social Share (shown on article pages) -->
+    {%- if article != blank and section.settings.show_article_tags or section.settings.show_share -%}
+      <div class="blog-article-footer">
+        {%- if section.settings.show_article_tags and article.tags.size > 0 -%}
+          <div class="blog-article__tags">
+            <span class="blog-article__tags-label">Tags:</span>
+            {%- for tag in article.tags -%}
+              <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="blog-article__tag">{{ tag }}</a>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_share -%}
+          <div class="blog-article__share">
+            <span class="blog-article__share-label">Share:</span>
+            <a href="https://www.facebook.com/sharer.php?u={{ shop.url }}{{ article.url }}" target="_blank" class="blog-article__share-btn" aria-label="Share on Facebook">Facebook</a>
+            <a href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ article.url }}&text={{ article.title | url_encode }}" target="_blank" class="blog-article__share-btn" aria-label="Share on Twitter">Twitter</a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ shop.url }}{{ article.url }}" target="_blank" class="blog-article__share-btn" aria-label="Share on LinkedIn">LinkedIn</a>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Newsletter Signup -->
+    {%- if section.settings.show_newsletter -%}
+      <div class="blog-newsletter">
+        <div class="blog-newsletter__inner">
+          <h3 class="blog-newsletter__title">{{ section.settings.newsletter_title | default: 'Subscribe to our blog' }}</h3>
+          <p class="blog-newsletter__text">Get the latest articles and updates delivered to your inbox.</p>
+          {%- form 'customer', id: 'BlogNewsletterForm' -%}
+            <input type="hidden" name="contact[tags]" value="blog">
+            <div class="blog-newsletter__form">
+              <input type="email" name="contact[email]" placeholder="Your email address" class="blog-newsletter__input" required>
+              <button type="submit" class="btn btn--primary blog-newsletter__btn">Subscribe</button>
+            </div>
+            {%- if form.posted_successfully -%}
+              <p class="blog-newsletter__success">Thanks for subscribing!</p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
       </div>
     {%- endif -%}
 
@@ -152,6 +265,18 @@
     },
     {
       "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search bar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tag filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
       "id": "show_description",
       "label": "Show blog description",
       "default": true
@@ -176,10 +301,29 @@
     },
     {
       "type": "checkbox",
-      "id": "enable_pagination",
-      "label": "Enable pagination",
+      "id": "show_article_tags",
+      "label": "Show article tags",
       "default": true
     },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show social share buttons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter signup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Newsletter title",
+      "default": "Subscribe to our blog"
+    },
+
     {
       "type": "text",
       "id": "empty_message",

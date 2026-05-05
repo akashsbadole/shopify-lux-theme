@@ -1,3 +1,4 @@
+{%- if customer -%}
 <div class="main-account section-{{ section.id }}">
   <div class="main-account__inner">
     <div class="main-account__header">
@@ -40,4 +41,23 @@
     </div>
   </div>
 </div>
+{%- else -%}
+<div class="main-account section-{{ section.id }}">
+  <div class="main-account__inner main-account--guest">
+    <h1 class="main-account__title">My Account</h1>
+    <div class="main-account__guest-actions">
+      <div class="main-account__auth-box">
+        <h2 class="main-account__section-title">Welcome Back</h2>
+        <p class="main-account__auth-desc">Sign in to view your orders, addresses, and account settings.</p>
+        <a href="{{ routes.account_login_url }}" class="btn btn--primary">Sign In</a>
+      </div>
+      <div class="main-account__register-box">
+        <h2 class="main-account__section-title">New Here?</h2>
+        <p class="main-account__auth-desc">Create an account to track orders, save addresses, and get exclusive offers.</p>
+        <a href="{{ routes.account_register_url }}" class="btn btn--outline">Create Account</a>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}
 {% schema %}{ "name": "Account", "tag": "section", "settings": [] }{% endschema %}

@@ -1,0 +1,120 @@
+<div class="testimonials-section section-{{ section.id }}" id="TestimonialsSection">
+  <div class="testimonials-section__inner">
+    {%- if section.settings.title != blank -%}
+      <h2 class="testimonials-section__title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    
+    <div class="testimonials-grid">
+      {%- for i in (1..3) -%}
+        {%- assign quote_key = 'quote_' | append: i -%}
+        {%- assign author_key = 'author_' | append: i -%}
+        {%- assign role_key = 'role_' | append: i -%}
+        {%- if section.settings[quote_key] != blank -%}
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars">★★★★★</div>
+            <blockquote class="testimonial-card__quote">"{{ section.settings[quote_key] }}"</blockquote>
+            <div class="testimonial-card__author">
+              <span class="testimonial-card__name">{{ section.settings[author_key] | default: 'Happy Customer' }}</span>
+              {%- if section.settings[role_key] != blank -%}
+                <span class="testimonial-card__role">{{ section.settings[role_key] }}</span>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<style>
+.testimonials-section { padding: 80px 20px; background: var(--color-bg-alt); }
+.testimonials-section__inner { max-width: var(--container); margin: 0 auto; }
+.testimonials-section__title { font-size: 32px; font-weight: 700; text-align: center; color: var(--color-navy); margin-bottom: 48px; }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.testimonial-card { background: white; padding: 32px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-sm); }
+.testimonial-card__stars { color: #FFB800; font-size: 18px; margin-bottom: 16px; letter-spacing: 2px; }
+.testimonial-card__quote { font-size: 16px; line-height: 1.8; color: var(--color-text); margin-bottom: 20px; font-style: italic; }
+.testimonial-card__author { display: flex; flex-direction: column; gap: 4px; }
+.testimonial-card__name { font-weight: 600; color: var(--color-navy); }
+.testimonial-card__role { font-size: 13px; color: var(--color-muted); }
+@media (max-width: 900px) {
+  .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .testimonials-section { padding: 48px 16px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .testimonial-card { padding: 24px; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "What Our Customers Say"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 1"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_1",
+      "label": "Quote"
+    },
+    {
+      "type": "text",
+      "id": "author_1",
+      "label": "Author name"
+    },
+    {
+      "type": "text",
+      "id": "role_1",
+      "label": "Role/Title"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 2"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_2",
+      "label": "Quote"
+    },
+    {
+      "type": "text",
+      "id": "author_2",
+      "label": "Author name"
+    },
+    {
+      "type": "text",
+      "id": "role_2",
+      "label": "Role/Title"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 3"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_3",
+      "label": "Quote"
+    },
+    {
+      "type": "text",
+      "id": "author_3",
+      "label": "Author name"
+    },
+    {
+      "type": "text",
+      "id": "role_3",
+      "label": "Role/Title"
+    }
+  ],
+  "presets": [{ "name": "Testimonials" }]
+}
+{% endschema %}

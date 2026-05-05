@@ -80,6 +80,21 @@
         "autoplay_speed": 4000
       }
     },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "title": "What Our Customers Say",
+        "quote_1": "Absolutely love the quality! Fast shipping too.",
+        "author_1": "Sarah M.",
+        "role_1": "Verified Buyer",
+        "quote_2": "Beautiful packaging and excellent customer service.",
+        "author_2": "James K.",
+        "role_2": "Loyal Customer",
+        "quote_3": "Exceeded my expectations. Will order again!",
+        "author_3": "Priya S.",
+        "role_3": "Verified Buyer"
+      }
+    },
     "promo_banner": {
       "type": "promo-banner",
       "settings": {
@@ -102,6 +117,25 @@
         "button_label": "Our Story",
         "button_url": "/pages/about"
       }
+    },
+    "newsletter_popup": {
+      "type": "newsletter-popup",
+      "settings": {
+        "heading": "Join Our Newsletter",
+        "subheading": "Subscribe to get special offers, free giveaways, and new arrivals.",
+        "placeholder": "Enter your email",
+        "button_label": "Subscribe",
+        "show_social": true,
+        "show_disclaimer": true
+      }
+    },
+    "featured_blog": {
+      "type": "featured-blog",
+      "settings": {
+        "title": "Latest from Our Blog",
+        "blog": "news",
+        "posts_to_show": 3
+      }
     }
   },
   "order": [
@@ -110,7 +144,10 @@
     "trust_bar",
     "featured_collection",
     "product_carousel",
+    "testimonials",
     "promo_banner",
+    "newsletter_popup",
+    "featured_blog",
     "image_with_text"
   ]
 }

@@ -1,0 +1,450 @@
+{%- style -%}
+  .promo-banners {
+    padding: {{ section.settings.padding_y }}px 20px;
+    background: {{ section.settings.bg_color }};
+  }
+  .promo-banners__inner {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
+    gap: {{ section.settings.gap }}px;
+  }
+  .promo-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ section.settings.border_radius }}px;
+    background: {{ section.settings.card_bg }};
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .promo-banner:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  }
+  .promo-banner__img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .promo-banner__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: {{ section.settings.overlay_color }};
+    z-index: 1;
+  }
+  .promo-banner__content {
+    position: relative;
+    z-index: 2;
+    padding: {{ section.settings.content_padding }}px;
+    display: flex;
+    flex-direction: column;
+    justify-content: {{ section.settings.text_align }};
+    min-height: {{ section.settings.min_height }}px;
+  }
+  .promo-banner__tag {
+    display: inline-block;
+    font-size: {{ section.settings.tag_size }}px;
+    font-weight: 600;
+    color: {{ section.settings.tag_color }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .promo-banner__title {
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .promo-banner__text {
+    font-size: {{ section.settings.text_size }}px;
+    color: {{ section.settings.text_color }};
+    line-height: 1.5;
+  }
+  .promo-banner__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: {{ section.settings.btn_size }}px;
+    font-weight: 600;
+    color: {{ section.settings.btn_color }};
+    text-decoration: none;
+  }
+  .promo-banner__btn svg {
+    transition: transform 0.3s ease;
+  }
+  .promo-banner:hover .promo-banner__btn svg {
+    transform: translateX(4px);
+  }
+  @media (max-width: 768px) {
+    .promo-banners__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+{%- endstyle -%}
+
+<div class="promo-banners" id="PromoBanners">
+  <div class="promo-banners__inner">
+    {%- for i in (1..4) -%}
+      {%- assign banner_enabled = 'banner_' | append: i | append: '_enable' -%}
+      {%- assign banner_title = 'banner_' | append: i | append: '_title' -%}
+      {%- assign banner_text = 'banner_' | append: i | append: '_text' -%}
+      {%- assign banner_tag = 'banner_' | append: i | append: '_tag' -%}
+      {%- assign banner_image = 'banner_' | append: i | append: '_image' -%}
+      {%- assign banner_link = 'banner_' | append: i | append: '_link' -%}
+      
+      {%- if section.settings[banner_enabled] -%}
+        <a href="{{ section.settings[banner_link] | default: '#' }}" class="promo-banner">
+          {%- if section.settings[banner_image] != blank -%}
+            {{ section.settings[banner_image] | image_url: width: 600 | image_tag: class: 'promo-banner__img', loading: 'lazy' }}
+            <div class="promo-banner__overlay"></div>
+          {%- endif -%}
+          <div class="promo-banner__content">
+            {%- if section.settings[banner_tag] != blank -%}
+              <span class="promo-banner__tag">{{ section.settings[banner_tag] }}</span>
+            {%- endif -%}
+            {%- if section.settings[banner_title] != blank -%}
+              <h3 class="promo-banner__title">{{ section.settings[banner_title] }}</h3>
+            {%- endif -%}
+            {%- if section.settings[banner_text] != blank -%}
+              <p class="promo-banner__text">{{ section.settings[banner_text] }}</p>
+            {%- endif -%}
+            <span class="promo-banner__btn">
+              Shop Now
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Promo Banners",
+  "tag": "section",
+  "class": "promo-banners-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Number of columns",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between banners",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "label": "Minimum height (px)",
+      "min": 120,
+      "max": 300,
+      "step": 20,
+      "default": 180
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Section padding (px)",
+      "min": 0,
+      "max": 80,
+      "step": 8,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width (px)",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Content padding (px)",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background fallback",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Image overlay",
+      "default": "rgba(0,0,0,0.35)"
+    },
+    {
+      "type": "color",
+      "id": "tag_color",
+      "label": "Tag color",
+      "default": "#f5a623"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "btn_color",
+      "label": "Button color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "tag_size",
+      "label": "Tag font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title font size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text font size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "btn_size",
+      "label": "Button font size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        {"value": "center", "label": "Center"},
+        {"value": "flex-start", "label": "Left"},
+        {"value": "flex-end", "label": "Right"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Banner 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "banner_1_enable",
+      "label": "Enable Banner 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "banner_1_tag",
+      "label": "Tag text",
+      "default": "FREE SHIPPING"
+    },
+    {
+      "type": "text",
+      "id": "banner_1_title",
+      "label": "Title",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_1_text",
+      "label": "Description",
+      "default": "On orders over $99"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_1_image",
+      "label": "Background image"
+    },
+    {
+      "type": "url",
+      "id": "banner_1_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Banner 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "banner_2_enable",
+      "label": "Enable Banner 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "banner_2_tag",
+      "label": "Tag text",
+      "default": "FLASH SALE"
+    },
+    {
+      "type": "text",
+      "id": "banner_2_title",
+      "label": "Title",
+      "default": "Up to 50% Off"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_2_text",
+      "label": "Description",
+      "default": "Limited time offers"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_2_image",
+      "label": "Background image"
+    },
+    {
+      "type": "url",
+      "id": "banner_2_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Banner 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "banner_3_enable",
+      "label": "Enable Banner 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "banner_3_tag",
+      "label": "Tag text",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "text",
+      "id": "banner_3_title",
+      "label": "Title",
+      "default": "Shop New In"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_3_text",
+      "label": "Description",
+      "default": "Fresh styles added daily"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_3_image",
+      "label": "Background image"
+    },
+    {
+      "type": "url",
+      "id": "banner_3_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Banner 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "banner_4_enable",
+      "label": "Enable Banner 4",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "banner_4_tag",
+      "label": "Tag text",
+      "default": "VIP"
+    },
+    {
+      "type": "text",
+      "id": "banner_4_title",
+      "label": "Title",
+      "default": "Join VIP Club"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_4_text",
+      "label": "Description",
+      "default": "Exclusive deals for members"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_4_image",
+      "label": "Background image"
+    },
+    {
+      "type": "url",
+      "id": "banner_4_link",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo Banners"
+    }
+  ]
+}
+{% endschema %}

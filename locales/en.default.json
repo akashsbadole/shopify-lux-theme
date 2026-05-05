@@ -85,6 +85,11 @@
       "manage_addresses": "Manage Addresses"
     }
   },
+  "contact": {
+    "form": {
+      "success": "Thank you for your message. We'll get back to you soon!"
+    }
+  },
   "accessibility": {
     "skip_to_content": "Skip to content",
     "close": "Close",

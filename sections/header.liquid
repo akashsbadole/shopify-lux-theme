@@ -90,10 +90,11 @@
     <!-- Right actions -->
     <div class="site-header__actions">
 
-      <!-- Wishlist (links to /pages/wishlist or can be wired to an app) -->
-      <a href="{{ routes.account_url }}" class="site-header__action-btn" aria-label="Wishlist">
+      <!-- Wishlist -->
+      <button class="site-header__action-btn site-header__wishlist-btn" id="WishlistToggle" aria-label="Wishlist">
         {%- render 'icon-heart' -%}
-      </a>
+        <span class="site-header__wishlist-badge" data-wishlist-count style="display:none">0</span>
+      </button>
 
       <!-- Account -->
       {%- if shop.customer_accounts_enabled -%}
