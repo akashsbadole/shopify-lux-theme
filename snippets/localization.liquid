@@ -1,0 +1,70 @@
+{%- comment -%}
+  Currency & Language Selector
+  Shows currency and language selectors in header
+{%- endcomment -%}
+
+{%- if settings.show_currency_selector or settings.show_language_selector -%}
+<div class="localization-selector" id="LocalizationSelector">
+  {%- if settings.show_language_selector and localization.available_languages.size > 1 -%}
+    <div class="localization-item">
+      <label for="LanguageSelector" class="visually-hidden">Language</label>
+      <select id="LanguageSelector" class="localization-select" name="language_code">
+        {%- for language in localization.available_languages -%}
+          <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>
+            {{ language.endonym_name }}
+          </option>
+        {%- endfor -%}
+      </select>
+    </div>
+  {%- endif -%}
+
+  {%- if settings.show_currency_selector and localization.available_languages.size > 0 -%}
+    <div class="localization-item">
+      <label for="CurrencySelector" class="visually-hidden">Currency</label>
+      <select id="CurrencySelector" class="localization-select" name="currency_code">
+        {%- for currency in localization.available_currencies -%}
+          <option value="{{ currency.iso_code }}"{% if currency.iso_code == localization.currency.iso_code %} selected{% endif %}>
+            {{ currency.iso_code }} {{ currency.symbol }}
+          </option>
+        {%- endfor -%}
+      </select>
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+.localization-selector { display: flex; gap: 8px; align-items: center; }
+.localization-select {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+.localization-select:hover { border-color: var(--color-purple); }
+</style>
+
+<script>
+(function() {
+  var languageSelect = document.getElementById('LanguageSelector');
+  var currencySelect = document.getElementById('CurrencySelector');
+
+  if (languageSelect) {
+    languageSelect.addEventListener('change', function() {
+      var newUrl = new URL(window.location.href);
+      newUrl.searchParams.set('language_code', this.value);
+      window.location.href = newUrl.toString();
+    });
+  }
+
+  if (currencySelect) {
+    currencySelect.addEventListener('change', function() {
+      var newUrl = new URL(window.location.href);
+      newUrl.searchParams.set('currency_code', this.value);
+      window.location.href = newUrl.toString();
+    });
+  }
+})();
+</script>
+{%- endif -%}

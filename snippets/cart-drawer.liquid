@@ -21,6 +21,10 @@
   <div class="cart-drawer__body" id="CartDrawerBody" style="visibility:visible;">
     {%- if cart.item_count > 0 -%}
       {%- render 'cart-items', cart: cart -%}
+      
+      <!-- Cart Upsell Section -->
+      {%- section 'cart-upsell' -%}
+      
     {%- else -%}
       <div class="cart-drawer__empty" id="CartEmpty">
         <div class="cart-drawer__empty-icon">{%- render 'icon-cart' -%}</div>

@@ -937,6 +937,11 @@ body.mobile-menu-open, body.wishlist-open { overflow: hidden; }
 }
 .product-card__price-sale { color: var(--color-sale); }
 .product-card__price-compare { font-size:12px; color:var(--color-muted); text-decoration:line-through; }
+.product-card__qty { display:flex; align-items:center; gap:0; border:1px solid var(--color-border); border-radius:4px; overflow:hidden; flex-shrink:0; }
+.product-card__qty-btn { width:24px; height:24px; border:none; background:#f5f5f5; cursor:pointer; font-size:14px; color:var(--color-navy); display:flex; align-items:center; justify-content:center; }
+.product-card__qty-btn:hover { background:#e5e5e5; }
+.product-card__qty-input { width:32px; height:24px; border:none; text-align:center; font-size:12px; background:#fff; -moz-appearance:textfield; }
+.product-card__qty-input::-webkit-outer-spin-button, .product-card__qty-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 .product-card__price-unavailable { font-size:12px; color:var(--color-muted); }
 
 /* Indian market: ₹ symbol styling */
