@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, height=device-height">
   <meta name="theme-color" content="{{ settings.color_brand_blue }}">
 
-  <!-- Performance: Preconnect to Google Fonts CDN -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="//fonts.gstatic.com">
-  <link rel="dns-prefetch" href="//cdn.shopify.com">
   
-  <!-- Performance: Preload critical CSS -->
-  <link rel="preload" as="style" href="{{ 'google-fonts.css' | asset_url }}">
+   <!-- Performance: Preload critical CSS -->
+   {{ 'google-fonts.css' | asset_url | stylesheet_tag: preload: true }}
 
   <!-- Security: Content Security Policy (basic - Shopify handles most) -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -73,20 +69,6 @@
   <!-- Shopify required tags -->
   {{ content_for_header }}
 
-  <!-- Judge.me Reviews Integration -->
-  {%- if template contains 'product' or template contains 'collection' -%}
-    <script>
-      window.jdgm = window.jdgm || {};
-      window.jdgm_settings = {
-        widget: 1,
-        preview: 1,
-        hide_main_widget_on_low_reviews: 0,
-        gdpr: 1,
-        timezone: 'Asia/Kolkata'
-      };
-    </script>
-    <script async src="https://cdn.judge.me/widget_v2.js"></script>
-  {%- endif -%}
 
   <!-- Loox Reviews Integration (Alternative) -->
   {%- if template == 'product' -%}
