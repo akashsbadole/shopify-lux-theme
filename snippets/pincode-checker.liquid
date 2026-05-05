@@ -94,16 +94,20 @@
   }
   .pincode-notify__field {
     display: flex;
+    flex-direction: row;
     gap: 8px;
+    align-items: stretch;
   }
   .pincode-notify__input {
     flex: 1;
+    min-width: 0;
     padding: 10px 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 14px;
   }
   .pincode-notify__btn {
+    flex-shrink: 0;
     padding: 10px 16px;
     background: #003B73;
     color: #fff;
@@ -129,6 +133,14 @@
     display: flex;
     align-items: center;
     gap: 6px;
+  }
+  @media (max-width: 400px) {
+    .pincode-notify__field {
+      flex-direction: column;
+    }
+    .pincode-notify__btn {
+      width: 100%;
+    }
   }
 </style>
 

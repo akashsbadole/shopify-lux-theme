@@ -330,6 +330,108 @@
         "id": "product_show_rating",
         "label": "Show star ratings",
         "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_compare",
+        "label": "Show compare button",
+        "default": true
+      }
+    ]
+  },
+{
+        "name": "Product Comparison",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "enable_comparison",
+            "label": "Enable product comparison",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "max_compare_products",
+            "label": "Maximum products to compare",
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "default": 3
+          }
+        ]
+      },
+      {
+        "name": "Loyalty & Rewards",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "enable_loyalty",
+            "label": "Enable loyalty points display",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "loyalty_program_name",
+            "label": "Program name",
+            "default": "LUXE Rewards"
+          },
+          {
+            "type": "text",
+            "id": "points_per_referral",
+            "label": "Points per referral",
+            "default": "500"
+          },
+          {
+            "type": "text",
+            "id": "points_per_rupee",
+            "label": "Points earned per ₹ spent",
+            "default": "1"
+          },
+          {
+            "type": "text",
+            "id": "loyalty_redeem_text",
+            "label": "Redeem text",
+            "default": "Redeem your points at checkout"
+          }
+        ]
+      },
+      {
+        "name": "Social Sharing",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_share_buttons",
+        "label": "Show share buttons on product page",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "share_facebook",
+        "label": "Share on Facebook",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "share_twitter",
+        "label": "Share on Twitter/X",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "share_pinterest",
+        "label": "Share on Pinterest",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "share_whatsapp",
+        "label": "Share on WhatsApp",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "share_copy_link",
+        "label": "Copy link button",
+        "default": true
       }
     ]
   },
@@ -661,6 +763,54 @@
         "id": "show_notification_badge",
         "label": "Show notification badge",
         "default": false
+      },
+      {
+        "type": "select",
+        "id": "chat_button_position",
+        "label": "Button position",
+        "options": [
+          { "value": "bottom-right", "label": "Bottom Right" },
+          { "value": "bottom-left", "label": "Bottom Left" }
+        ],
+        "default": "bottom-right"
+      },
+      {
+        "type": "header",
+        "content": "Telegram Chat"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_telegram",
+        "label": "Enable Telegram Chat",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "telegram_username",
+        "label": "Telegram username",
+        "default": "yourstore"
+      },
+      {
+        "type": "header",
+        "content": "Custom Chat Widget"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_chat",
+        "label": "Enable custom chat widget",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "custom_chat_name",
+        "label": "Chat widget name",
+        "default": "Customer Support"
+      },
+      {
+        "type": "text",
+        "id": "custom_chat_script",
+        "label": "Chat widget script (JavaScript)",
+        "info": "Paste your chat widget code here"
       },
       {
         "type": "header",

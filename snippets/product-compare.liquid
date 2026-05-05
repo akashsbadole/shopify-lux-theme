@@ -1,0 +1,121 @@
+{%- comment -%}
+  Product Comparison Feature
+  Usage: {% render 'product-compare' %}
+{%- endcomment -%}
+
+{%- if settings.enable_comparison -%}
+<div class="compare-overlay" id="CompareOverlay" aria-hidden="true"></div>
+<div class="compare-drawer" id="CompareDrawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Compare Products">
+  <div class="compare-drawer__header">
+    <h2 class="compare-drawer__title">Compare Products <span id="CompareCount">(0)</span></h2>
+    <button class="compare-drawer__close" id="CompareDrawerClose" aria-label="Close compare">
+      {%- render 'icon-x' -%}
+    </button>
+  </div>
+  <div class="compare-drawer__body" id="CompareDrawerBody">
+    <div class="compare-empty" id="CompareEmpty">
+      <p>No products to compare yet.</p>
+      <p class="compare-empty__tip">Click "Compare" on products to add them here.</p>
+    </div>
+    <div class="compare-products" id="CompareProducts"></div>
+  </div>
+  <div class="compare-drawer__footer" id="CompareFooter" hidden>
+    <button class="compare-clear" id="CompareClear">Clear All</button>
+    <a href="#" class="compare-view btn btn--primary" id="CompareViewBtn">View Full Comparison</a>
+  </div>
+</div>
+
+<style>
+.compare-overlay { position: fixed; inset: 0; background: rgba(14,29,52,0.5); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.compare-overlay.active { opacity: 1; pointer-events: all; }
+.compare-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 100%; background: var(--color-bg); z-index: 201; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); display: flex; flex-direction: column; border-left: 1px solid var(--color-border); }
+.compare-drawer.active { transform: translateX(0); }
+.compare-drawer__header { padding: 18px 24px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; background: var(--color-white); flex-shrink: 0; }
+.compare-drawer__title { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: var(--color-navy); }
+.compare-drawer__close { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1.5px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-navy); cursor: pointer; background: none; }
+.compare-drawer__body { flex: 1; overflow-y: auto; padding: 16px 24px; }
+.compare-drawer__footer { padding: 16px 24px; border-top: 1px solid var(--color-border); display: flex; gap: 12px; background: var(--color-white); flex-shrink: 0; }
+.compare-empty { text-align: center; padding: 40px 20px; color: var(--color-muted); }
+.compare-empty__tip { font-size: 13px; margin-top: 8px; }
+.compare-products { display: flex; flex-direction: column; gap: 12px; }
+.compare-item { display: flex; gap: 12px; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius); position: relative; }
+.compare-item__img { width: 70px; height: 70px; object-fit: cover; border-radius: var(--radius-sm); }
+.compare-item__info { flex: 1; }
+.compare-item__title { font-size: 14px; font-weight: 500; color: var(--color-navy); text-decoration: none; display: block; margin-bottom: 4px; }
+.compare-item__price { font-size: 14px; color: var(--color-purple); font-weight: 600; }
+.compare-item__remove { position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border: none; background: #f5f5f5; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.compare-clear { flex: 1; padding: 12px; border: 1px solid var(--color-border); background: white; border-radius: var(--radius); cursor: pointer; font-size: 14px; }
+.compare-view { flex: 1; padding: 12px; text-align: center; text-decoration: none; font-size: 14px; }
+.compare-add-btn { font-size: 12px; padding: 4px 8px; border: 1px solid var(--color-border); background: white; border-radius: 4px; cursor: pointer; }
+.compare-add-btn.added { background: var(--color-purple); color: white; border-color: var(--color-purple); }
+@media (max-width: 500px) { .compare-drawer { width: 100%; } }
+</style>
+
+<script>
+(function() {
+  var MAX_COMPARE = {{ settings.max_compare_products | default: 3 }};
+  var drawer = document.getElementById('CompareDrawer');
+  var overlay = document.getElementById('CompareOverlay');
+  var close = document.getElementById('CompareDrawerClose');
+  var body = document.getElementById('CompareDrawerBody');
+  var empty = document.getElementById('CompareEmpty');
+  var products = document.getElementById('CompareProducts');
+  var footer = document.getElementById('CompareFooter');
+  var countEl = document.getElementById('CompareCount');
+
+  function getCompareList() { return JSON.parse(localStorage.getItem('luxe_compare') || '[]'); }
+  function saveCompareList(list) { localStorage.setItem('luxe_compare', JSON.stringify(list)); updateCompareUI(); }
+
+  function openDrawer() { if(drawer) { drawer.setAttribute('aria-hidden','false'); drawer.classList.add('active'); } if(overlay) { overlay.setAttribute('aria-hidden','false'); overlay.classList.add('active'); } document.body.classList.add('compare-open'); }
+  function closeDrawer() { if(drawer) { drawer.setAttribute('aria-hidden','true'); drawer.classList.remove('active'); } if(overlay) { overlay.setAttribute('aria-hidden','true'); overlay.classList.remove('active'); } document.body.classList.remove('compare-open'); }
+
+  function updateCompareUI() {
+    var list = getCompareList();
+    countEl.textContent = '(' + list.length + ')';
+    if(list.length === 0) { empty.style.display = 'block'; products.innerHTML = ''; footer.hidden = true; }
+    else {
+      empty.style.display = 'none'; footer.hidden = false;
+      var html = '';
+      list.forEach(function(p) {
+        html += '<div class="compare-item" data-id="' + p.id + '">' +
+          '<img src="' + p.image + '" alt="' + p.title + '" class="compare-item__img">' +
+          '<div class="compare-item__info"><a href="' + p.url + '" class="compare-item__title">' + p.title + '</a>' +
+          '<span class="compare-item__price">' + p.price + '</span></div>' +
+          '<button class="compare-item__remove" onclick="removeFromCompare(' + p.id + ')" aria-label="Remove">×</button></div>';
+      });
+      products.innerHTML = html;
+    }
+  }
+
+  window.addToCompare = function(id, title, price, image, url) {
+    var list = getCompareList();
+    if(list.some(function(p) { return p.id === id; })) return;
+    if(list.length >= MAX_COMPARE) { alert('Maximum ' + MAX_COMPARE + ' products can be compared.'); return; }
+    list.push({ id: id, title: title, price: price, image: image, url: url });
+    saveCompareList(list);
+    var btn = document.querySelector('[data-compare-id="' + id + '"]');
+    if(btn) btn.classList.add('added');
+  };
+
+  window.removeFromCompare = function(id) {
+    var list = getCompareList().filter(function(p) { return p.id !== id; });
+    saveCompareList(list);
+    var btn = document.querySelector('[data-compare-id="' + id + '"]');
+    if(btn) btn.classList.remove('added');
+  };
+
+  document.getElementById('CompareClear').addEventListener('click', function() {
+    localStorage.removeItem('luxe_compare');
+    document.querySelectorAll('.compare-add-btn').forEach(function(b) { b.classList.remove('added'); });
+    updateCompareUI();
+  });
+
+  if(drawer) {
+    close.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', function(e) { if(e.key === 'Escape' && drawer.getAttribute('aria-hidden') === 'false') closeDrawer(); });
+  }
+  updateCompareUI();
+})();
+</script>
+{%- endif -%}

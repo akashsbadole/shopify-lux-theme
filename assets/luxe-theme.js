@@ -23,6 +23,8 @@
     initRecentlyViewed();
     initWishlist();
     initWishlistButtons();
+    initCompareDrawer();
+    initScrollToTop();
     initPredictiveSearch();
   });
 
@@ -562,6 +564,87 @@
         track.appendChild(card);
       });
     }
+  }
+
+  // ─── COMPARE ───
+  function initCompareDrawer() {
+    var compareToggle = document.getElementById('CompareToggle');
+    var compareDrawer = document.getElementById('CompareDrawer');
+    var compareOverlay = document.getElementById('CompareOverlay');
+    var compareClose = document.getElementById('CompareDrawerClose');
+    
+    function openCompareDrawer() {
+      if (compareDrawer) {
+        compareDrawer.setAttribute('aria-hidden', 'false');
+        compareDrawer.classList.add('active');
+        document.body.classList.add('compare-open');
+      }
+      if (compareOverlay) compareOverlay.setAttribute('aria-hidden', 'false');
+    }
+    
+    function closeCompareDrawer() {
+      if (compareDrawer) {
+        compareDrawer.setAttribute('aria-hidden', 'true');
+        compareDrawer.classList.remove('active');
+        document.body.classList.remove('compare-open');
+      }
+      if (compareOverlay) compareOverlay.setAttribute('aria-hidden', 'true');
+    }
+    
+    if (compareToggle) {
+      compareToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (compareDrawer && compareDrawer.getAttribute('aria-hidden') === 'true') {
+          openCompareDrawer();
+        } else {
+          closeCompareDrawer();
+        }
+      });
+    }
+    
+    if (compareClose) {
+      compareClose.addEventListener('click', closeCompareDrawer);
+    }
+    
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && compareDrawer && compareDrawer.getAttribute('aria-hidden') === 'false') {
+        closeCompareDrawer();
+      }
+    });
+    
+    updateCompareCount();
+  }
+  
+  function updateCompareCount() {
+    var list = JSON.parse(localStorage.getItem('luxe_compare') || '[]');
+    var badge = document.getElementById('CompareBadge');
+    if (badge) {
+      badge.textContent = list.length;
+      badge.style.display = list.length > 0 ? 'flex' : 'none';
+    }
+  }
+
+  // ─── SCROLL TO TOP ───
+  function initScrollToTop() {
+    var scrollBtn = document.getElementById('ScrollToTopFloating');
+    if (!scrollBtn) {
+      scrollBtn = document.getElementById('ScrollToTop');
+    }
+    if (!scrollBtn) return;
+    
+    scrollBtn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) {
+        scrollBtn.style.display = 'flex';
+      } else {
+        scrollBtn.style.display = 'none';
+      }
+    });
+    
+    scrollBtn.style.display = 'none';
   }
 
   // ─── WISHLIST ───

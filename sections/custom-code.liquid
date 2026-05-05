@@ -1,0 +1,77 @@
+{%- comment -%}
+  Custom Code Section
+  Add your custom JavaScript, CSS, or HTML code here.
+{%- endcomment -%}
+
+{%- if section.settings.code != blank -%}
+  {%- if section.settings.code_type == 'css' -%}
+    <style>{{ section.settings.code }}</style>
+  {%- elsif section.settings.code_type == 'js' -%}
+    <script>{{ section.settings.code }}</script>
+  {%- else -%}
+    {{ section.settings.code }}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if section.settings.custom_css != blank -%}
+<style>
+{{ section.settings.custom_css }}
+</style>
+{%- endif -%}
+
+{%- if section.settings.code == blank and section.settings.custom_css == blank -%}
+<div class="custom-code__empty" style="padding: 60px 20px; text-align: center; color: #666; background: #f9f9f9; border: 2px dashed #ddd; margin: 20px;">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.5;">
+    <polyline points="16 18 22 12 16 6"></polyline>
+    <polyline points="8 6 2 12 8 18"></polyline>
+  </svg>
+  <p style="margin: 0; font-size: 14px;"><strong>Custom Code</strong></p>
+  <p style="margin: 8px 0 0; font-size: 13px; color: #888;">Add your code in section settings</p>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Custom Code",
+  "class": "section-custom-code",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Custom Code"
+    },
+    {
+      "type": "textarea",
+      "id": "code",
+      "label": "Your Code",
+      "info": "Paste your JavaScript, CSS, or HTML code here",
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "code_type",
+      "label": "Code Type",
+      "options": [
+        { "value": "html", "label": "HTML" },
+        { "value": "js", "label": "JavaScript" },
+        { "value": "css", "label": "CSS" }
+      ],
+      "default": "html"
+    },
+    {
+      "type": "header",
+      "content": "Additional Custom CSS"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Add custom styles for this section"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Code"
+    }
+  ]
+}
+{% endschema %}

@@ -99,6 +99,17 @@
       >
         {%- render 'icon-heart' -%}
       </button>
+      {%- if settings.product_show_compare -%}
+      <button
+        class="product-card__action-btn product-card__compare-btn"
+        data-compare-id="{{ product.id }}"
+        aria-label="Add to compare"
+        title="Compare"
+        onclick="addToCompare({{ product.id }}, '{{ product.title | escape }}', '{{ product.price | money }}', '{{ product.featured_image | image_url: width: 200 }}', '{{ product.url }}')"
+      >
+        {%- render 'icon-arrow-right' -%}
+      </button>
+      {%- endif -%}
       <button
         class="product-card__action-btn"
         aria-label="Quick view"
