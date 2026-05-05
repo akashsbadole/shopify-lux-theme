@@ -2,6 +2,10 @@
 
 A premium Shopify theme with modern design, featuring product customization, quick view, mega menu, and conversion-optimized components.
 
+## Screenshot
+
+![ Luxe Shopify Theme](screenshot.png) 
+
 ## Features
 
 ### Core Features ✅

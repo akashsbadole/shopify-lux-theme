@@ -40,14 +40,97 @@
     <div class="pincode-checker__error" id="PincodeError" hidden>
       <span class="pincode-checker__icon">✕</span>
       <p class="pincode-checker__msg">{{ settings.pincode_error_title | default: 'Sorry, we don\'t deliver to this pincode yet.' }}</p>
-      {%- if settings.show_alert -%}
-        <button type="button" class="pincode-checker__alert-btn" id="PincodeAlertBtn">
-          Notify me when available
-        </button>
+      {%- if settings.enable_delivery_notification and settings.show_alert -%}
+        <div class="pincode-notify" id="PincodeNotify">
+          <p class="pincode-notify__title">{{ settings.delivery_notification_title | default: 'Notify me when delivery is available' }}</p>
+          <p class="pincode-notify__subtitle">{{ settings.delivery_notification_subtitle | default: 'Enter your email and we\'ll notify you when we start delivering to your area.' }}</p>
+          <form class="pincode-notify__form" id="DeliveryNotifyForm">
+            <input type="hidden" name="contact[tags]" value="delivery-notification">
+            <input type="hidden" name="contact[note][pincode]" id="NotifyPincode" value="">
+            <input type="hidden" name="contact[note][source]" value="pincode-checker">
+            <div class="pincode-notify__field">
+              <label for="DeliveryNotifyEmail" class="visually-hidden">Email address</label>
+              <input 
+                type="email" 
+                id="DeliveryNotifyEmail" 
+                name="contact[email]" 
+                class="pincode-notify__input" 
+                placeholder="{{ settings.delivery_notification_placeholder | default: 'Enter your email address' }}" 
+                required
+                autocomplete="email"
+              >
+              <button type="submit" class="pincode-notify__btn" id="DeliveryNotifyBtn">
+                {{ settings.delivery_notification_button | default: 'Notify Me' }}
+              </button>
+            </div>
+            <div class="pincode-notify__error" id="DeliveryNotifyError" hidden></div>
+            <div class="pincode-notify__success" id="DeliveryNotifySuccess" hidden>
+              <span class="pincode-notify__success-icon">✓</span>
+              <span>{{ settings.delivery_notification_success | default: 'You\'re on the list! We\'ll email you when delivery is available.' }}</span>
+            </div>
+          </form>
+        </div>
       {%- endif -%}
     </div>
   </div>
 </div>
+
+<style>
+  .pincode-notify {
+    margin-top: 16px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+  .pincode-notify__title {
+    font-weight: 600;
+    margin: 0 0 4px;
+    font-size: 14px;
+  }
+  .pincode-notify__subtitle {
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 12px;
+  }
+  .pincode-notify__field {
+    display: flex;
+    gap: 8px;
+  }
+  .pincode-notify__input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .pincode-notify__btn {
+    padding: 10px 16px;
+    background: #003B73;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .pincode-notify__btn:hover {
+    background: #002a55;
+  }
+  .pincode-notify__error {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .pincode-notify__success {
+    color: #28a745;
+    font-size: 13px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -61,6 +144,17 @@
 
     var deliveryDaysMin = {{ settings.default_delivery_days | default: 5 }};
     var deliveryDaysMax = deliveryDaysMin + 2;
+
+    var serviceablePincodes = [
+      {%- assign pincodes = settings.serviceable_pincodes | default: '110001,110002,110003,110004,110005,400001,400002,400003,400004,400005,500001,600001,700001,800001,900001' | split: ',' -%}
+      {%- for p in pincodes -%}
+        '{{ p | strip }}'{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ];
+
+    function isServicable(pincode) {
+      return serviceablePincodes.indexOf(pincode) !== -1;
+    }
 
     function formatDate(days) {
       var date = new Date();
@@ -79,8 +173,7 @@
       }
 
       result.hidden = false;
-      var isServicable = true;
-      if (isServicable) {
+      if (isServicable(pincode)) {
         success.hidden = false;
         error.hidden = true;
         var minDate = formatDate(deliveryDaysMin);
@@ -90,6 +183,8 @@
       } else {
         success.hidden = true;
         error.hidden = false;
+        var notifyPincodeInput = document.getElementById('NotifyPincode');
+        if (notifyPincodeInput) notifyPincodeInput.value = pincode;
       }
     }
 
@@ -103,10 +198,48 @@
       });
     }
 
-    var alertBtn = document.getElementById('PincodeAlertBtn');
-    if (alertBtn) {
-      alertBtn.addEventListener('click', function() {
-        alert('Feature coming soon: Notify me when delivery is available to your area.');
+    var notifyForm = document.getElementById('DeliveryNotifyForm');
+    if (notifyForm) {
+      notifyForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var emailInput = document.getElementById('DeliveryNotifyEmail');
+        var errorEl = document.getElementById('DeliveryNotifyError');
+        var successEl = document.getElementById('DeliveryNotifySuccess');
+        var btn = document.getElementById('DeliveryNotifyBtn');
+
+        if (!emailInput.value || !emailInput.value.includes('@')) {
+          errorEl.hidden = false;
+          errorEl.textContent = 'Please enter a valid email address';
+          return;
+        }
+
+        var formData = new FormData(notifyForm);
+        var params = new URLSearchParams(formData).toString();
+
+        fetch(window.Shopify.routes.root + 'contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+          body: params
+        })
+        .then(function(response) {
+          if (response.ok) {
+            errorEl.hidden = true;
+            successEl.hidden = false;
+            notifyForm.reset();
+          } else {
+            return response.json();
+          }
+        })
+        .then(function(data) {
+          if (data && data.errors) {
+            errorEl.hidden = false;
+            errorEl.textContent = data.errors.email || 'Something went wrong. Please try again.';
+          }
+        })
+        .catch(function() {
+          errorEl.hidden = false;
+          errorEl.textContent = 'Something went wrong. Please try again.';
+        });
       });
     }
   });
