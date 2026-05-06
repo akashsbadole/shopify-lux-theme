@@ -1,0 +1,143 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "उत्पाद शोधा...",
+      "submit": "शोधा",
+      "no_results": "कोणतेही परिणाम नाही",
+      "results_with_count_and_term": "{{ terms }}साठी {{ count }} परिणाम"
+    },
+    "pagination": {
+      "previous": "मागील",
+      "next": "पुढील"
+    },
+    "meta": {
+      "page": "पृष्ठ {{ page }}"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "कार्टमध्ये टाका",
+      "sold_out": "विकले गेले",
+      "unavailable": "उपलब्ध नाही",
+      "select_options": "पर्याय निवडा",
+      "quantity": "प्रमाण",
+      "vendor": "विक्रेता",
+      "description": "वर्णन",
+      "share": "शेअर करा",
+      "new": "नवीन",
+      "sale": "सूट",
+      "save": "{{ percentage }}% बचत",
+      "pre_order": "प्री-ऑर्डर",
+      "reviews": "पुनरावलोकने"
+    },
+    "product_card": {
+      "add_to_wishlist": "इच्छादर्शिकेत जोडा",
+      "quick_view": "त्वरित पहा"
+    },
+    "tabs": {
+      "description": "वर्णन",
+      "details": "तपशील",
+      "shipping": "शिपिंग",
+      "returns": "परतावणी"
+    }
+  },
+  "cart": {
+    "title": "माझा कार्ट",
+    "empty": "कार्ट रिकामा आहे",
+    "checkout": "चेकआऊट करा",
+    "subtotal": "उप-एकूण",
+    "taxes": "कर",
+    "shipping": "शिपिंग",
+    "total": "एकूण",
+    "free_shipping": "मोफत",
+    "calculated_at_checkout": "चेकआऊटवर गणना केली जाईल",
+    "update": "कार्ट अपडेट करा",
+    "continue_shopping": "खरेदी सुरू ठेवा",
+    "remove": "काढा",
+    "items": "{{ count }} आयटम"
+  },
+  "collections": {
+    "title": "संग्रह",
+    "all": "सर्व उत्पादने",
+    "empty": "या संग्रहात कोणतेही उत्पादने नाहीत",
+    "filtering": {
+      "filter_and_sort": "फ़िल्टर आणि क्रम",
+      "apply": "लागू करा",
+      "clear_all": "सर्व साफ करा",
+      "sort_by": "क्रमवारी",
+      "featured": "विशेष",
+      "best_selling": "सर्वाधिक विक्री",
+      "az": "अ ते ज़ेड",
+      "za": "ज़ेड ते अ",
+      "price_low_high": "किंमत: कमी ते जास्त",
+      "price_high_low": "किंमत: जास्त ते कमी",
+      "newest": "नवीनतम"
+    },
+    "showing_count": "{{ count }} उत्पादने दाखवित आहेत"
+  },
+  "customer": {
+    "login": {
+      "title": "साइन इन करा",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "submit": "साइन इन करा",
+      "forgot_password": "पासवर्ड विसरलात?",
+      "no_account": "खाते नाही?",
+      "create_account": "एक तयार करा"
+    },
+    "register": {
+      "title": "खाते तयार करा",
+      "first_name": "पहिले नाव",
+      "last_name": "आडनाव",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "submit": "खाते तयार करा",
+      "have_account": "आधीपासून खाते आहे?",
+      "sign_in": "साइन इन करा"
+    },
+    "account": {
+      "title": "माझे खाते",
+      "sign_out": "साइन आउट करा",
+      "order_history": "ऑर्डर इतिहास",
+      "no_orders": "तुम्ही अजून कोणताही ऑर्डर केला नाही.",
+      "account_details": "खाते तपशील",
+      "manage_addresses": "पत्ते व्यवस्थापित करा"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "नाव",
+      "email": "ईमेल",
+      "message": "संदेश",
+      "submit": "पाठवा",
+      "success": "धन्यवाद! आम्ही लवकरच संपर्क करू."
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "मुख्य सामग्रीवर जा",
+    "close": "बंद करा",
+    "open_menu": "मेनू उघडा",
+    "close_menu": "मेनू बंद करा",
+    "open_cart": "कार्ट उघडा",
+    "close_cart": "कार्ट बंद करा",
+    "previous": "मागील",
+    "next": "पुढील"
+  },
+  "newsletter": {
+    "label": "ईमेल",
+    "button": "सदस्यता घ्या",
+    "success": "धन्यवाद! तुमची सदस्यता निश्चित केली गेली.",
+    "placeholder": "तुमचा ईमेल टाका"
+  },
+  "wishlist": {
+    "title": "माझी इच्छादर्शिका",
+    "empty": "तुमची इच्छादर्शिका रिकामी आहे",
+    "add": "इच्छादर्शिकेत जोडा",
+    "remove": "काढा"
+  },
+  "comparison": {
+    "title": "तुलना",
+    "empty": "तुलना करण्यासाठी उत्पादने नाहीत",
+    "add": "तुलनात जोडा"
+  }
+}

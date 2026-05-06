@@ -380,7 +380,7 @@
 
       <!-- Frequently Bought Together -->
       {%- if section.settings.show_fbt -%}
-        {%- section 'bundle-fbt' -%}
+        {%- render 'bundle-fbt', product: product -%}
       {%- endif -%}
 
     </div>
@@ -393,10 +393,10 @@
 
 <style>
   .main-product__atc-wrap { display: flex; gap: 12px; align-items: stretch; margin: 24px 0; }
-  .btn--atc { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: #1a1a2e; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-  .btn--atc:hover { background: #2d2d4a; transform: translateY(-2px); }
-  .btn--buy-now { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-  .btn--buy-now:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+   .btn--atc { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: var(--color-blue); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+   .btn--atc:hover { background: #0055AA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,59,115,0.3); }
+   .btn--buy-now { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: var(--color-blue); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+   .btn--buy-now:hover { background: #0055AA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,59,115,0.3); }
   .btn--wishlist { padding: 16px; background: #f5f5f5; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; color: #666; }
   .btn--wishlist:hover { background: #ffe5e5; color: #e74c3c; }
   @media (max-width: 480px) {

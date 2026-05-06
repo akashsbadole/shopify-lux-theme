@@ -1,0 +1,107 @@
+{%- comment -%}
+  Bundle / Frequently Bought Together - Snippet version
+  Usage: {% render 'bundle-fbt', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign bundle_handles = product.metafields.luxe.bundle_products.value
+-%}
+
+{%- if bundle_handles != blank -%}
+  {%- assign handle_list = bundle_handles | split: ',' -%}
+  {%- assign bundle_items = '' -%}
+  {%- for h in handle_list limit: 3 -%}
+    {%- assign h = h | strip -%}
+    {%- assign bp = all_products[h] -%}
+    {%- if bp != blank and bp.id != product.id -%}
+      {%- unless forloop.first -%}{%- assign bundle_items = bundle_items | append: '||' -%}{%- endunless -%}
+      {%- assign bundle_items = bundle_items | append: h -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- if bundle_items != blank -%}
+<div class="bundle-section" id="BundleSection" data-product-id="{{ product.id }}">
+  <div class="bundle-section__inner">
+    <div class="bundle-section__header">
+      <h3 class="bundle-section__title">Frequently Bought Together</h3>
+    </div>
+    <div class="bundle-section__products">
+      {%- assign products = bundle_items | split: '||' -%}
+      {%- for handle in products -%}
+        {%- assign bp = all_products[handle] -%}
+        {%- if bp != blank -%}
+          <div class="bundle-section__item">
+            <div class="bundle-section__item-img">
+              {%- if bp.featured_media -%}
+                {{ bp.featured_media.preview_image | image_url: width: 200 | image_tag: width: 100, height: 100, loading: 'lazy' }}
+              {%- endif -%}
+            </div>
+            <div class="bundle-section__item-info">
+              <a href="{{ bp.url }}" class="bundle-section__item-title">{{ bp.title }}</a>
+              <p class="bundle-section__item-price">{{ bp.price | money }}</p>
+            </div>
+            <label class="bundle-section__item-check">
+              <input type="checkbox" name="bundle_products" value="{{ bp.id }}" data-product-id="{{ bp.id }}">
+            </label>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <div class="bundle-section__total">
+      <p>Total: <span id="BundleTotal">{{ product.price | money }}</span></p>
+    </div>
+    <button type="button" class="btn btn--primary bundle-section__add-btn" id="BundleAddBtn">
+      Add All to Cart
+    </button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var bundleSection = document.getElementById('BundleSection');
+  if (!bundleSection) return;
+  
+  var checkboxes = bundleSection.querySelectorAll('input[name="bundle_products"]');
+  var totalEl = document.getElementById('BundleTotal');
+  var addBtn = document.getElementById('BundleAddBtn');
+  var productPrice = {{ product.price }};
+  
+  function updateTotal() {
+    var total = productPrice;
+    checkboxes.forEach(function(cb) {
+      if (cb.checked) {
+        var pid = cb.dataset.productId;
+        var item = bundleSection.querySelector('.bundle-section__item[data-product-id="' + pid + '"]');
+        if (item) {
+          var priceEl = item.querySelector('.bundle-section__item-price');
+          if (priceEl) {
+            total += parseInt(priceEl.dataset.price || 0);
+          }
+        }
+      }
+    });
+    if (totalEl) totalEl.textContent = '$' + (total / 100).toFixed(2);
+  }
+  
+  checkboxes.forEach(function(cb) {
+    cb.addEventListener('change', updateTotal);
+  });
+  
+  if (addBtn) {
+    addBtn.addEventListener('click', function() {
+      var items = [{{ product.id }}];
+      checkboxes.forEach(function(cb) {
+        if (cb.checked) items.push(cb.value);
+      });
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: items.map(function(id) { return { id: id, quantity: 1 }; }) })
+      })
+      .then(function() { window.location = '/cart'; });
+    });
+  }
+});
+</script>
+{%- endif -%}

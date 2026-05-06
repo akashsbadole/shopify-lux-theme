@@ -224,6 +224,32 @@
   <!-- LUXE Theme JS -->
   <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
 
+  <!-- Scroll Animation Trigger -->
+  <script>
+    (function() {
+      var animated = false;
+      function animateOnScroll() {
+        if (animated) return;
+        var elements = document.querySelectorAll('.animate-on-scroll');
+        var len = elements.length;
+        for (var i = 0; i < len; i++) {
+          var el = elements[i];
+          var rect = el.getBoundingClientRect();
+          var winH = window.innerHeight;
+          if (rect.top < winH - 100) {
+            el.classList.add('animated');
+            el.classList.remove('animate-on-scroll');
+          }
+        }
+        if (document.querySelectorAll('.animate-on-scroll').length === 0) {
+          animated = true;
+        }
+      }
+      window.addEventListener('scroll', animateOnScroll);
+      document.addEventListener('DOMContentLoaded', animateOnScroll);
+    })();
+  </script>
+
   <!-- Tab Title - Shows custom message when user leaves tab -->
   <script>
     (function() {

@@ -1,25 +1,24 @@
 {%- assign products_per_row = section.settings.products_per_row | default: 4 -%}
 {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
 
-<div class="main-collection section-{{ section.id }}" id="MainCollection">
-  <!-- Breadcrumbs -->
-  <nav class="collection-breadcrumbs" aria-label="Breadcrumb">
-    <ol class="collection-breadcrumbs__list">
-      <li class="collection-breadcrumbs__item">
-        <a href="{{ routes.root_url }}" class="collection-breadcrumbs__link">Home</a>
-        <span class="collection-breadcrumbs__sep">›</span>
-      </li>
-      <li class="collection-breadcrumbs__item">
-        <a href="{{ routes.collections_url }}" class="collection-breadcrumbs__link">Collections</a>
-        <span class="collection-breadcrumbs__sep">›</span>
-      </li>
-      <li class="collection-breadcrumbs__item">
-        <span class="collection-breadcrumbs__current">{{ collection.title }}</span>
-      </li>
-    </ol>
-  </nav>
-
+<div class="main-collection section-{{ section.id }} animate-on-scroll" id="MainCollection">
   <div class="main-collection__inner">
+    <!-- Breadcrumbs -->
+    <nav class="collection-breadcrumbs" aria-label="Breadcrumb">
+      <ol class="collection-breadcrumbs__list">
+        <li class="collection-breadcrumbs__item">
+          <a href="{{ routes.root_url }}" class="collection-breadcrumbs__link">Home</a>
+          <span class="collection-breadcrumbs__sep">›</span>
+        </li>
+        <li class="collection-breadcrumbs__item">
+          <a href="{{ routes.collections_url }}" class="collection-breadcrumbs__link">Collections</a>
+          <span class="collection-breadcrumbs__sep">›</span>
+        </li>
+        <li class="collection-breadcrumbs__item">
+          <span class="collection-breadcrumbs__current">{{ collection.title }}</span>
+        </li>
+      </ol>
+    </nav>
 
     <!-- Collection header -->
     <div class="collection-header">
@@ -123,18 +122,19 @@
                         <span class="filter-option__label">{{ value.label }} ({{ value.count }})</span>
                       </label>
                     {%- endfor -%}
-                  {%- when 'price_range' -%}
+{%- when 'price_range' -%}
                     <div class="filter-price">
                       <label>
                         <span>Min</span>
-                        <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency }}" class="filter-price__input">
+                        <input type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency }}" class="filter-price__input filter-price__input-min">
                       </label>
                       <label>
                         <span>Max</span>
-                        <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency }}" class="filter-price__input">
+                        <input type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency }}" min="0" max="{{ filter.range_max | money_without_currency }}" class="filter-price__input filter-price__input-max">
                       </label>
+                      <button type="button" id="ApplyPriceFilter" class="btn btn--primary btn--sm">Apply</button>
                     </div>
-                {%- endcase -%}
+                  {%- endcase -%}
               </div>
             </details>
           {%- endfor -%}
@@ -211,9 +211,9 @@
   var sortEl = document.getElementById('SortBy');
   if (sortEl) {
     sortEl.addEventListener('change', function() {
-      var url = new URL(window.location);
+      var url = new URL(window.location.href);
       url.searchParams.set('sort_by', this.value);
-      window.location = url.toString();
+      window.location.href = url.toString();
     });
   }
   // Filter toggle
@@ -229,12 +229,27 @@
   // Apply filters
   var applyBtn = document.getElementById('ApplyFilters');
   if (applyBtn) {
-    applyBtn.addEventListener('click', function() {
-      var url = new URL(window.location);
+    applyBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = new URL(window.location.href);
+      url.searchParams.set('page', '1');
       document.querySelectorAll('.filter-option__check:checked').forEach(function(cb) {
-        url.searchParams.append(cb.name, cb.value);
+        url.searchParams.set(cb.name, cb.value);
       });
-      window.location = url.toString();
+      window.location.href = url.toString();
+    });
+  }
+  // Price filter
+  var priceApplyBtn = document.getElementById('ApplyPriceFilter');
+  if (priceApplyBtn) {
+    priceApplyBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = new URL(window.location.href);
+      var minInput = document.querySelector('.filter-price__input-min');
+      var maxInput = document.querySelector('.filter-price__input-max');
+      if (minInput && minInput.value) url.searchParams.set('min_price', minInput.value);
+      if (maxInput && maxInput.value) url.searchParams.set('max_price', maxInput.value);
+      window.location.href = url.toString();
     });
   }
   // Grid/List view toggle

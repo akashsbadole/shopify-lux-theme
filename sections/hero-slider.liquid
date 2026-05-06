@@ -5,10 +5,10 @@
 {%- endcomment -%}
 
 {%- if section.blocks.size > 0 -%}
-<div class="hero-slider section-{{ section.id }}" id="HeroSlider" data-autoplay="{% if section.settings.autoplay != false %}{{ settings.hero_slider_autoplay | default: true }}{% else %}false{% endif %}" data-speed="{{ settings.hero_slider_speed | default: 5 }}000" data-dots="{{ section.settings.show_dots }}" data-arrows="{{ section.settings.show_arrows }}">
+<div class="hero-slider section-{{ section.id }} animate-fade-in" id="HeroSlider" data-autoplay="{% if section.settings.autoplay != false %}{{ settings.hero_slider_autoplay | default: true }}{% else %}false{% endif %}" data-speed="{{ settings.hero_slider_speed | default: 5 }}000" data-dots="{{ section.settings.show_dots }}" data-arrows="{{ section.settings.show_arrows }}">
   <div class="hero-slider__track" id="HeroSliderTrack">
     {%- for block in section.blocks -%}
-      <div class="hero-slider__slide" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+      <div class="hero-slider__slide animate-fade-in-up delay-{{ forloop.index }}" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
         {%- if block.settings.image != blank -%}
           {{ block.settings.image | image_url: width: 1920 | image_tag: class: 'hero-slider__img', loading: 'eager', fetchpriority: 'high' }}
         {%- else -%}

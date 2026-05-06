@@ -2,11 +2,11 @@
 {%- assign products_per_row = section.settings.products_per_row | default: 4 -%}
 {%- assign limit = products_per_row | times: section.settings.rows | default: 8 -%}
 
-<div class="featured-collection section-{{ section.id }}">
+<div class="featured-collection section-{{ section.id }} animate-on-scroll">
   <div class="featured-collection__inner">
 
     {%- if section.settings.title != blank or section.settings.show_view_all -%}
-      <div class="section-header">
+      <div class="section-header animate-fade-in-up delay-1">
         {%- if section.settings.title != blank -%}
           <h2 class="section-header__title">{{ section.settings.title }}</h2>
         {%- endif -%}

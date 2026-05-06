@@ -83,11 +83,22 @@
     var cartOverlay = document.getElementById('CartOverlay');
     var cartClose = document.getElementById('CartDrawerClose');
 
+    // Ensure loading state is hidden on initialization
+    var loading = document.getElementById('CartLoading');
+    if (loading) {
+      loading.style.display = 'none';
+    }
+
     // Open/close cart
     if (cartToggle && cartDrawer) {
       cartToggle.addEventListener('click', function(e) {
         e.preventDefault();
         if (window.LuxeCart) {
+          // Ensure loading state is hidden when opening cart
+          var loading = document.getElementById('CartLoading');
+          if (loading) {
+            loading.style.display = 'none';
+          }
           window.LuxeCart.toggle();
         }
       });
@@ -109,7 +120,7 @@
 
     // Close on escape
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && cartDrawer && cartDrawer.getAttribute('aria-hidden') === 'false') {
+      if (e.key === 'Escape' && cartDrawer && cartDrawer.style.display === 'flex') {
         if (window.LuxeCart) window.LuxeCart.close();
       }
     });
@@ -242,7 +253,7 @@
   function setLoading(isLoading) {
     var loading = document.getElementById('CartLoading');
     if (loading) {
-      loading.hidden = !isLoading;
+      loading.style.display = isLoading ? 'flex' : 'none';
     }
   }
 

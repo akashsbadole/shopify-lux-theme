@@ -900,6 +900,13 @@
         "label": "Show language selector in header",
         "default": true,
         "info": "Requires multiple languages in store settings"
+      },
+      {
+        "type": "text",
+        "id": "custom_languages",
+        "label": "Custom languages (optional)",
+        "info": "Format: code-name, code-name (e.g., ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French)",
+        "default": "ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French"
       }
     ]
   }

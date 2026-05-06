@@ -1,0 +1,151 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "ಉತ್ಪತ್ತಿಗಳನ್ನು ಹುಡುಕಿ...",
+      "submit": "ಹುಡುಕಿ",
+      "no_results": "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳಿಲ್ಲ",
+      "results_with_count_and_term": "\"{{ terms }}\"ಗೆ {{ count }} ಫಲಿತಾಂಶಗಳು"
+    },
+    "pagination": {
+      "previous": "ಹಿಂದಿನ",
+      "next": "ಮುಂದಿನ"
+    },
+    "meta": {
+      "page": "ಪುಟ {{ page }}"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ",
+      "sold_out": "ಮಾರಾಯವಾಗಿದೆ",
+      "unavailable": "ಲಭ್ಯವಿಲ್ಲ",
+      "select_options": "ಆಯ್ಕೆಗಳನ್ನು ಆರಿಸಿ",
+      "quantity": "ಪ್ರಮಾಣ",
+      "vendor": "ಮಾರಾಗರು",
+      "description": "ವಿವರಣೆ",
+      "share": "ಹಂಚಿಕೊಳ್ಳಿ",
+      "new": "ಹೊಸ",
+      "sale": "ರಿಯಾಯಿತಿ",
+      "save": "{{ percentage }}% ಉಳಿತಾಯ",
+      "pre_order": "ಪ್ರಿ-ಆರ್ಡರ್",
+      "reviews": "ವಿಮರ್ಶೆಗಳು"
+    },
+    "product_card": {
+      "add_to_wishlist": "ಬಯಕೆ ಪಟ್ಟಿಗೆ ಸೇರಿಸಿ",
+      "quick_view": "ತ್ವರಿತ ನೋಟ"
+    },
+    "tabs": {
+      "description": "ವಿವರಣೆ",
+      "details": "ವಿವರಗಳು",
+      "shipping": "ಸಾಗಣೆ",
+      "returns": "ಹಿಂತಿರುಗಿಸುವಿಕೆ"
+    }
+  },
+  "cart": {
+    "title": "ನನ್ನ ಕಾರ್ಟ್",
+    "empty": "ನಿಮ್ಮ ಕಾರ್ಟ್ ಖಾಲಿಯಾಗಿದೆ",
+    "checkout": "ಚೆಕ್‌ಔಟ್‌ಗೆ ಮುಂದುವರಿಸಿ",
+    "subtotal": "ಉಪ-ಒಟ್ಟು",
+    "taxes": "ತೆರಿಗೆಗಳು",
+    "shipping": "ಸಾಗಣೆ",
+    "total": "ಒಟ್ಟು",
+    "free_shipping": "ಉಚಿತ",
+    "calculated_at_checkout": "ಚೆಕ್‌ಔಟ್‌ನಲ್ಲಿ ಲೆಕ್ಕಾಚಾರವಾಗುತ್ತದೆ",
+    "update": "ಕಾರ್ಟ್ ಅಪ್ಡೇಟ್ ಮಾಡಿ",
+    "continue_shopping": "ಖರೀದಿ ಮುಂದುವರಿಸಿ",
+    "remove": "ತೆಗೆದುಹಾಕಿ",
+    "items": "{{ count }} ಐಟಂಗಳು"
+  },
+  "collections": {
+    "title": "ಸಂಗ್ರಹಗಳು",
+    "all": "ಎಲ್ಲಾ ಉತ್ಪತ್ತಿಗಳು",
+    "empty": "ಈ ಸಂಗ್ರಹದಲ್ಲಿ ಉತ್ಪತ್ತಿಗಳಿಲ್ಲ",
+    "filtering": {
+      "filter_and_sort": "ಫಿಲ್ಟರ್ ಮತ್ತು ವರ್ಗಾಯಿಸಿ",
+      "apply": "ಅನ್ವಯಿಸಿ",
+      "clear_all": "ಎಲ್ಲಾ ತೆರಿಗೆ",
+      "sort_by": "ವರ್ಗಾಯಿಸುವ ರೀತಿ",
+      "featured": "ವಿಶೇಷ",
+      "best_selling": "ಹೆಚ್ಚು ಮಾರಾಟ",
+      "az": "A–Z",
+      "za": "Z–A",
+      "price_low_high": "ಬೆಲೆ: ಕಡಿಮೆಯಿಂದ ಹೆಚ್ಚಿನದವರೆಗೆ",
+      "price_high_low": "ಬೆಲೆ: ಹೆಚ್ಚಿನದಿಂದ ಕಡಿಮೆಯವರೆಗೆ",
+      "newest": "ಹೊಸದು"
+    },
+    "showing_count": "{{ count }} ಉತ್ಪತ್ತಿಗಳು ತೋರಿಸಲಾಗುತ್ತಿದೆ"
+  },
+  "customer": {
+    "login": {
+      "title": "ಸೈನ್ ಇನ್ ಮಾಡಿ",
+      "email": "ಇಮೇಲ್",
+      "password": "ಪಾಸ್‌ವರ್ಡ್",
+      "submit": "ಸೈನ್ ಇನ್ ಮಾಡಿ",
+      "forgot_password": "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರಾ?",
+      "no_account": "ಖಾತೆ ಇಲ್ಲವೇ?",
+      "create_account": "ಒಂದನ್ನು ರಚಿಸಿ"
+    },
+    "register": {
+      "title": "ಖಾತೆ ರಚಿಸಿ",
+      "first_name": "ಮೊದಲ ಹೆಸರು",
+      "last_name": "ಕೊನೆಯ ಹೆಸರು",
+      "email": "ಇಮೇಲ್",
+      "password": "ಪಾಸ್‌ವರ್ಡ್",
+      "submit": "ಖಾತೆ ರಚಿಸಿ",
+      "have_account": "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?",
+      "sign_in": "ಸೈನ್ ಇನ್ ಮಾಡಿ"
+    },
+    "account": {
+      "title": "ನನ್ನ ಖಾತೆ",
+      "sign_out": "ಸೈನ್ ಔಟ್ ಮಾಡಿ",
+      "order_history": "ಆರ್ಡರ್ ಇತಿಹಾಸ",
+      "no_orders": "ನೀವು ಇನ್ನೂ ಯಾವುದೇ ಆರ್ಡರ್‌ಗಳನ್ನು ಮಾಡಿಲ್ಲ.",
+      "account_details": "ಖಾತೆ ವಿವರಗಳು",
+      "manage_addresses": "ವಿಳಾಸಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
+    },
+    "orders": {
+      "title": "ಆರ್ಡರ್‌ಗಳು",
+      "order_number": "ಆರ್ಡರ್ #{{ number }}",
+      "date": "ದಿನಾಂಕ",
+      "payment_status": "ಪಾವತಿ ಸ್ಥಿತಿ",
+      "fulfillment_status": "ಪೂರೈಕೆ ಸ್ಥಿತಿ",
+      "total": "ಒಟ್ಟು"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "ಹೆಸರು",
+      "email": "ಇಮೇಲ್",
+      "message": "ಸಂದೇಶ",
+      "submit": "ಕಳುಹಿಸಿ",
+      "success": "ಧನ್ಯವಾದಗಳು! ನಾವು ಶೀಘ್ರದಲ್ಲಿ ಸಂಪರ್ಕ ಮಾಡುತ್ತೇವೆ."
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "ವಿಷಯಕ್ಕೆ ಹೋಗಿ",
+    "close": "ಮುಚ್ಚಿ",
+    "open_menu": "ಮೆನೂ ತೆರೆಯಿರಿ",
+    "close_menu": "ಮೆನೂ ಮುಚ್ಚಿ",
+    "open_cart": "ಕಾರ್ಟ್ ತೆರೆಯಿರಿ",
+    "close_cart": "ಕಾರ್ಟ್ ಮುಚ್ಚಿ",
+    "previous": "ಹಿಂದಿನ",
+    "next": "ಮುಂದಿನ"
+  },
+  "newsletter": {
+    "label": "ಇಮೇಲ್",
+    "button": "ಚಂದಾದಾರರಾಗಿ",
+    "success": "ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ಚಂದಾದಾರತ್ವವು ದೃಢೀಕರಿಸಲಾಗಿದೆ.",
+    "placeholder": "ನಿಮ್ಮ ಇಮೇಲ್ ನಮೂದಿಸಿ"
+  },
+  "wishlist": {
+    "title": "ನನ್ನ ಬಯಕೆ ಪಟ್ಟಿ",
+    "empty": "ನಿಮ್ಮ ಬಯಕೆ ಪಟ್ಟಿ ಖಾಲಿಯಾಗಿದೆ",
+    "add": "ಬಯಕೆ ಪಟ್ಟಿಗೆ ಸೇರಿಸಿ",
+    "remove": "ತೆಗೆದುಹಾಕಿ"
+  },
+  "comparison": {
+    "title": "ಹೋಲಿಕೆ",
+    "empty": "ಹೋಲಿಸಲು ಉತ್ಪತ್ತಿಗಳಿಲ್ಲ",
+    "add": "ಹೋಲಿಕೆಗೆ ಸೇರಿಸಿ"
+  }
+}

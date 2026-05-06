@@ -1,4 +1,4 @@
-<div class="cart-overlay" id="CartOverlay" aria-hidden="true" style="display:block;"></div>
+<div class="cart-overlay" id="CartOverlay" aria-hidden="true"   style="display:none;"></div>
 
 <div
   class="cart-drawer"
@@ -7,9 +7,9 @@
   role="dialog"
   aria-modal="true"
   aria-label="Shopping cart"
-  style="display:flex !important; visibility:visible !important;"
+  style="display:none;"
 >
-  <div class="cart-drawer__header" style="visibility:visible;">
+  <div class="cart-drawer__header">
     <h2 class="cart-drawer__title">My Cart
       <span class="cart-drawer__count" id="CartItemCount">({{ cart.item_count }})</span>
     </h2>
@@ -18,7 +18,7 @@
     </button>
   </div>
 
-  <div class="cart-drawer__body" id="CartDrawerBody" style="visibility:visible;">
+  <div class="cart-drawer__body" id="CartDrawerBody">
     {%- if cart.item_count > 0 -%}
       {%- render 'cart-items', cart: cart -%}
       
@@ -34,13 +34,13 @@
     {%- endif -%}
     
     <!-- Loading overlay -->
-    <div class="cart-drawer__loading" id="CartLoading" hidden>
+    <div class="cart-drawer__loading" id="CartLoading" style="display: none;">
       <div class="cart-spinner"></div>
     </div>
   </div>
 
   {%- if cart.item_count > 0 -%}
-  <div class="cart-drawer__footer" id="CartFooter" style="visibility:visible;">
+  <div class="cart-drawer__footer" id="CartFooter">
     <!-- Totals -->
     <div class="cart-totals" id="CartTotals">
       <div class="cart-totals__row">
@@ -156,14 +156,19 @@
     open: function() {
       var drawer = document.getElementById('CartDrawer');
       var overlay = document.getElementById('CartOverlay');
+      var loading = document.getElementById('CartLoading');
       if (drawer) {
-        drawer.setAttribute('aria-hidden', 'false');
+        drawer.style.display = 'flex';
         drawer.classList.add('active');
         document.body.classList.add('cart-open');
       }
       if (overlay) {
-        overlay.setAttribute('aria-hidden', 'false');
+        overlay.style.display = 'block';
         overlay.classList.add('active');
+      }
+      // Ensure loading state is hidden when opening cart
+      if (loading) {
+        loading.style.display = 'none';
       }
     },
 
@@ -172,12 +177,12 @@
       var drawer = document.getElementById('CartDrawer');
       var overlay = document.getElementById('CartOverlay');
       if (drawer) {
-        drawer.setAttribute('aria-hidden', 'true');
+        drawer.style.display = 'none';
         drawer.classList.remove('active');
         document.body.classList.remove('cart-open');
       }
       if (overlay) {
-        overlay.setAttribute('aria-hidden', 'true');
+        overlay.style.display = 'none';
         overlay.classList.remove('active');
       }
     },
@@ -185,7 +190,7 @@
     // Toggle cart drawer
     toggle: function() {
       var drawer = document.getElementById('CartDrawer');
-      if (drawer && drawer.getAttribute('aria-hidden') === 'true') {
+      if (drawer && (drawer.style.display === 'none' || !drawer.style.display)) {
         this.open();
       } else {
         this.close();
