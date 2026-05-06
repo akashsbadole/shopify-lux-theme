@@ -6,8 +6,12 @@
   <meta name="theme-color" content="{{ settings.color_brand_blue }}">
 
   
-   <!-- Performance: Preload critical CSS -->
-   {{ 'google-fonts.css' | asset_url | stylesheet_tag: preload: true }}
+  <!-- Performance: Resource Hints -->
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+  <!-- Performance: Preload critical CSS -->
+  {{ 'google-fonts.css' | asset_url | stylesheet_tag: preload: true }}
 
   <!-- Security: Content Security Policy (basic - Shopify handles most) -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -120,6 +124,7 @@
 
   <!-- LUXE Theme CSS -->
   {{ 'luxe-theme.css' | asset_url | stylesheet_tag }}
+  {{ 'luxe-marketing.css' | asset_url | stylesheet_tag }}
 
   <!-- SEO: Schema.org Structured Data -->
   {%- render 'structured-data' -%}
@@ -223,6 +228,7 @@
 
   <!-- LUXE Theme JS -->
   <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'luxe-marketing.js' | asset_url }}" defer="defer"></script>
 
   <!-- Scroll Animation Trigger -->
   <script>
