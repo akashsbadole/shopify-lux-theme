@@ -14,7 +14,7 @@ module.exports = (env, argv) => {
     output: {
       filename: '[name].js',
       path: path.resolve(__dirname, 'assets'),
-      clean: true
+      clean: false
     },
     module: {
       rules: [

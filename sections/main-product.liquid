@@ -41,7 +41,7 @@
               {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-gallery__model' }}
             {%- else -%}
               {%- if forloop.first -%}
-              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, loading: 'eager' }}
+              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, loading: 'eager', fetchpriority: 'high' }}
             {%- else -%}
               {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, loading: 'lazy' }}
             {%- endif -%}

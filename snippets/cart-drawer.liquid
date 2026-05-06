@@ -33,6 +33,14 @@
     <div class="cart-drawer__loading" id="CartLoading" hidden>
       <div class="cart-spinner"></div>
     </div>
+
+    <!-- AJAX Cart Upsell -->
+    <div class="cart-upsell" id="CartUpsell" style="display:none;">
+      <h3 class="cart-upsell__title">Recommended for You</h3>
+      <div class="cart-upsell__items" id="CartUpsellItems">
+        {%- comment -%} Populated by JS based on cart contents {%- endcomment -%}
+      </div>
+    </div>
   </div>
 
   {%- if cart.item_count > 0 -%}

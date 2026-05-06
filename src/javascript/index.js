@@ -1,14 +1,27 @@
 // Luxe Theme JavaScript
 
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Luxe Theme Loaded');
+/**
+ * Luxe Theme JavaScript Core
+ *
+ * This file handles the primary interactive components of the Luxe Shopify Theme.
+ */
 
-  initMobileMenu();
-  initQuickView();
-  initCartDrawer();
-  initQuantitySelectors();
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    initMobileMenu();
+    initQuickView();
+    initCartDrawer();
+    initQuantitySelectors();
+    initMarketingFeatures();
+  } catch (error) {
+    console.error('Luxe Theme: Initialization failed', error);
+  }
 });
 
+/**
+ * Mobile Navigation Menu
+ * Handles toggle of hamburger menu and overlay
+ */
 function initMobileMenu() {
   const menuToggle = document.querySelector('.menu-toggle');
   const mobileNav = document.querySelector('.mobile-nav');
@@ -21,6 +34,10 @@ function initMobileMenu() {
   }
 }
 
+/**
+ * Quick View Modal
+ * Fetches product data and opens the quick view modal
+ */
 function initQuickView() {
   const quickViewBtns = document.querySelectorAll('.quick-view-btn');
 
@@ -37,6 +54,10 @@ function openQuickView(productId) {
   console.log('Opening quick view for product:', productId);
 }
 
+/**
+ * Cart Drawer Toggle
+ * Handles opening and closing of the AJAX cart drawer
+ */
 function initCartDrawer() {
   const cartToggle = document.querySelector('.cart-toggle');
   const cartDrawer = document.querySelector('.cart-drawer');
@@ -56,6 +77,10 @@ function initCartDrawer() {
   }
 }
 
+/**
+ * Quantity Selectors
+ * Handles increment/decrement of product quantity inputs
+ */
 function initQuantitySelectors() {
   const quantityBtns = document.querySelectorAll('.quantity-btn');
 
@@ -103,17 +128,104 @@ if (sizeGuideLinks.length && sizeGuideModal) {
   });
 }
 
-// Sticky Add to Cart
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-  const stickyAtc = document.querySelector('.sticky-atc');
-  const currentScroll = window.pageYOffset;
+/**
+ * Marketing & Conversion Features
+ */
+function initMarketingFeatures() {
+  trackRecentlyViewed();
+  renderRecentlyViewed();
+  initCartUpsell();
+  initStickyAtc();
+}
 
-  if (currentScroll > 300) {
-    stickyAtc?.classList.add('visible');
-  } else {
-    stickyAtc?.classList.remove('visible');
+/**
+ * Sticky Add to Cart
+ * Appears when main ATC button scrolls out of view
+ */
+function initStickyAtc() {
+  window.addEventListener('scroll', () => {
+    const stickyAtc = document.getElementById('StickyATC');
+    const mainAtc = document.getElementById('AddToCartBtn');
+    const currentScroll = window.pageYOffset;
+
+    if (mainAtc) {
+      const mainAtcRect = mainAtc.getBoundingClientRect();
+      if (mainAtcRect.bottom < 0 && currentScroll > 300) {
+        stickyAtc?.classList.add('active');
+        stickyAtc?.setAttribute('aria-hidden', 'false');
+      } else {
+        stickyAtc?.classList.remove('active');
+        stickyAtc?.setAttribute('aria-hidden', 'true');
+      }
+    }
+  });
+}
+
+/**
+ * Recently Viewed Logic
+ */
+function trackRecentlyViewed() {
+  const product = window.__luxe_track_product__;
+  if (!product) return;
+
+  let recentlyViewed = JSON.parse(localStorage.getItem('luxe_recently_viewed') || '[]');
+  recentlyViewed = recentlyViewed.filter(p => p.id !== product.id);
+  recentlyViewed.unshift(product);
+  recentlyViewed = recentlyViewed.slice(0, 10);
+  localStorage.setItem('luxe_recently_viewed', JSON.stringify(recentlyViewed));
+}
+
+function renderRecentlyViewed() {
+  const container = document.getElementById('RecentlyViewedTrack');
+  const section = document.getElementById('RecentlyViewed');
+  if (!container || !section) return;
+
+  const products = JSON.parse(localStorage.getItem('luxe_recently_viewed') || '[]');
+  const currentId = section.dataset.productId;
+  const filteredProducts = products.filter(p => p.id != currentId).slice(0, section.dataset.limit || 6);
+
+  if (filteredProducts.length > 0) {
+    section.style.display = 'block';
+    container.innerHTML = filteredProducts.map(p => `
+      <div class="product-card product-card--mini">
+        <a href="${p.url}" class="product-card__link">
+          <img src="${p.image}" alt="${p.title}" class="product-card__img" loading="lazy">
+          <div class="product-card__info">
+            <h4 class="product-card__title">${p.title}</h4>
+            <p class="product-card__price">$${(p.price / 100).toFixed(2)}</p>
+          </div>
+        </a>
+      </div>
+    `).join('');
   }
+}
 
-  lastScroll = currentScroll;
-});
+/**
+ * AJAX Cart Upsell
+ */
+function initCartUpsell() {
+  const cartUpsellContainer = document.getElementById('CartUpsellItems');
+  const cartUpsellSection = document.getElementById('CartUpsell');
+  if (!cartUpsellContainer || !cartUpsellSection) return;
+
+  fetch(window.Shopify.routes.root + 'recommendations/products.json?product_id=' + (window.__luxe_track_product__?.id || '') + '&limit=3')
+    .then(res => res.json())
+    .then(data => {
+      if (data.products && data.products.length > 0) {
+        cartUpsellSection.style.display = 'block';
+        cartUpsellContainer.innerHTML = data.products.map(p => `
+          <div class="cart-upsell-item">
+            <img src="${p.featured_image}" alt="${p.title}" class="cart-upsell-item__img" loading="lazy">
+            <div class="cart-upsell-item__info">
+              <h4 class="cart-upsell-item__title">${p.title}</h4>
+              <p class="cart-upsell-item__price">$${(p.price / 100).toFixed(2)}</p>
+            </div>
+            <button class="cart-upsell-item__btn" onclick="window.LuxeCart.addItem(${p.variants[0].id}, 1).then(() => window.LuxeCart.fetchCart().then(doc => { document.getElementById('CartDrawerBody').innerHTML = doc.getElementById('CartAjaxContent').innerHTML; }))">Add</button>
+          </div>
+        `).join('');
+      }
+    })
+    .catch(() => {
+      cartUpsellSection.style.display = 'none';
+    });
+}

@@ -43,6 +43,12 @@ A premium Shopify theme with modern design, featuring product customization, qui
 - **Trust Elements**: Trust bar, promo banners, flash sale timer, countdown timers
 - **India-Specific**: COD badges, EMI calculator, pincode checker, WhatsApp chat, GST invoice
 
+## Documentation
+
+- [Theme Setup Guide](./docs/THEME-SETUP.md) - How to configure your store.
+- [Marketing & Conversion](./docs/MARKETING-FEATURES.md) - Using built-in marketing tools.
+- [Developer Guide](./docs/DEVELOPER-GUIDE.md) - Technical details and build process.
+
 ## Prerequisites
 
 - Node.js 18+
