@@ -28,6 +28,7 @@ A premium Shopify theme with modern design, featuring product customization, qui
 - **App Compatibility**: Judge.me, Loox, Yotpo reviews integration
 - **Multi-language Ready**: Translation system with locale files
 - **Currency Support**: Automatic Shopify currency formatting
+- **Currency Converter (Tooltip)**: Hover over prices to see approximate conversions in selected currency using ExchangeRate-API with 24hr caching
 
 ### Performance & Security ✅
 - **Shopify Speed Report Ready**: Optimized assets, efficient loading
@@ -42,6 +43,30 @@ A premium Shopify theme with modern design, featuring product customization, qui
 - **Customer**: Login, register, account pages, wishlist
 - **Trust Elements**: Trust bar, promo banners, flash sale timer, countdown timers
 - **India-Specific**: COD badges, EMI calculator, pincode checker, WhatsApp chat, GST invoice
+- **Currency Converter**: Hover tooltips showing converted prices via ExchangeRate-API
+
+## Currency Converter (Tooltip)
+
+The theme includes an optional currency converter that displays approximate converted prices in tooltips when hovering over any price.
+
+**Features**:
+- Powered by ExchangeRate-API (free tier: 1,500 requests/month)
+- Rates cached locally for 24 hours (typically <30 API calls/month)
+- Supports 60+ global currencies
+- Works on collection grids, product pages, cart drawer, quick view, wishlist, and more
+- Graceful fallback to native Shopify currency switcher if API unavailable
+
+**Setup**:
+1. Get a free API key from [exchangerate-api.com](https://www.exchangerate-api.com)
+2. In Shopify Admin → Online Store → Themes → Customize → Theme Settings → Currency & Language:
+   - Check "Enable currency converter (tooltip prices)"
+   - Enter your ExchangeRate-API key
+   - Select base currency (usually your store's default)
+3. Save
+
+**Usage**: Hover over any price to see an approximate conversion in the currently selected currency.
+
+> **Note**: This is a visual aid only. Actual checkout currency is controlled by Shopify Markets.
 
 ## Documentation
 

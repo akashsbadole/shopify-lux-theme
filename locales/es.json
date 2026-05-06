@@ -12,7 +12,9 @@
     },
     "meta": {
       "page": "Página {{ page }}"
-    }
+    },
+    "language_label": "Idioma",
+    "currency_label": "Moneda"
   },
   "products": {
     "product": {

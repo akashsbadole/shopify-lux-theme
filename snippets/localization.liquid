@@ -7,9 +7,9 @@
 {%- if settings.show_currency_selector or settings.show_language_selector -%}
 <div class="localization-selector" id="LocalizationSelector">
   {%- if settings.show_language_selector -%}
-    <div class="localization-item localization-item--lang">
-      <label for="LanguageSelector" class="visually-hidden">Language</label>
-      <select id="LanguageSelector" class="localization-select" name="language_code">
+     <div class="localization-item localization-item--lang">
+       <label for="LanguageSelector" class="visually-hidden">{{ 'general.language_label' | t }}</label>
+       <select id="LanguageSelector" class="localization-select" name="language_code">
         {%- if settings.custom_languages != blank -%}
           {%- assign custom_langs = settings.custom_languages | split: ',' -%}
           {%- for lang in custom_langs -%}
@@ -33,8 +33,15 @@
 
   {%- if settings.show_currency_selector and localization.available_currencies.size > 0 -%}
     <div class="localization-item localization-item--currency">
-      <label for="CurrencySelector" class="visually-hidden">Currency</label>
-      <select id="CurrencySelector" class="localization-select" name="currency_code">
+      <label for="CurrencySelector" class="visually-hidden">{{ 'general.currency_label' | t }}</label>
+      <select 
+        id="CurrencySelector" 
+        class="localization-select{% if settings.enable_currency_converter and settings.exchange_rate_api_key != blank %} js-currency-converter-select{% endif %}"
+        name="currency_code"
+        {% if settings.enable_currency_converter and settings.exchange_rate_api_key != blank %}
+          data-converter-enabled="true"
+        {% endif %}
+      >
         {%- for currency in localization.available_currencies -%}
           <option value="{{ currency.iso_code }}"{% if currency.iso_code == localization.currency.iso_code %} selected{% endif %}>
             {{ currency.iso_code }} {{ currency.symbol }}
@@ -72,30 +79,32 @@
 </style>
 
 <script>
-(function() {
-  var languageSelect = document.getElementById('LanguageSelector');
-  var currencySelect = document.getElementById('CurrencySelector');
-
-  function handleLanguageChange(select) {
-    var newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('language_code', select.value);
-    newUrl.searchParams.set('return_to', window.location.pathname);
-    window.location.href = newUrl.toString();
-  }
-
-  function handleCurrencyChange(select) {
-    var newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('currency', select.value);
-    window.location.href = newUrl.toString();
-  }
-
-  if (languageSelect) {
-    languageSelect.addEventListener('change', function() { handleLanguageChange(this); });
-  }
-
-  if (currencySelect) {
-    currencySelect.addEventListener('change', function() { handleCurrencyChange(this); });
-  }
-})();
+  (function() {
+    var currencySelect = document.getElementById('CurrencySelector');
+    {%- if settings.enable_currency_converter and settings.exchange_rate_api_key != blank -%}
+      // Converter mode: no page reload; just update selected currency for tooltips
+      if (currencySelect) {
+        currencySelect.addEventListener('change', function() {
+          if (window.LuxeCurrencyConverterInstance) {
+            window.LuxeCurrencyConverterInstance.selectedCurrency = this.value;
+          }
+          // Keep theme settings in sync
+          if (window.LuxeThemeSettings) {
+            window.LuxeThemeSettings.selected_currency = this.value;
+          }
+        });
+      }
+    {%- else -%}
+      // Native Shopify currency switcher: full page reload
+      function handleCurrencyChange(select) {
+        var newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('currency', select.value);
+        window.location.href = newUrl.toString();
+      }
+      if (currencySelect) {
+        currencySelect.addEventListener('change', function() { handleCurrencyChange(this); });
+      }
+    {%- endif -%}
+  })();
 </script>
 {%- endif -%}

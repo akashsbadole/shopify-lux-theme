@@ -12,7 +12,9 @@
     },
     "meta": {
       "page": "पृष्ठ {{ page }}"
-    }
+    },
+    "language_label": "भाषा",
+    "currency_label": "मुद्रा"
   },
   "products": {
     "product": {

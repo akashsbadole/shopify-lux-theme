@@ -1,0 +1,15 @@
+{%- comment -%}
+  Theme Settings for JavaScript
+  Exposes selected theme settings to global window.LuxeThemeSettings
+{%- endcomment -%}
+<script>
+  window.LuxeThemeSettings = {
+    enable_currency_converter: {{ settings.enable_currency_converter | default: false | json }},
+    exchange_rate_api_key: {{ settings.exchange_rate_api_key | default: '' | json }},
+    converter_base_currency: {{ settings.converter_base_currency | default: 'USD' | json }},
+    // Source currency: the currency prices are currently displayed in (Shopify's localization)
+    page_currency: {{ localization.currency.iso_code | default: 'USD' | json }},
+    // Target currency: the user's selected currency for conversion (mirrors dropdown)
+    selected_currency: {{ localization.currency.iso_code | default: 'USD' | json }}
+  };
+</script>

@@ -9,7 +9,9 @@
     "pagination": {
       "previous": "Previous",
       "next": "Next"
-    }
+    },
+    "language_label": "Language",
+    "currency_label": "Currency"
   },
   "products": {
     "product": {

@@ -12,7 +12,9 @@
     },
     "meta": {
       "page": "பக்கம் {{ page }}"
-    }
+    },
+    "language_label": "மொழி",
+    "currency_label": "நாணயம்"
   },
   "products": {
     "product": {

@@ -901,13 +901,42 @@
         "default": true,
         "info": "Requires multiple languages in store settings"
       },
-      {
-        "type": "text",
-        "id": "custom_languages",
-        "label": "Custom languages (optional)",
-        "info": "Format: code-name, code-name (e.g., ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French)",
-        "default": "ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French"
-      }
-    ]
+       {
+         "type": "text",
+         "id": "custom_languages",
+         "label": "Custom languages (optional)",
+         "info": "Format: code-name, code-name (e.g., ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French)",
+         "default": "ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French"
+       },
+       {
+         "type": "checkbox",
+         "id": "enable_currency_converter",
+         "label": "Enable currency converter (tooltip prices)",
+         "default": false,
+         "info": "Shows approximate converted prices in tooltips when hovering over prices. Uses ExchangeRate-API with 24hr caching."
+       },
+        {
+          "type": "text",
+          "id": "exchange_rate_api_key",
+          "label": "ExchangeRate-API key",
+          "info": "Get free API key at exchangerate-api.com (1,500 requests/month). Leave empty to disable converter."
+        },
+       {
+         "type": "select",
+         "id": "converter_base_currency",
+         "label": "Base currency for conversion",
+         "default": "USD",
+         "options": [
+           { "value": "USD", "label": "USD - US Dollar" },
+           { "value": "EUR", "label": "EUR - Euro" },
+           { "value": "GBP", "label": "GBP - British Pound" },
+           { "value": "INR", "label": "INR - Indian Rupee" },
+           { "value": "CNY", "label": "CNY - Chinese Yuan" },
+           { "value": "JPY", "label": "JPY - Japanese Yen" },
+           { "value": "AUD", "label": "AUD - Australian Dollar" },
+           { "value": "CAD", "label": "CAD - Canadian Dollar" }
+         ]
+       }
+     ]
   }
 ]

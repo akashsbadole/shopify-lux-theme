@@ -226,11 +226,16 @@
     <span class="luxe-toast__msg" id="luxeToastMsg"></span>
   </div>
 
-  <!-- LUXE Theme JS -->
-  <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
-  <script src="{{ 'luxe-marketing.js' | asset_url }}" defer="defer"></script>
+    <!-- Theme Settings JS -->
+    {%- render 'theme-settings' -%}
 
-  <!-- Scroll Animation Trigger -->
+    <!-- Currency Converter (optional tooltip) -->
+    <script src="{{ 'currency-converter.js' | asset_url }}" defer></script>
+
+    <!-- LUXE Theme JS -->
+    <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
+
+    <!-- Scroll Animation Trigger -->
   <script>
     (function() {
       var animated = false;

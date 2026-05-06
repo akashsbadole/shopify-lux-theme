@@ -12,7 +12,9 @@
     },
     "meta": {
       "page": "ಪುಟ {{ page }}"
-    }
+    },
+    "language_label": "ಭಾಷೆ",
+    "currency_label": "ಕರೆನ್ಸಿ"
   },
   "products": {
     "product": {

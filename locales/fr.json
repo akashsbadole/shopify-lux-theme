@@ -12,7 +12,9 @@
     },
     "meta": {
       "page": "Page {{ page }}"
-    }
+    },
+    "language_label": "Langue",
+    "currency_label": "Devise"
   },
   "products": {
     "product": {

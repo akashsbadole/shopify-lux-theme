@@ -103,15 +103,18 @@
       <button
         class="product-card__action-btn product-card__compare-btn"
         data-compare-id="{{ product.id }}"
+        data-product-title="{{ product.title | escape }}"
+        data-product-price="{{ product.price | money }}"
+        data-product-image="{{ product.featured_image | image_url: width: 200 }}"
+        data-product-url="{{ product.url }}"
         aria-label="Add to compare"
         title="Compare"
-        onclick="addToCompare({{ product.id }}, '{{ product.title | escape }}', '{{ product.price | money }}', '{{ product.featured_image | image_url: width: 200 }}', '{{ product.url }}')"
       >
         {%- render 'icon-arrow-right' -%}
       </button>
       {%- endif -%}
       <button
-        class="product-card__action-btn"
+        class="product-card__action-btn quick-view-btn"
         aria-label="Quick view"
         title="Quick view"
         data-quick-view="{{ product.url }}"

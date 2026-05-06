@@ -6,27 +6,28 @@
 (function() {
   'use strict';
 
-  // Wait for DOM
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('Luxe Theme Loaded');
+   // Wait for DOM
+   document.addEventListener('DOMContentLoaded', function() {
+     console.log('Luxe Theme Loaded');
 
-    // Initialize all modules
-    initMobileNav();
-    initCartDrawer();
-    initQuickView();
-    initQuantityButtons();
-    initNewsletterForm();
-    initSizeGuide();
-    initStickyATC();
-    initCollectionFilters();
-    initProductOptions();
-    initRecentlyViewed();
-    initWishlist();
-    initWishlistButtons();
-    initCompareDrawer();
-    initScrollToTop();
-    initPredictiveSearch();
-  });
+     // Initialize all modules
+     initMobileNav();
+     initCartDrawer();
+     initQuickView();
+     initQuantityButtons();
+     initNewsletterForm();
+     initSizeGuide();
+     initStickyATC();
+     initCollectionFilters();
+     initProductOptions();
+     initRecentlyViewed();
+     initWishlist();
+     initWishlistButtons();
+     initCompareDrawer();
+     initScrollToTop();
+     initPredictiveSearch();
+     initCurrencyConverter();
+   });
 
   // ─── MOBILE NAVIGATION ───
   function initMobileNav() {
@@ -207,38 +208,54 @@
   function updateCartContent(doc) {
     var drawerBody = document.getElementById('CartDrawerBody');
     var cartAjax = doc.getElementById('CartAjaxContent');
-    
-    if (drawerBody && cartAjax) {
-      // Replace cart items
-      var itemsList = cartAjax.querySelector('#CartItemsList');
-      var footer = cartAjax.querySelector('.cart-drawer__footer');
-      var empty = cartAjax.querySelector('#CartEmpty');
-      
-      // Clear and update body
-      drawerBody.innerHTML = '';
-      
-      if (itemsList) {
-        drawerBody.appendChild(itemsList);
-      }
-      
-      if (footer) {
-        drawerBody.appendChild(footer);
-      }
-      
-      if (empty) {
-        drawerBody.appendChild(empty);
-      }
+    if (!drawerBody || !cartAjax) return;
 
-      // Re-initialize quantity buttons
-      initCartQuantityButtons();
-      initCartRemoveButtons();
-      
-      // Update cart count in header
-      var itemCount = doc.querySelector('#CartItemCount');
-      if (itemCount) {
-        var headerCount = document.querySelector('.cart-toggle .cart-count');
-        if (headerCount) headerCount.textContent = itemCount.textContent;
+    var newItems = cartAjax.querySelector('#CartItemsList');
+    var newEmpty = cartAjax.querySelector('#CartEmpty');
+    var newFooter = cartAjax.querySelector('.cart-drawer__footer');
+
+    // --- Update body dynamic content ---
+    // Remove only old items list or empty state, keep static children
+    var currentItems = drawerBody.querySelector('#CartItemsList');
+    var currentEmpty = drawerBody.querySelector('#CartEmpty');
+    if (currentItems) currentItems.remove();
+    if (currentEmpty) currentEmpty.remove();
+
+    // Append the appropriate new element
+    if (newItems) {
+      drawerBody.appendChild(newItems);
+    } else if (newEmpty) {
+      drawerBody.appendChild(newEmpty);
+    }
+
+    // --- Update footer ---
+    var oldFooter = document.getElementById('CartFooter');
+    if (newFooter) {
+      if (oldFooter) {
+        // Replace inner content of existing footer
+        oldFooter.innerHTML = newFooter.innerHTML;
+      } else {
+        // Create new footer and insert after body
+        var footerEl = document.createElement('div');
+        footerEl.id = 'CartFooter';
+        footerEl.className = 'cart-drawer__footer';
+        footerEl.innerHTML = newFooter.innerHTML;
+        drawerBody.parentNode.insertBefore(footerEl, drawerBody.nextSibling);
       }
+    } else {
+      // Cart is empty → remove footer if present
+      if (oldFooter) oldFooter.remove();
+    }
+
+    // Reinitialize interactive elements
+    initCartQuantityButtons();
+    initCartRemoveButtons();
+
+    // Update cart count in header
+    var itemCountEl = doc.querySelector('#CartItemCount');
+    if (itemCountEl) {
+      var headerCount = document.querySelector('.cart-toggle .cart-count');
+      if (headerCount) headerCount.textContent = itemCountEl.textContent;
     }
   }
 
@@ -617,6 +634,45 @@
       compareClose.addEventListener('click', closeCompareDrawer);
     }
     
+    // Compare button click handlers
+    var compareBtns = document.querySelectorAll('[data-compare-id]');
+    compareBtns.forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var id = this.dataset.compareId;
+        var title = this.dataset.productTitle || '';
+        var price = this.dataset.productPrice || '';
+        var image = this.dataset.productImage || '';
+        var url = this.dataset.productUrl || '';
+        
+        var list = JSON.parse(localStorage.getItem('luxe_compare') || '[]');
+        var exists = list.some(function(p) { return p.id === id; });
+        
+        if (exists) {
+          list = list.filter(function(p) { return p.id !== id; });
+          this.classList.remove('added');
+        } else {
+          if (list.length >= 3) { alert('Maximum 3 products can be compared.'); return; }
+          list.push({ id: id, title: title, price: price, image: image, url: url });
+          this.classList.add('added');
+        }
+        localStorage.setItem('luxe_compare', JSON.stringify(list));
+        updateCompareCount();
+      });
+    });
+    
+    // Clear all compare
+    var compareClearBtn = document.getElementById('CompareClear');
+    if (compareClearBtn) {
+      compareClearBtn.addEventListener('click', function() {
+        localStorage.removeItem('luxe_compare');
+        document.querySelectorAll('.compare-add-btn, [data-compare-id]').forEach(function(b) {
+          b.classList.remove('added');
+        });
+        updateCompareCount();
+      });
+    }
+    
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && compareDrawer && compareDrawer.getAttribute('aria-hidden') === 'false') {
         closeCompareDrawer();
@@ -913,8 +969,28 @@
     html += '<a href="/search?q=' + encodeURIComponent(query) + '" class="predictive-search__view-all">View all results</a>';
     html += '</div>';
     
-    container.innerHTML = html;
-    container.hidden = false;
-  }
+     container.innerHTML = html;
+     container.hidden = false;
+   }
 
-})();
+   // ─── CURRENCY CONVERTER ───
+   function initCurrencyConverter() {
+     if (!window.LuxeCurrencyConverter || !window.LuxeThemeSettings) return;
+
+     if (!window.LuxeThemeSettings.enable_currency_converter || !window.LuxeThemeSettings.exchange_rate_api_key) {
+       console.log('[CurrencyConverter] Not enabled or no API key');
+       return;
+     }
+
+     var converter = new window.LuxeCurrencyConverter();
+     converter.init({
+       enabled: true,
+       apiKey: window.LuxeThemeSettings.exchange_rate_api_key,
+       baseCurrency: window.LuxeThemeSettings.converter_base_currency,
+       pageCurrency: window.LuxeThemeSettings.page_currency,
+       selectedCurrency: window.LuxeThemeSettings.selected_currency
+     });
+     window.LuxeCurrencyConverterInstance = converter;
+   }
+
+ })();

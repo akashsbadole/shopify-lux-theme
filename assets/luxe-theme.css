@@ -1676,6 +1676,32 @@ body.mobile-menu-open, body.wishlist-open { overflow: hidden; }
   pointer-events:none;
 }
 .luxe-toast.show { transform:translateX(-50%) translateY(0); }
+
+/* Currency Converter Tooltip */
+.currency-tooltip {
+  position: fixed;
+  background: var(--color-navy);
+  color: white;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 9999;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(4px);
+  box-shadow: var(--shadow-md);
+}
+.currency-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.currency-price-hover {
+  cursor: help;
+  position: relative;
+}
 .luxe-toast__icon { color:var(--color-purple); font-size:16px; }
 
 /* ─── FOOTER ─── */
