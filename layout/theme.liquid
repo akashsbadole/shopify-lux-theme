@@ -124,7 +124,7 @@
 
   <!-- LUXE Theme CSS -->
   {{ 'luxe-theme.css' | asset_url | stylesheet_tag }}
-  {{ 'luxe-theme.style.css' | asset_url | stylesheet_tag }}
+  {{ 'luxe-marketing.css' | asset_url | stylesheet_tag }}
 
   <!-- SEO: Schema.org Structured Data -->
   {%- render 'structured-data' -%}
@@ -225,7 +225,7 @@
 
   <!-- LUXE Theme JS -->
   <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
-  <script src="{{ 'luxe-theme.style.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'luxe-marketing.js' | asset_url }}" defer="defer"></script>
 
   <!-- Tab Title - Shows custom message when user leaves tab -->
   <script>
