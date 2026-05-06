@@ -37,7 +37,7 @@
   endif
 -%}
 
-<div class="product-card" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}" data-product-url="{{ product.url }}" data-product-title="{{ product.title | escape }}" data-product-price="{{ product.price }}" data-product-image="{{ product.featured_image | image_url: width: 400 }}">
+<div class="product-card animate-fade-in-up" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}" data-product-url="{{ product.url }}" data-product-title="{{ product.title | escape }}" data-product-price="{{ product.price }}" data-product-image="{{ product.featured_image | image_url: width: 400 }}">
 
   <!-- Image -->
   <div class="product-card__media">
@@ -51,7 +51,7 @@
             alt: featured_image.alt | default: product.title,
             width: 600,
             height: 600,
-            loading: lazy_load | default: 'lazy'
+            loading: 'lazy'
         }}
 
         {%- if product.media.size > 1 -%}
@@ -188,6 +188,13 @@
 
       {%- unless sold_out -%}
         {%- if product.variants.size == 1 -%}
+          {%- if settings.product_show_quantity -%}
+          <div class="product-card__qty">
+            <button type="button" class="product-card__qty-btn product-card__qty-minus" aria-label="Decrease quantity">−</button>
+            <input type="number" class="product-card__qty-input" value="1" min="1" max="10" readonly>
+            <button type="button" class="product-card__qty-btn product-card__qty-plus" aria-label="Increase quantity">+</button>
+          </div>
+          {%- endif -%}
           <button
             class="btn btn--add-to-cart"
             data-variant-id="{{ product.variants.first.id }}"

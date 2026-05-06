@@ -1,0 +1,155 @@
+{%- comment -%}
+  Cart Upsell Section
+  Shows upsell products in cart based on cart items
+{%- endcomment -%}
+
+{%- if section.settings.upsell_collection != blank -%}
+{%- assign upsell_products = section.settings.upsell_collection.products | limit: section.settings.upsell_limit -%}
+
+{%- if upsell_products.size > 0 -%}
+<div class="cart-upsell" id="CartUpsell">
+  <div class="cart-upsell__header">
+    <h3 class="cart-upsell__title">{{ section.settings.upsell_title | default: 'You might also like' }}</h3>
+    <p class="cart-upsell__subtitle">{{ section.settings.upsell_subtitle | default: 'Complete your order with these great deals' }}</p>
+  </div>
+  
+  <div class="cart-upsell__products">
+    {%- for product in upsell_products -%}
+      {%- assign already_in_cart = false -%}
+      {%- for item in cart.items -%}
+        {%- if item.product.id == product.id -%}
+          {%- assign already_in_cart = true -%}
+        {%- endif -%}
+      {%- endfor -%}
+      
+      {%- unless already_in_cart -%}
+        <div class="cart-upsell__product">
+          <a href="{{ product.url }}" class="cart-upsell__img-wrap">
+            <img 
+              src="{{ product.featured_image | image_url: width: 120 }}" 
+              alt="{{ product.title }}"
+              loading="lazy"
+              width="120"
+              height="120"
+            >
+          </a>
+          <div class="cart-upsell__info">
+            <a href="{{ product.url }}" class="cart-upsell__name">{{ product.title }}</a>
+            <span class="cart-upsell__price">{{ product.price | money }}</span>
+            <button 
+              type="button" 
+              class="cart-upsell__btn" 
+              data-variant-id="{{ product.variants.first.id }}"
+              data-product-title="{{ product.title | escape }}"
+            >
+              {{ section.settings.upsell_btn_text | default: 'Add to Cart' }}
+            </button>
+          </div>
+        </div>
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+<style>
+.cart-upsell { padding: 20px; background: #f9f9f9; border-radius: 8px; margin: 20px 0; }
+.cart-upsell__header { text-align: center; margin-bottom: 16px; }
+.cart-upsell__title { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+.cart-upsell__subtitle { font-size: 13px; color: #666; margin: 0; }
+.cart-upsell__products { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.cart-upsell__product { flex-shrink: 0; width: 140px; background: #fff; border-radius: 8px; padding: 12px; text-align: center; }
+.cart-upsell__img-wrap { display: block; margin-bottom: 8px; }
+.cart-upsell__img-wrap img { width: 100%; height: auto; border-radius: 4px; }
+.cart-upsell__name { display: block; font-size: 12px; color: var(--color-navy); text-decoration: none; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cart-upsell__price { display: block; font-size: 14px; font-weight: 600; color: var(--color-purple); margin-bottom: 8px; }
+.cart-upsell__btn { width: 100%; padding: 8px; background: var(--color-purple); color: #fff; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.cart-upsell__btn:hover { opacity: 0.9; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.cart-upsell__btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var variantId = this.dataset.variantId;
+      var productTitle = this.dataset.productTitle;
+      
+      fetch(window.Shopify.routes.root + 'cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        if (data.items) {
+          // Update cart drawer
+          if (window.LuxeCart && window.LuxeCart.updateCart) {
+            window.LuxeCart.updateCart();
+          }
+          // Show toast
+          if (window.LuxeCart && window.LuxeCart.showToast) {
+            window.LuxeCart.showToast(productTitle + ' added to cart!');
+          }
+          // Update badge
+          var badge = document.getElementById('CartBadge');
+          if (badge) {
+            var count = parseInt(badge.textContent || 0) + 1;
+            badge.textContent = count;
+            badge.classList.remove('hidden');
+          }
+        }
+      })
+      .catch(function(error) {
+        console.error('Error adding to cart:', error);
+      });
+    });
+  });
+});
+</script>
+{%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart Upsell",
+  "class": "section-cart-upsell",
+  "settings": [
+    {
+      "type": "text",
+      "id": "upsell_title",
+      "label": "Section title",
+      "default": "You might also like"
+    },
+    {
+      "type": "text",
+      "id": "upsell_subtitle",
+      "label": "Subtitle",
+      "default": "Complete your order with these great deals"
+    },
+    {
+      "type": "collection",
+      "id": "upsell_collection",
+      "label": "Upsell products collection"
+    },
+    {
+      "type": "range",
+      "id": "upsell_limit",
+      "label": "Number of products to show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "upsell_btn_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Upsell"
+    }
+  ]
+}
+{% endschema %}

@@ -1,5 +1,5 @@
-<div class="testimonials-section section-{{ section.id }}" id="TestimonialsSection">
-  <div class="testimonials-section__inner">
+<div class="testimonials-section section-{{ section.id }} animate-on-scroll" id="TestimonialsSection">
+  <div class="testimonials-section__inner animate-fade-in-up">
     {%- if section.settings.title != blank -%}
       <h2 class="testimonials-section__title">{{ section.settings.title }}</h2>
     {%- endif -%}
@@ -10,7 +10,7 @@
         {%- assign author_key = 'author_' | append: i -%}
         {%- assign role_key = 'role_' | append: i -%}
         {%- if section.settings[quote_key] != blank -%}
-          <div class="testimonial-card">
+          <div class="testimonial-card animate-fade-in-up delay-{{ forloop.index }}">
             <div class="testimonial-card__stars">★★★★★</div>
             <blockquote class="testimonial-card__quote">"{{ section.settings[quote_key] }}"</blockquote>
             <div class="testimonial-card__author">

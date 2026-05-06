@@ -135,6 +135,14 @@
         </div>
       {%- endif -%}
 
+      <!-- Pre-order Badge -->
+      {%- if section.settings.show_preorder_badge -%}
+        <div class="main-product__preorder">
+          <span class="main-product__preorder-badge">📦 Pre-order</span>
+          <span class="main-product__preorder-text">{{ section.settings.preorder_message }} {{ section.settings.preorder_date }}</span>
+        </div>
+      {%- endif -%}
+
       <!-- India: EMI Calculator -->
       {%- if section.settings.enable_emi != false -%}
         {%- render 'emi-calculator', price: current_variant.price -%}
@@ -372,7 +380,7 @@
 
       <!-- Frequently Bought Together -->
       {%- if section.settings.show_fbt -%}
-        {%- section 'bundle-fbt' -%}
+        {%- render 'bundle-fbt', product: product -%}
       {%- endif -%}
 
     </div>
@@ -385,10 +393,10 @@
 
 <style>
   .main-product__atc-wrap { display: flex; gap: 12px; align-items: stretch; margin: 24px 0; }
-  .btn--atc { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: #1a1a2e; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-  .btn--atc:hover { background: #2d2d4a; transform: translateY(-2px); }
-  .btn--buy-now { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-  .btn--buy-now:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
+   .btn--atc { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: var(--color-blue); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+   .btn--atc:hover { background: #0055AA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,59,115,0.3); }
+   .btn--buy-now { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: var(--color-blue); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+   .btn--buy-now:hover { background: #0055AA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,59,115,0.3); }
   .btn--wishlist { padding: 16px; background: #f5f5f5; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; color: #666; }
   .btn--wishlist:hover { background: #ffe5e5; color: #e74c3c; }
   @media (max-width: 480px) {
@@ -405,6 +413,9 @@
   .main-product__share-btn--wa:hover { background: #25D366; color: #fff; border-color: #25D366; }
   .main-product__share-btn--copy:hover { background: var(--color-purple); color: #fff; border-color: var(--color-purple); }
   .main-product__share-btn--copy.copied { background: #28a745; color: #fff; border-color: #28a745; }
+  .main-product__preorder { margin: 12px 0; padding: 12px; background: #fef3cd; border: 1px solid #ffc107; border-radius: 8px; }
+  .main-product__preorder-badge { display: inline-block; padding: 4px 10px; background: #ffc107; color: #000; font-size: 12px; font-weight: 600; border-radius: 4px; margin-right: 8px; }
+  .main-product__preorder-text { font-size: 14px; color: #856404; }
 </style>
 
 <script>
@@ -650,6 +661,28 @@
       "id": "show_inventory",
       "label": "Show inventory status",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Pre-order Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_preorder_badge",
+      "label": "Show pre-order badge",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "preorder_message",
+      "label": "Pre-order message",
+      "default": "Pre-order now! Ships by"
+    },
+    {
+      "type": "text",
+      "id": "preorder_date",
+      "label": "Estimated shipping date",
+      "default": "Dec 15, 2024"
     },
     {
       "type": "checkbox",

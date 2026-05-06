@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "main_product": {
+      "type": "main-product",
+      "settings": {
+        "show_vendor": true,
+        "show_rating": true,
+        "enable_zoom": true,
+        "show_share": true,
+        "show_preorder_badge": true,
+        "preorder_message": "Pre-order now! Ships by",
+        "preorder_date": "Dec 15, 2024"
+      }
+    },
+    "product_recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "title": "You May Also Like",
+        "products_to_show": 4
+      }
+    },
+    "bundle_fbt": {
+      "type": "bundle-fbt",
+      "settings": {
+        "title": "Frequently Bought Together",
+        "bundle_discount": 10,
+        "bundle_note": "Items added separately to cart"
+      }
+    },
+    "product_review": {
+      "type": "product-reviews-section",
+      "settings": {
+        "title": "Customer Reviews"
+      }
+    }
+  },
+  "order": [
+    "main_product",
+    "bundle_fbt",
+    "product_recommendations",
+    "product_review"
+  ]
+}

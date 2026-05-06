@@ -1,0 +1,151 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "துணை தேட...",
+      "submit": "தேடு",
+      "no_results": "எதுவும் இல்லை",
+      "results_with_count_and_term": "{{ terms }}-க்கு {{ count }} முடிவுகள்"
+    },
+    "pagination": {
+      "previous": "முன்",
+      "next": "பின்"
+    },
+    "meta": {
+      "page": "பக்கம் {{ page }}"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "வண்டியில் சேர்",
+      "sold_out": "விற்கப்பட்டது",
+      "unavailable": "கிடைக்கவில்லை",
+      "select_options": "விருப்பங்களைத் தேர்ந்தெடுக்கவும்",
+      "quantity": "அளவு",
+      "vendor": "விற்பத்னர்",
+      "description": "விளக்கம்",
+      "share": "பகிர்",
+      "new": "புதிய",
+      "sale": "விற்பனை",
+      "save": "{{ percentage }}% மிச்சம்",
+      "pre_order": "முன்பதிவு",
+      "reviews": "மதிப்புரைகள்"
+    },
+    "product_card": {
+      "add_to_wishlist": "விருப்பப் பட்டியலில் சேர்",
+      "quick_view": "விரைவு பார்வை"
+    },
+    "tabs": {
+      "description": "விளக்கம்",
+      "details": "விவரங்கள்",
+      "shipping": "அனுப்புதல்",
+      "returns": "திருப்பி அனுப்புதல்"
+    }
+  },
+  "cart": {
+    "title": "என் வண்டி",
+    "empty": "வண்டி காலியாக உள்ளது",
+    "checkout": "செக் அவுட்",
+    "subtotal": "துணை மொத்தம்",
+    "taxes": "வரி",
+    "shipping": "அனுப்புதல்",
+    "total": "மொத்தம்",
+    "free_shipping": " இலவை",
+    "calculated_at_checkout": "செக் அவுட் வரை கணக்கிடப்படும்",
+    "update": "வண்டியைப் புதுப்பி",
+    "continue_shopping": "ஷாப்பிங் தொடர்க",
+    "remove": "நீக்கு",
+    "items": "{{ count }} பொருட்கள்"
+  },
+  "collections": {
+    "title": "தொகுப்புகள்",
+    "all": "அனைத்து துணை",
+    "empty": "இந்த தொகுப்பில் துணைகள் இல்லை",
+    "filtering": {
+      "filter_and_sort": "வடிகட்டி & வரிசை",
+      "apply": "பயன்படுத்து",
+      "clear_all": "அனைத்தையும் அழி",
+      "sort_by": "வரிசை",
+      "featured": "சிறப்பு",
+      "best_selling": "அதிகம் விற்பன",
+      "az": "அ - ஜ",
+      "za": "ஜ - அ",
+      "price_low_high": "விலை: குறைவு - அதிகம்",
+      "price_high_low": "விலை: அதிகம் - குறைவு",
+      "newest": "புதியவை"
+    },
+    "showing_count": "{{ count }} துணைகள் காட்டப்படுகின்றன"
+  },
+  "customer": {
+    "login": {
+      "title": "உள்நுழை",
+      "email": "மின்னஞ்சல்",
+      "password": "கடவுச்சொல்",
+      "submit": "உள்நுழை",
+      "forgot_password": "கடவுச்சொல் மறந்துவிட்டதா?",
+      "no_account": "கணக்கு இல்லையா?",
+      "create_account": "ஒன்று உருவாக்கு"
+    },
+    "register": {
+      "title": "கணக்கு உருவாக்கு",
+      "first_name": "முதல் பெயர்",
+      "last_name": "கடைசி பெயர்",
+      "email": "மின்னஞ்சல்",
+      "password": "கடவுச்சொல்",
+      "submit": "கணக்கு உருவாக்கு",
+      "have_account": "ஏready கணக்கு உள்ளதா?",
+      "sign_in": "உள்நுழை"
+    },
+    "account": {
+      "title": "என் கணக்கு",
+      "sign_out": "வெளியேறு",
+      "order_history": "ஆர்டர் வரலாறு",
+      "no_orders": "இன்னும் ஆர்டர்கள் இல்லை.",
+      "account_details": "கணக்கு விவரங்கள்",
+      "manage_addresses": "முகவரிகளை நிர்வகி"
+    },
+    "orders": {
+      "title": "ஆர்டர்கள்",
+      "order_number": "ஆர்டர் #{{ number }}",
+      "date": "தேதி",
+      "payment_status": "பணம் செலுத்தல் நிலை",
+      "fulfillment_status": "நிறைவு நிலை",
+      "total": "மொத்தம்"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "பெயர்",
+      "email": "மின்னஞ்சல்",
+      "message": "செய்தி",
+      "submit": "அனுப்பு",
+      "success": "நன்றி! உங்கள் செய்தி வந்தது. விரைவில் தொடர்பு கொள்வோம்!"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "உள்ளடக்கத்திற்குச் செல்",
+    "close": "மூடு",
+    "open_menu": "மெனு திற",
+    "close_menu": "மெனு மூடு",
+    "open_cart": "வண்டி திற",
+    "close_cart": "வண்டி மூடு",
+    "previous": "முன்",
+    "next": "பின்"
+  },
+  "newsletter": {
+    "label": "மின்னஞ்சல்",
+    "button": "சநிதையில் சேர்க",
+    "success": "நன்றி! உங்கள் சநிதை உறுதிப்படுத்தப்பட்டது.",
+    "placeholder": "உங்கள் மின்னஞ்சலை உள்ளிடுக"
+  },
+  "wishlist": {
+    "title": "என் விருப்பப் பட்டியல்",
+    "empty": "விருப்பப் பட்டியல் காலியாக உள்ளது",
+    "add": "விருப்பப் பட்டியலில் சேர்",
+    "remove": "நீக்கு"
+  },
+  "comparison": {
+    "title": "ஒப்பிடுதல்",
+    "empty": "ஒப்பிடத் துணைகள் இல்லை",
+    "add": "ஒப்பிடலில் சேர்"
+  }
+}

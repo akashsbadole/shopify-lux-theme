@@ -1,0 +1,151 @@
+{
+  "general": {
+    "search": {
+      "placeholder": "Rechercher des produits...",
+      "submit": "Rechercher",
+      "no_results": "Aucun résultat pour",
+      "results_with_count_and_term": "{{ count }} résultats pour \"{{ terms }}\""
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "meta": {
+      "page": "Page {{ page }}"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au panier",
+      "sold_out": "Épuisé",
+      "unavailable": "Indisponible",
+      "select_options": "Sélectionner les options",
+      "quantity": "Quantité",
+      "vendor": "Vendeur",
+      "description": "Description",
+      "share": "Partager",
+      "new": "Nouveau",
+      "sale": "Solde",
+      "save": "Économisez {{ percentage }}%",
+      "pre_order": "Pré-commande",
+      "reviews": "Avis"
+    },
+    "product_card": {
+      "add_to_wishlist": "Ajouter aux favoris",
+      "quick_view": "Aperçu rapide"
+    },
+    "tabs": {
+      "description": "Description",
+      "details": "Détails",
+      "shipping": "Livraison",
+      "returns": "Retours"
+    }
+  },
+  "cart": {
+    "title": "Mon panier",
+    "empty": "Votre panier est vide",
+    "checkout": "Passer à la caisse",
+    "subtotal": "Sous-total",
+    "taxes": "Taxes",
+    "shipping": "Livraison",
+    "total": "Total",
+    "free_shipping": "GRATUIT",
+    "calculated_at_checkout": "Calculé à la caisse",
+    "update": "Mettre à jour le panier",
+    "continue_shopping": "Continuer vos achats",
+    "remove": "Supprimer",
+    "items": "{{ count }} articles"
+  },
+  "collections": {
+    "title": "Collections",
+    "all": "Tous les produits",
+    "empty": "Aucun produit dans cette collection",
+    "filtering": {
+      "filter_and_sort": "Filtrer et trier",
+      "apply": "Appliquer",
+      "clear_all": "Tout effacer",
+      "sort_by": "Trier par",
+      "featured": "En vedette",
+      "best_selling": "Meilleures ventes",
+      "az": "A–Z",
+      "za": "Z–A",
+      "price_low_high": "Prix: croissant",
+      "price_high_low": "Prix: décroissant",
+      "newest": "Plus récents"
+    },
+    "showing_count": "Affichage de {{ count }} produits"
+  },
+  "customer": {
+    "login": {
+      "title": "Se connecter",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "forgot_password": "Mot de passe oublié?",
+      "no_account": "Pas de compte?",
+      "create_account": "Créer un compte"
+    },
+    "register": {
+      "title": "Créer un compte",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "submit": "Créer un compte",
+      "have_account": "Déjà un compte?",
+      "sign_in": "Se connecter"
+    },
+    "account": {
+      "title": "Mon compte",
+      "sign_out": "Se déconnecter",
+      "order_history": "Historique des commandes",
+      "no_orders": "Vous n'avez pas encore passé de commandes.",
+      "account_details": "Détails du compte",
+      "manage_addresses": "Gérer les adresses"
+    },
+    "orders": {
+      "title": "Commandes",
+      "order_number": "Commande #{{ number }}",
+      "date": "Date",
+      "payment_status": "Statut du paiement",
+      "fulfillment_status": "Statut de livraison",
+      "total": "Total"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "Nom",
+      "email": "E-mail",
+      "message": "Message",
+      "submit": "Envoyer",
+      "success": "Merci! Nous vous contacterons bientôt."
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Aller au contenu",
+    "close": "Fermer",
+    "open_menu": "Ouvrir le menu",
+    "close_menu": "Fermer le menu",
+    "open_cart": "Ouvrir le panier",
+    "close_cart": "Fermer le panier",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "newsletter": {
+    "label": "E-mail",
+    "button": "S'abonner",
+    "success": "Merci! Votre abonnement est confirmé.",
+    "placeholder": "Entrez votre e-mail"
+  },
+  "wishlist": {
+    "title": "Ma liste de souhaits",
+    "empty": "Votre liste de souhaits est vide",
+    "add": "Ajouter aux favoris",
+    "remove": "Supprimer"
+  },
+  "comparison": {
+    "title": "Comparer",
+    "empty": "Aucun produit à comparer",
+    "add": "Ajouter à la comparaison"
+  }
+}

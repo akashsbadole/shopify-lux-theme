@@ -336,10 +336,17 @@
         "id": "product_show_compare",
         "label": "Show compare button",
         "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_quantity",
+        "label": "Show quantity selector on grid",
+        "default": false,
+        "info": "Show quantity +/- buttons on product cards in collection grid"
       }
     ]
   },
-{
+  {
         "name": "Product Comparison",
         "settings": [
           {
@@ -542,6 +549,47 @@
         "type": "image_picker",
         "id": "favicon",
         "label": "Favicon image"
+      }
+    ]
+  },
+  {
+    "name": "GDPR Cookie Consent",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_cookie_banner",
+        "label": "Enable cookie consent banner",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cookie_banner_title",
+        "label": "Banner title",
+        "default": "We use cookies"
+      },
+      {
+        "type": "textarea",
+        "id": "cookie_banner_message",
+        "label": "Banner message",
+        "default": "We use cookies to improve your experience and analyze site traffic. By clicking 'Accept All', you consent to our use of cookies."
+      },
+      {
+        "type": "text",
+        "id": "cookie_accept_btn",
+        "label": "Accept button text",
+        "default": "Accept All"
+      },
+      {
+        "type": "text",
+        "id": "cookie_reject_btn",
+        "label": "Reject button text",
+        "default": "Reject All"
+      },
+      {
+        "type": "text",
+        "id": "cookie_policy_link",
+        "label": "Policy page URL",
+        "info": "Link to your privacy policy page"
       }
     ]
   },
@@ -833,6 +881,32 @@
         "id": "gst_sublabel",
         "label": "GST toggle sublabel",
         "default": "Add GSTIN for business purchase"
+      }
+    ]
+  },
+  {
+    "name": "Currency & Language",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_currency_selector",
+        "label": "Show currency selector in header",
+        "default": true,
+        "info": "Requires Shopify Markets to be configured"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_language_selector",
+        "label": "Show language selector in header",
+        "default": true,
+        "info": "Requires multiple languages in store settings"
+      },
+      {
+        "type": "text",
+        "id": "custom_languages",
+        "label": "Custom languages (optional)",
+        "info": "Format: code-name, code-name (e.g., ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French)",
+        "default": "ta-Tamil, hi-Hindi, mr-Marathi, kn-Kannada, es-Spanish, fr-French"
       }
     ]
   }

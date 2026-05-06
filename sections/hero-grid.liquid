@@ -1,15 +1,15 @@
-<div class="hero-grid section-{{ section.id }}">
+<div class="hero-grid section-{{ section.id }} animate-fade-in">
   <div class="hero-grid__inner">
 
     {%- for block in section.blocks -%}
       {%- liquid
-        assign block_class = 'hero-grid__tile'
+        assign block_class = 'hero-grid__tile animate-fade-in-up'
         if forloop.first
           assign block_class = block_class | append: ' hero-grid__tile--large'
         endif
       -%}
 
-      <div class="{{ block_class }}" {{ block.shopify_attributes }}>
+      <div class="{{ block_class }} delay-{{ forloop.index }}" {{ block.shopify_attributes }}>
         <a
           href="{{ block.settings.link | default: '#' }}"
           class="hero-grid__tile-link"
