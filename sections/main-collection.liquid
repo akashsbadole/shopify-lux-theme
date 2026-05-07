@@ -31,6 +31,8 @@
               | image_tag:
                 class: 'collection-header__img',
                 alt: collection.title,
+                widths: '600, 800, 1000, 1200, 1400, 1600, 2000',
+                sizes: '100vw',
                 fetchpriority: 'high'
             }}
             <div class="collection-header__overlay"></div>
@@ -95,6 +97,15 @@
       {%- endif -%}
     </div>
 
+    <!-- App Blocks (Top) -->
+    <div class="collection-app-blocks-top">
+      {%- for block in section.blocks -%}
+        {%- if block.type == '@app' and block.settings.position == 'top' -%}
+          {%- render block -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
     <!-- Filter panel (inline) -->
     {%- if section.settings.show_filter and collection.filters.size > 0 -%}
       <div class="filter-panel" id="FilterPanel" hidden>
@@ -146,6 +157,15 @@
       </div>
     {%- endif -%}
 
+    <!-- App Blocks (Above Grid) -->
+    <div class="collection-app-blocks-above-grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == '@app' and block.settings.position == 'above_grid' -%}
+          {%- render block -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
     <!-- Product grid -->
     <div class="product-grid product-grid--{{ products_per_row }}-col" id="CollectionGrid">
       {%- paginate collection.products by section.settings.products_per_page -%}
@@ -159,6 +179,15 @@
           </div>
         {%- endif -%}
       {%- endpaginate -%}
+    </div>
+
+    <!-- App Blocks (Bottom) -->
+    <div class="collection-app-blocks-bottom">
+      {%- for block in section.blocks -%}
+        {%- if block.type == '@app' and block.settings.position == 'bottom' -%}
+          {%- render block -%}
+        {%- endif -%}
+      {%- endfor -%}
     </div>
 
     <!-- Load More / Infinite Scroll -->
@@ -391,6 +420,24 @@
         { "value": "infinite", "label": "Infinite Scroll" }
       ],
       "default": "standard"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app",
+      "settings": [
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Position",
+          "options": [
+            { "value": "top", "label": "Top" },
+            { "value": "above_grid", "label": "Above Grid" },
+            { "value": "bottom", "label": "Bottom" }
+          ],
+          "default": "above_grid"
+        }
+      ]
     }
   ]
 }

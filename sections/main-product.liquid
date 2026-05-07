@@ -41,9 +41,9 @@
               {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-gallery__model' }}
             {%- else -%}
               {%- if forloop.first -%}
-              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, loading: 'eager', fetchpriority: 'high' }}
+              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, widths: '400, 600, 800, 1000, 1200, 1600', sizes: '(max-width: 768px) 100vw, 50vw', loading: 'eager', fetchpriority: 'high' }}
             {%- else -%}
-              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, loading: 'lazy' }}
+              {{ media | image_url: width: 1000 | image_tag: class: 'product-gallery__img', alt: media.alt | default: product.title, widths: '400, 600, 800, 1000, 1200, 1600', sizes: '(max-width: 768px) 100vw, 50vw', loading: 'lazy' }}
             {%- endif -%}
             {%- endif -%}
           </div>
@@ -238,7 +238,11 @@
           >
             <span class="btn__icon">+</span>
             <span id="AddToCartText">
-              {%- if current_variant.available -%}Add to Cart{%- else -%}Sold Out{%- endif -%}
+              {%- if current_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
             </span>
           </button>
 
@@ -382,6 +386,16 @@
       {%- if section.settings.show_fbt -%}
         {%- render 'bundle-fbt', product: product -%}
       {%- endif -%}
+
+      <!-- App Blocks -->
+      <div class="product-app-blocks">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {%- render block -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
 
     </div>
   </div>
@@ -617,7 +631,7 @@
         btn.disabled = !match.available;
         btn.classList.toggle('btn--disabled', !match.available);
       }
-      if (btnText) btnText.textContent = match.available ? 'Add to Cart' : 'Sold Out';
+      if (btnText) btnText.textContent = match.available ? {{ 'products.product.add_to_cart' | t | json }} : {{ 'products.product.sold_out' | t | json }};
     }
   }
 
@@ -711,6 +725,11 @@
       "id": "enable_buy_now",
       "label": "Show Buy Now button",
       "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
     }
   ]
 }

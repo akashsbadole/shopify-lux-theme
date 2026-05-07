@@ -152,6 +152,15 @@
 
           <!-- Summary -->
           <div class="main-cart__summary">
+            <!-- App Blocks (Above Summary) -->
+            <div class="cart-app-blocks">
+              {%- for block in section.blocks -%}
+                {%- case block.type -%}
+                  {%- when '@app' -%}
+                    {%- render block -%}
+                {%- endcase -%}
+              {%- endfor -%}
+            </div>
             <h2 class="main-cart__summary-title">Order Summary</h2>
             <div class="cart-totals">
               <div class="cart-totals__row"><span>Subtotal</span><span>{{ cart.items_subtotal_price | money }}</span></div>
@@ -249,6 +258,11 @@
       "id": "upsell_title",
       "label": "Upsell section title",
       "default": "You May Also Like"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
     }
   ]
 }

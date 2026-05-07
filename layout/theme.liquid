@@ -10,8 +10,31 @@
   <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
   <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
 
-  <!-- Performance: Preload critical CSS -->
-  {{ 'google-fonts.css' | asset_url | stylesheet_tag: preload: true }}
+  <!-- Performance: Shopify Font Picker -->
+  {%- liquid
+    assign font_heading = settings.font_heading
+    assign font_body = settings.font_body
+  -%}
+
+  <style>
+    {{ font_heading | font_face: display: 'swap' }}
+    {{ font_body | font_face: display: 'swap' }}
+
+    {%- assign font_heading_bold = font_heading | font_modify: 'weight', 'bold' -%}
+    {%- if font_heading_bold -%}
+      {{ font_heading_bold | font_face: display: 'swap' }}
+    {%- endif -%}
+
+    {%- assign font_body_bold = font_body | font_modify: 'weight', 'bold' -%}
+    {%- if font_body_bold -%}
+      {{ font_body_bold | font_face: display: 'swap' }}
+    {%- endif -%}
+
+    {%- assign font_body_italic = font_body | font_modify: 'style', 'italic' -%}
+    {%- if font_body_italic -%}
+      {{ font_body_italic | font_face: display: 'swap' }}
+    {%- endif -%}
+  </style>
 
   <!-- Security: Content Security Policy (basic - Shopify handles most) -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -114,16 +137,35 @@
       --color-muted: {{ settings.color_muted }};
       --color-border: {{ settings.color_border }};
       --font-size-base: {{ settings.font_size_base }}px;
+      --font-heading-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+      --font-heading-style: {{ font_heading.style }};
+      --font-heading-weight: {{ font_heading.weight }};
+      --font-body-family: {{ font_body.family }}, {{ font_body.fallback_families }};
+      --font-body-style: {{ font_body.style }};
+      --font-body-weight: {{ font_body.weight }};
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--color-bg); color: var(--color-navy); }
+    body {
+      font-family: var(--font-body-family);
+      font-style: var(--font-body-style);
+      font-weight: var(--font-body-weight);
+      font-size: var(--font-size-base);
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+    h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+      font-family: var(--font-heading-family);
+      font-style: var(--font-heading-style);
+      font-weight: var(--font-heading-weight);
+    }
     .site-header { position: relative; }
     .luxe-main { min-height: 60vh; }
   </style>
 
   <!-- LUXE Theme CSS -->
   {{ 'luxe-theme.css' | asset_url | stylesheet_tag }}
+  {{ 'luxe-theme.style.css' | asset_url | stylesheet_tag }}
   {{ 'luxe-marketing.css' | asset_url | stylesheet_tag }}
 
   <!-- SEO: Schema.org Structured Data -->

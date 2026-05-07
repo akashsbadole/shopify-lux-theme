@@ -49,8 +49,8 @@
           | image_tag:
             class: 'product-card__img',
             alt: featured_image.alt | default: product.title,
-            width: 600,
-            height: 600,
+            widths: '200, 400, 600, 800, 1000',
+            sizes: '(max-width: 480px) 100vw, (max-width: 768px) 50vw, 25vw',
             loading: 'lazy'
         }}
 
@@ -61,8 +61,8 @@
             | image_tag:
               class: 'product-card__img product-card__img--hover',
               alt: product.title,
-              width: 600,
-              height: 600,
+              widths: '200, 400, 600, 800, 1000',
+              sizes: '(max-width: 480px) 100vw, (max-width: 768px) 50vw, 25vw',
               loading: 'lazy'
           }}
         {%- endif -%}
