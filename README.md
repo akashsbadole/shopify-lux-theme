@@ -26,7 +26,6 @@ A premium Shopify theme with modern design, featuring product customization, qui
 - **Liquid Templating**: Full Liquid implementation with dynamic data pulling
 - **Sections & Blocks**: Modular, reusable components
 - **App Compatibility**: Judge.me, Loox, Yotpo reviews integration
-- **Multi-language Ready**: Translation system with locale files
 - **Currency Support**: Automatic Shopify currency formatting
 - **Currency Converter (Tooltip)**: Hover over prices to see approximate conversions in selected currency using ExchangeRate-API with 24hr caching
 
@@ -140,7 +139,6 @@ luxe-theme/
 ├── assets/           # Compiled CSS & JS
 ├── config/           # Shopify settings
 ├── layout/           # theme.liquid
-├── locales/          # Translation files
 ├── sections/         # Theme sections
 ├── snippets/         # Reusable code snippets
 ├── templates/        # Page templates

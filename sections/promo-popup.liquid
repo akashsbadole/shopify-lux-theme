@@ -1,0 +1,203 @@
+{%- comment -%}
+  Promotional Popup
+  Displays promotional offers triggered by exit intent, scroll, or time delay.
+  Configurable via theme settings.
+{%- endcomment -%}
+
+{%- assign enabled = settings.promo_enable_popups | default: true -%}
+{%- assign popup_trigger = settings.promo_popup_trigger | default: 'exit_intent' -%}
+
+{%- if enabled -%}
+
+{%- assign popup_id = 'PromoPopup' -%}
+{%- assign popup_class = 'promo-popup' -%}
+
+<div class="{{ popup_class }}" id="{{ popup_id }}" role="dialog" aria-modal="true" aria-labelledby="PromoPopupTitle" style="display:none;">
+  <div class="{{ popup_class }}__overlay"></div>
+  
+  <div class="{{ popup_class }}__container">
+    <button class="{{ popup_class }}__close" id="PromoPopupClose" aria-label="Close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <div class="{{ popup_class }}__content">
+      
+      <!-- Headline -->
+      <h2 id="PromoPopupTitle" class="{{ popup_class }}__title">
+        {{ settings.promo_popup_headline | default: '🎁 Special Offer Inside!' }}
+      </h2>
+
+      <!-- Subhead -->
+      <p class="{{ popup_class }}__subhead">
+        {{ settings.promo_popup_subhead | default: 'Get 20% off your first order when you subscribe to our newsletter.' }}
+      </p>
+
+      <!-- Offer Graphic -->
+      <div class="{{ popup_class }}__graphic">
+{%- if settings.promo_popup_image != blank -%}
+           {{ settings.promo_popup_image | image_url: width: 300 | image_tag: class: 'popup_popup__img', alt: 'Promotional offer' }}
+         {%- else -%}
+          <div class="{{ popup_class }}__graphic-placeholder">
+            🎁
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- CTA -->
+      <div class="{{ popup_class }}__cta-wrap">
+        <a href="{{ settings.promo_popup_button_link | default: '/collections/all' }}" class="btn btn--primary btn--large {{ popup_class }}__btn">
+          {{ settings.promo_popup_button_text | default: 'Shop Now' }}
+        </a>
+        <p class="{{ popup_class }}__code">
+          Or use code: <strong>{{ settings.promo_popup_discount_code | default: 'WELCOME20' }}</strong>
+        </p>
+      </div>
+
+      <!-- Coupon Input (optional) -->
+      {%- if settings.promo_popup_show_copy -%}
+        <div class="{{ popup_class }}__coupon">
+          <input type="text" readonly value="{{ settings.promo_popup_discount_code | default: 'WELCOME20' }}" class="{{ popup_class }}__coupon-input" id="PromoPopupCouponInput">
+          <button type="button" class="{{ popup_class }}__copy-btn" data-clipboard-target="#PromoPopupCouponInput" id="PromoCopyBtn">
+            Copy
+          </button>
+        </div>
+      {%- endif -%}
+
+      <!-- Not Now link -->
+      {%- if settings.promo_popup_allow_dismiss -%}
+        <button type="button" class="{{ popup_class }}__dismiss" id="PromoPopupDismiss">
+          {{ settings.promo_popup_dismiss_text | default: 'Not now' }}
+        </button>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+{%- comment -%}
+  Popup trigger scripts: exit intent handled by JS,
+  scroll/time-delay also handled in JS with same showPromoPopup() function
+{%- endcomment -%}
+
+<script type="text/javascript">
+  (function() {
+    'use strict';
+
+    var popupShown = false;
+    var popupTrigger = '{{ popup_trigger }}';
+    var scrollPercent = {{ settings.promo_popup_scroll_percent | default: 50 }};
+    var timeDelay = {{ settings.promo_popup_delay_seconds | default: 5 }} * 1000;
+    var dismissCookie = 'luxe_promo_popup_dismissed';
+
+    function canShowPopup() {
+      // Check for dismiss cookie
+      if (getCookie(dismissCookie)) return false;
+      // Check if popup already shown this session
+      if (sessionStorage.getItem('luxe_promo_popup_shown')) return false;
+      return true;
+    }
+
+    function markPopupShown() {
+      sessionStorage.setItem('luxe_promo_popup_shown', 'true');
+      setCookie(dismissCookie, 'true', 7);
+    }
+
+    function showPopup() {
+      if (!canShowPopup() || popupShown) return;
+      popupShown = true;
+
+      var popup = document.getElementById('{{ popup_id }}');
+      if (popup) {
+        popup.style.display = 'block';
+        document.body.classList.add('promo-popup-open');
+        markPopupShown();
+      }
+    }
+
+    // Trigger based on setting
+    if (popupTrigger === 'exit_intent') {
+      document.addEventListener('mouseout', function(e) {
+        if (e.clientY < 0) showPopup();
+      });
+    } else if (popupTrigger === 'scroll_depth') {
+      window.addEventListener('scroll', function() {
+        if (popupShown) return;
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var scrolled = (scrollTop / docHeight) * 100;
+        if (scrolled >= scrollPercent) {
+          showPopup();
+        }
+      });
+    } else if (popupTrigger === 'time_delay') {
+      setTimeout(showPopup, timeDelay);
+    } else if (popupTrigger === 'cart_abandon') {
+      // Show if user has items in cart and is on any page for X seconds
+      var cartCount = {{ cart.item_count }};
+      if (cartCount > 0) {
+        setTimeout(showPopup, 10000); // 10 sec delay if cart not empty
+      }
+    }
+
+    // Close handlers
+    var closeBtn = document.getElementById('PromoPopupClose');
+    var dismissBtn = document.getElementById('PromoPopupDismiss');
+    var overlay = document.querySelector('.{{ popup_class }}__overlay');
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        document.getElementById('{{ popup_id }}').style.display = 'none';
+        document.body.classList.remove('promo-popup-open');
+      });
+    }
+
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', function() {
+        document.getElementById('{{ popup_id }}').style.display = 'none';
+        document.body.classList.remove('promo-popup-open');
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.getElementById('{{ popup_id }}').style.display = 'none';
+        document.body.classList.remove('promo-popup-open');
+      });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('{{ popup_id }}').style.display = 'none';
+        document.body.classList.remove('promo-popup-open');
+      }
+    });
+
+    // Copy button
+    var copyBtn = document.getElementById('PromoCopyBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function() {
+        var input = document.getElementById('PromoPopupCouponInput');
+        input.select();
+        document.execCommand('copy');
+        this.textContent = 'Copied!';
+        setTimeout(() => { this.textContent = 'Copy'; }, 2000);
+      });
+    }
+
+    function getCookie(name) {
+      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : null;
+    }
+
+    function setCookie(name, value, days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+    }
+
+  })();
+</script>
+
+{%- endif -%}

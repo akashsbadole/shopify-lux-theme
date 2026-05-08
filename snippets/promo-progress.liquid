@@ -1,0 +1,104 @@
+{%- comment -%}
+  Promo Progress Bar
+  Shows customer's progress toward promotion goal (spend threshold, quantity needed, etc.)
+  Used in cart drawer and cart page.
+{%- endcomment -%}
+
+{%- assign show_progress = settings.promo_show_progress_bar | default: true -%}
+{%- assign promo = cart.attributes.promo_type | default: '' -%}
+{%- assign progress_percent = cart.attributes.promo_progress | default: 0 | plus: 0 -%}
+
+{%- if show_progress -%}
+  <div class="promo-progress" id="PromoProgressBar" data-promo-type="{{ promo }}" data-promo-id="{{ cart.attributes.promo_id }}" style="display:none;">
+    
+    {%- assign progress_percent = cart.attributes.promo_progress | default: 0 | plus: 0 -%}
+    {%- assign remaining_raw = 0 -%}
+    {%- assign gift_name = '' -%}
+
+{%- comment -%}
+       Progress data comes from PromoEngine via JS.
+       Default values shown until JS calculates accurate numbers.
+     {%- endcomment -%}
+
+     <div class="promo-progress__header">
+       <span class="promo-progress__label">
+         {%- case promo -%}
+           {%- when 'free_gift' -%}
+             {%- assign goal_msg_default = 'Spend {remaining} more for a free {gift_name}!' -%}
+             {%- if settings.promo_gift_threshold_message != blank -%}
+               {{ settings.promo_gift_threshold_message }}
+             {%- else -%}
+               {{ goal_msg_default }}
+             {%- endif -%}
+             Free Gift Unlocked
+           {%- when 'bogo' -%}
+             BOGO Progress
+           {%- when 'volume_discount' -%}
+             Bulk Savings
+           {%- when 'price_based' -%}
+             Cheapest Item Free
+           {%- else -%}
+             Promotion
+         {%- endcase -%}
+       </span>
+      <span class="promo-progress__percentage" id="PromoProgressPercent">{{ progress_percent }}%</span>
+    </div>
+
+    <div class="promo-progress__bar">
+      <div class="promo-progress__fill" id="PromoProgressFill" style="width: {{ progress_percent }}%"></div>
+    </div>
+
+    <div class="promo-progress__message" id="PromoProgressMessage">
+      {%- if promo == 'free_gift' -%}
+        {%- assign remaining_raw = cart.total_price | minus: settings.promo_gift_min_amount | default: 0 | money -%}
+        {%- assign gift_product_handle = settings.promo_gift_product_handle -%}
+        {%- if gift_product_handle != blank -%}
+          {%- assign gift_product = all_products[gift_product_handle] -%}
+          {%- if gift_product -%}
+            {%- assign gift_name = gift_product.title -%}
+          {%- endif -%}
+        {%- endif -%}
+        {%- if progress_percent >= 100 -%}
+          🎉 You've unlocked a free gift! Select it below.
+        {%- else -%}
+          <span>{%- assign remaining_display = remaining_raw | money -%}Spend {{ remaining_display }} more for a free {{ gift_name }}!</span>
+        {%- endif -%}
+      {%- elsif promo == 'bogo' -%}
+        {%- comment -%} Updated via JS with accurate count {%- endcomment -%}
+        Add more items to unlock your free product!
+      {%- elsif promo == 'volume_discount' -%}
+        {%- assign min_qty = settings.promo_volume_min_qty | default: 3 -%}
+        {%- assign current_qty = cart.item_count -%}
+        {%- if current_qty < min_qty -%}
+          Add {{ min_qty | minus: current_qty }} more items to activate bulk pricing
+        {%- else -%}
+          Bulk pricing active! You're saving on eligible items.
+        {%- endif -%}
+      {%- elsif promo == 'price_based' -%}
+        {%- assign min_qty = settings.promo_price_min_qty | default: 3 -%}
+        {%- assign current_qty = cart.item_count -%}
+        {%- if current_qty < min_qty -%}
+          Add {{ min_qty | minus: current_qty }} more items to get the cheapest item free!
+        {%- else -%}
+          Cheapest item in your cart is now free!
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    {%- if promo == 'free_gift' -%}
+      {%- if progress_percent >= 100 -%}
+        <button type="button" class="promo-progress__cta btn btn--small btn--outline promo-gift-select-btn">
+          {{- settings.promo_gift_modal_title | default: '🎁 Choose Your Free Gift' | strip_html | truncate: 30 -}}
+        </button>
+      {%- endif -%}
+    {%- elsif promo == 'bogo' -%}
+      {%- if progress_percent >= 100 -%}
+        {%- unless settings.promo_bogo_auto_add -%}
+          <button type="button" class="promo-progress__cta btn btn--small btn--outline promo-gift-select-btn">
+            {{- settings.promo_gift_modal_title | default: '🎁 Choose Your Free Gift' | strip_html | truncate: 30 -}}
+          </button>
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+{%- endif -%}

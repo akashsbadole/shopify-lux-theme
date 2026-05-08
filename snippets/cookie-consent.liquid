@@ -1,6 +1,9 @@
 {%- comment -%}
-  Cookie Consent Banner (GDPR)
-  Shows cookie consent popup, stores preference in localStorage
+   Cookie Consent Banner
+   Displays GDPR/CCPA compliance notice
+   Usage: {% render 'cookie-consent' %}
+   Note: This snippet is intentionally designed to be included conditionally via JavaScript
+   based on merchant settings for cookie consent enablement.
 {%- endcomment -%}
 
 {%- if settings.enable_cookie_banner -%}

@@ -122,7 +122,7 @@
     .luxe-main { min-height: 60vh; }
   </style>
 
-  <!-- LUXE Theme CSS -->
+  <!-- FlowTheme CSS -->
   {{ 'luxe-theme.css' | asset_url | stylesheet_tag }}
   {{ 'luxe-marketing.css' | asset_url | stylesheet_tag }}
 
@@ -232,8 +232,11 @@
     <!-- Currency Converter (optional tooltip) -->
     <script src="{{ 'currency-converter.js' | asset_url }}" defer></script>
 
-    <!-- LUXE Theme JS -->
-    <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
+     <!-- FlowTheme JS -->
+     <script src="{{ 'luxe-theme.js' | asset_url }}" defer="defer"></script>
+
+     <!-- Promo Engine JS -->
+     <script src="{{ 'promo-engine.js' | asset_url }}" defer="defer"></script>
 
     <!-- Scroll Animation Trigger -->
   <script>

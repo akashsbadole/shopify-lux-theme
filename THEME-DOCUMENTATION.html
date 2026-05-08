@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXE Theme - Complete Theme Documentation</title>
+    <style>
+        :root {
+            --primary: #8A2BE2;
+            --primary-dark: #7B22CC;
+            --secondary: #003B73;
+            --text: #0E1D34;
+            --text-light: #5a6a80;
+            --bg: #F7FAFC;
+            --white: #ffffff;
+            --border: #D8E1EC;
+            --code-bg: #f4f6f8;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --error: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin-left: 280px;
+            margin-right: 0;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 30px 20px;
+        }
+        
+        .sidebar h1 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: var(--secondary);
+        }
+        
+        .sidebar .subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .sidebar nav h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            margin: 25px 0 10px;
+            font-weight: 600;
+        }
+        
+        .sidebar nav a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 2px;
+            transition: all 0.2s;
+        }
+        
+        .sidebar nav a:hover {
+            background: var(--code-bg);
+            color: var(--primary);
+        }
+        
+        .sidebar nav a.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 50px 60px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+            scroll-margin-top: 30px;
+        }
+        
+        .section h2 {
+            font-size: 32px;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            color: var(--secondary);
+        }
+        
+        .section h3 {
+            font-size: 22px;
+            margin: 35px 0 15px;
+            color: var(--text);
+        }
+        
+        .section h4 {
+            font-size: 18px;
+            margin: 25px 0 12px;
+            color: var(--text);
+        }
+        
+        .section p {
+            margin-bottom: 16px;
+            color: var(--text-light);
+        }
+        
+        .section ul, .section ol {
+            margin: 15px 0 20px 25px;
+            color: var(--text-light);
+        }
+        
+        .section li {
+            margin-bottom: 8px;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+        
+        p code, li code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background: var(--code-bg);
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        tr:hover {
+            background: rgba(138, 43, 226, 0.03);
+        }
+        
+        /* File Tree */
+        .file-tree {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .file-tree .directory {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .file-tree .file {
+            color: var(--text-light);
+            padding-left: 20px;
+        }
+        
+        .file-tree .comment {
+            color: #999;
+            font-style: italic;
+        }
+        
+        /* Inline code in text */
+        .inline-code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            color: var(--primary);
+        }
+        
+        /* Settings table */
+        .settings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .settings-table th {
+            background: var(--secondary);
+            color: var(--white);
+            font-weight: 600;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        .settings-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .settings-table tr:nth-child(even) {
+            background: var(--code-bg);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .badge-default { background: #e0e0e0; color: #333; }
+        .badge-boolean { background: var(--success); color: white; }
+        .badge-string { background: var(--primary); color: white; }
+        .badge-integer { background: var(--secondary); color: white; }
+        
+        /* Horizontal Rule */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 40px 0;
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                margin-left: 0;
+            }
+            
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 30px;
+            }
+        }
+        
+        /* Feature cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .feature-card h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h1>LUXE Theme</h1>
+            <p class="subtitle">Complete Theme Documentation & Feature Reference</p>
+
+            <nav>
+                <h3>Getting Started</h3>
+                <a href="#introduction">Introduction</a>
+                <a href="#installation-guide">Installation Guide</a>
+                <a href="#post-installation">Post-Installation Setup</a>
+
+                <h3>Overview</h3>
+                <a href="#file-structure">File Structure</a>
+                <a href="#theme-architecture">Theme Architecture</a>
+                <a href="#theme-editor-overview">Theme Editor Overview</a>
+                <a href="#css-variables">CSS Variables</a>
+
+                <h3>Sections & Blocks</h3>
+                <a href="#section-reference">All Sections</a>
+                <a href="#header-customization">Header</a>
+                <a href="#footer-customization">Footer</a>
+
+                <h3>Development</h3>
+                <a href="#javascript-api">JavaScript API</a>
+                <a href="#data-objects-reference">Data Objects</a>
+                <a href="#adding-custom-features">Custom Features</a>
+                <a href="#snippet-reference">Snippets</a>
+                <a href="#template-customization">Templates</a>
+
+                <h3>Integration</h3>
+                <a href="#app-integration">App Integration</a>
+                <a href="#performance-optimization">Performance</a>
+                <a href="#seo-meta-tags">SEO & Meta</a>
+                <a href="#accessibility">Accessibility</a>
+                <a href="#troubleshooting">Troubleshooting</a>
+                <a href="#support-resources">Support & Resources</a>
+                <a href="#changelog">Changelog</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Introduction Section -->
+            <section id="introduction" class="section">
+                <h2>Introduction</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Theme Name</h4>
+                        <p><strong>LUXE Theme</strong> v1.0.0</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Target Audience</h4>
+                        <p>Fashion brands, luxury retailers, dropshippers, and high-end e-commerce stores</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Shopify Version</h4>
+                        <p>Online Store 2.0 compatible (Shopify 2024+)</p>
+                    </div>
+                </div>
+
+                <h3>About LUXE Theme</h3>
+                <p>LUXE is a premium Shopify theme designed for high-end fashion and luxury brands. It features a sleek, modern design with advanced e-commerce functionality including quick view, wishlist, product comparison, and seamless app integration. Built with performance and accessibility in mind, LUXE delivers exceptional shopping experiences on any device.</p>
+
+                <h3>Key Features</h3>
+                <ul>
+                    <li><strong>40+ Sections & Blocks:</strong> Highly modular layout with drag-and-drop section ordering</li>
+                    <li><strong>Advanced Product Display:</strong> Image zoom, 360° view, size guides, pre-order badges</li>
+                    <li><strong>Conversion Tools:</strong> Countdown timers, trust badges, flash sale, bundle offers</li>
+                    <li><strong>Customer Experience:</strong> Ajax cart, wishlist, compare products, quick view modal</li>
+                    <li><strong>Multi-Currency & Language:</strong> Built-in currency converter, localization support</li>
+                    <li><strong>Performance Optimized:</strong> Lazy loading, critical CSS, minified assets, Core Web Vitals ready</li>
+                    <li><strong>Accessibility:</strong> WCAG 2.1 AA compliant with full keyboard navigation</li>
+                    <li><strong>SEO Ready:</strong> Structured data, meta tags, optimized markup</li>
+                    <li><strong>Mobile-First:</strong> Fully responsive with touch-optimized interactions</li>
+                </ul>
+
+                <h3>Demo Stores</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Fashion / Apparel</h4>
+                        <p>Ideal for clothing, shoes, accessories, and jewelry brands</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Electronics / Tech</h4>
+                        <p>Perfect for gadgets, electronics, and tech accessories</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Dropshipping</h4>
+                        <p>Optimized for high-volume catalogs and AliExpress suppliers</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Luxury / Premium</h4>
+                        <p>Sophisticated design for high-end products and boutique stores</p>
+                    </div>
+                </div>
+
+                <h3>Support</h3>
+                <p>Need help? Contact our support team:</p>
+                <ul>
+                    <li><strong>Email:</strong> info@appixen.com</li>
+                    <li><strong>Help Desk:</strong> <a href="https://appixen.com/shopify" target="_blank">appixen.com/shopify</a></li>
+                    <li><strong>Response Time:</strong> 24–48 hours on weekdays</li>
+                </ul>
+
+                <hr>
+
+                <p class="text-muted"><strong>Ready to get started?</strong> Jump to the <a href="#installation-guide">Installation Guide</a> or explore the <a href="#file-structure">File Structure</a> to understand the theme architecture.</p>
+            </section>
+
+            <hr>
+
+            <!-- Installation Guide Section -->
+            <section id="installation-guide" class="section">
+                <h2>Installation Guide</h2>
+                <p>Get your LUXE theme up and running in minutes with these step-by-step instructions.</p>
+
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>A Shopify store (any plan)</li>
+                    <li>LUXE theme .zip file (downloaded from Theme Forest or your account)</li>
+                    <li>Admin access to your Shopify store</li>
+                </ul>
+
+                <h3>Step 1: Download the Theme</h3>
+                <ol>
+                    <li>Log in to your <a href="https://www.shopify.com/admin" target="_blank">Shopify Admin</a>.</li>
+                    <li>If purchased from Theme Forest, download the .zip file from your purchases page.</li>
+                    <li>If purchased from Shopify Theme Store, the theme will be automatically added to your store.</li>
+                </ol>
+
+                <h3>Step 2: Upload to Shopify</h3>
+                <ol>
+                    <li>In Shopify Admin, go to <strong>Online Store → Themes</strong>.</li>
+                    <li>Click <strong>Add theme</strong> → <strong>Upload zip file</strong>.</li>
+                    <li>Click <strong>Add file</strong> and select the <code>luxe-theme-v1.0.zip</code> file.</li>
+                    <li>Wait for the upload to complete (may take 1–2 minutes).</li>
+                </ol>
+
+                <div class="feature-card">
+                    <h4>⚠️ Important</h4>
+                    <p>Do not delete or unpublish your current theme until you've confirmed LUXE works correctly. Keep a backup theme as a safety net.</p>
+                </div>
+
+                <h3>Step 3: Activate the Theme</h3>
+                <ol>
+                    <li>After upload, find LUXE in your <strong>Unpublished themes</strong> section.</li>
+                    <li>Click <strong>Actions → Publish</strong> to make it live.</li>
+                    <li>Alternatively, click <strong>Customize</strong> to preview and edit before publishing.</li>
+                </ol>
+
+                <h3>Step 4: Initial Configuration</h3>
+                <p>Once activated, complete these essential setup steps:</p>
+
+                <h4>1. Upload Your Logo</h4>
+                <ol>
+                    <li>Go to <strong>Online Store → Themes → Customize</strong>.</li>
+                    <li>Open <strong>Theme settings</strong> → <strong>Logo</strong>.</li>
+                    <li>Upload your brand logo (PNG or SVG recommended, max 400px width).</li>
+                </ol>
+
+                <h4>2. Set Up Navigation Menus</h4>
+                <ol>
+                    <li>Go to <strong>Online Store → Navigation</strong>.</li>
+                    <li>Create your main menu (e.g., "Main Menu") with all important links.</li>
+                    <li>Return to the theme editor and assign this menu to the <strong>Header</strong> section.</li>
+                </ol>
+
+                <h4>3. Configure Homepage Sections</h4>
+                <ol>
+                    <li>In the theme editor, select the <strong>Homepage</strong> template.</li>
+                    <li>Add and arrange sections (hero, featured products, testimonials, etc.).</li>
+                    <li>Customize each section's content and styling.</li>
+                </ol>
+
+                <h4>4. Connect Social Media</h4>
+                <p>Add your social media URLs under <strong>Theme settings → Social media</strong> to display icons in the header and footer.</p>
+
+                <h3>Step 5: Recommended Apps</h3>
+                <p>Enhance your store with these compatible apps:</p>
+                <ul>
+                    <li><strong>Reviews:</strong> Judge.me, Loox, Yotpo, <a href="https://appixen.com/shopify" target="_blank">Appixen</a></li>
+                    <li><strong>Email Marketing:</strong> Klaviyo, Mailchimp</li>
+                    <li><strong>Upsell:</strong> Zipify, ReConvert, Appixen Upsell</li>
+                    <li><strong>Live Chat:</strong> Gorgias, Tawk.to</li>
+                </ul>
+
+                <hr>
+
+            </section>
+
+            <!-- Post-Installation Section -->
+            <section id="post-installation" class="section">
+                <h2>Post-Installation Setup</h2>
+                <p>Once the theme is uploaded and activated, complete these essential configuration steps:</p>
+                    <table class="settings-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Upload logo and set brand colors</td>
+                                <td>Theme Settings → Colors &amp; Typography</td>
+                                <td>☐</td>
+                            </tr>
+                            <tr>
+                                <td>Create navigation menu</td>
+                                <td>Online Store → Navigation</td>
+                                <td>☐</td>
+                            </tr>
+                            <tr>
+                                <td>Configure homepage sections</td>
+                                <td>Online Store → Themes → Customize → Homepage</td>
+                                <td>☐</td>
+                            </tr>
+                            <tr>
+                                <td>Set up payment and shipping</td>
+                                <td>Settings → Payments &amp; Shipping</td>
+                                <td>☐</td>
+                            </tr>
+                            <tr>
+                                <td>Add legal pages (privacy, terms)</td>
+                                <td>Online Store → Pages</td>
+                                <td>☐</td>
+                            </tr>
+                            <tr>
+                                <td>Install recommended apps</td>
+                                <td>Shopify App Store</td>
+                                <td>☐</td>
+                            </tr>
+                            <tr>
+                                <td>Test checkout flow</td>
+                                <td>Preview store → Add product → Checkout</td>
+                                <td>☐</td>
+                            </tr>
+                        </tbody>
+                     </table>
+                 </section>
+
+            <hr>
+
+            <!-- Theme Editor Overview -->
+            <section id="theme-editor-overview" class="section">
+                <h2>Theme Editor Overview</h2>
+                <p>The LUXE theme uses Shopify's intuitive theme editor for drag-and-drop customization without any coding.</p>
+
+                <h3>Accessing the Theme Editor</h3>
+                <ol>
+                    <li>Go to <strong>Online Store → Themes</strong> in your Shopify Admin.</li>
+                    <li>Find the LUXE theme (published or unpublished).</li>
+                    <li>Click <strong>Customize</strong> to open the theme editor.</li>
+                </ol>
+
+                <h3>Editor Layout</h3>
+                <ul>
+                    <li><strong>Left sidebar:</strong> Sections tree - click to edit each section's settings and blocks</li>
+                    <li><strong>Main preview:</strong> Live preview of your store updating in real-time</li>
+                    <li><strong>Right sidebar:</strong> Theme settings (global) and the selected section's settings</li>
+                </ul>
+
+                <h3>Working with Sections</h3>
+                <ul>
+                    <li><strong>Add Section:</strong> Click "Add section" button at the bottom of the left sidebar</li>
+                    <li><strong>Reorder:</strong> Drag and drop sections in the left sidebar to change layout</li>
+                    <li><strong>Remove:</strong> Click the trash icon next to a section in the sidebar</li>
+                    <li><strong>Edit:</strong> Click any section to reveal its settings in the right sidebar</li>
+                </ul>
+
+                <h3>Theme Settings</h3>
+                <p>Global settings are organized into categories:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Colors &amp; Typography</h4>
+                        <p>Set brand colors, font families, heading styles, and font sizes</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Layout</h4>
+                        <p>Container width, spacing, border radius, and grid settings</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Header</h4>
+                        <p>Logo, navigation, sticky behavior, and mobile menu style</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Footer</h4>
+                        <p>Newsletter, social icons, payment icons, and legal links</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Product Pages</h4>
+                        <p>Image zoom, ratings, share buttons, inventory display</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Cart &amp; Checkout</h4>
+                        <p>Cart drawer, express checkout, notes, shipping calculator</p>
+                    </div>
+                </div>
+
+                <h3>Blocks</h3>
+                <p>Many sections support blocks - repeatable content items you can add, remove, and reorder:</p>
+                <ul>
+                    <li><strong>Mega Menu:</strong> Add up to 10 blocks per menu item</li>
+                    <li><strong>Footer:</strong> Add multiple info/social/link columns</li>
+                    <li><strong>Hero Slider:</strong> Add unlimited slides with text, images, and buttons</li>
+                    <li><strong>Product Carousel:</strong> Add heading, collection, and optional promo</li>
+                </ul>
+
+                <h3>Previewing Changes</h3>
+                <p>Use the preview toolbar to view your store on different devices:</p>
+                <ul>
+                    <li><strong>Desktop:</strong> Full-width desktop view (default)</li>
+                    <li><strong>Tablet:</strong> iPad viewport</li>
+                    <li><strong>Mobile:</strong> iPhone viewport</li>
+                    <li><strong>Landscape:</strong> Mobile landscape orientation</li>
+                </ul>
+
+                <h3>Saving &amp; Publishing</h3>
+                <ol>
+                    <li>Click <strong>Save</strong> to save your changes (they're stored but not yet live).</li>
+                    <li>Click <strong>Publish</strong> to make changes live immediately.</li>
+                    <li>Use <strong>View published theme</strong> to exit editor and view the live store.</li>
+                </ol>
+
+                <div class="feature-card">
+                    <h4>💡 Pro Tip</h4>
+                    <p>Your changes are saved automatically every 30 seconds and when you navigate away. But always click Save before leaving to ensure recent edits are stored.</p>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- File Structure Section -->
+            <section id="file-structure" class="section">
+                <h2>File Structure</h2>
+                <p>Complete overview of the LUXE theme directory structure.</p>
+                
+                <div class="file-tree">
+                    <div class="directory">luxe-theme/</div>
+                    <div class="directory">├── config/</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── settings_schema.json&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Theme settings configuration</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;└── settings_data.json&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Saved theme settings</span></div>
+                    <div class="directory">├── layout/</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;└── theme.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Main layout, head, body</span></div>
+                    <div class="directory">├── snippets/</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── cart-drawer.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Ajax cart drawer</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── cart-items.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Cart items rendering</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── cookie_consent.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># GDPR cookie banner</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── localization.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Currency selector</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── mega-menu.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Navigation mega menu</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── pincode-checker.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># India delivery checker</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── product-card.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Product card component</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── product-compare.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Product comparison</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── quick-view.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Quick view modal</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── wishlist-drawer.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Wishlist drawer</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── notify-me.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Back-in-stock notification</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── cod-badge.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Cash on Delivery badge</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── emi-calculator.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># EMI calculator</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── loyalty-display.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Loyalty points display</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── chat-buttons.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># WhatsApp/Telegram chat</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── size-guide.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Size guide modal</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;└── icon-*.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># SVG icon snippets</span></div>
+                    <div class="directory">├── sections/</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── header.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Header/navigation</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── footer.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Footer</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── main-product.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Product page</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── main-collection.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Collection page</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── main-cart.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Cart page</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── hero-slider.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Hero slider</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── hero-grid.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Hero grid</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── featured-collection.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Featured products</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── product-carousel.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Product carousel</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── bundle-fbt.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Frequently bought together</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── flash-sale-timer.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Countdown timer</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── trust-bar.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Trust badges</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── promo-banner.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Promo banner</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── newsletter-popup.liquid&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Newsletter popup</span></div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;└── [30+ more sections]</div>
+                    <div class="directory">├── templates/</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── product.json</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── collection.json</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── cart.json</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── index.json</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;└── [other templates]</div>
+                    <div class="directory">├── assets/</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── luxe-theme.js</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;├── luxe-theme.css</div>
+                    <div class="file">&nbsp;&nbsp;&nbsp;&nbsp;└── google-fonts.css</div>
+                    <div class="file">├── config.yml</div>
+                    <div class="file">└── README.md</div>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- Theme Architecture Section -->
+            <section id="theme-architecture" class="section">
+                <h2>Theme Architecture</h2>
+                <h3>Layout Flow</h3>
+                <pre><code>theme.liquid
+├── &lt;head&gt;
+│   ├── Meta tags (SEO)
+│   ├── CSS (critical inline + theme.css)
+│   ├── Schema structured data
+│   └── Favicon
+├── &lt;body&gt;
+│   ├── Skip to content link
+│   ├── Announcement bar (if enabled)
+│   ├── Header (section)
+│   ├── Main content (template-specific)
+│   ├── Cart drawer (snippet)
+│   ├── Wishlist drawer (snippet)
+│   ├── Compare drawer (snippet)
+│   ├── Quick view modal (snippet)
+│   ├── Pincode checker (floating)
+│   ├── Floating chat buttons
+│   ├── Cookie consent banner
+│   ├── Toast notifications
+│   └── Footer (section)</code></pre>
+
+                <h3>Data Flow</h3>
+                <ol>
+                    <li><strong>Settings</strong> → Theme Settings → All sections access via <code class="inline-code">settings.setting_id</code></li>
+                    <li><strong>Products</strong> → Collection loop → Product card snippet</li>
+                    <li><strong>Cart</strong> → Liquid object → Cart drawer snippet</li>
+                    <li><strong>Customer</strong> → Shopify object → Account links</li>
+                </ol>
+            </section>
+
+            <hr>
+
+            <!-- Header Customization Section -->
+            <section id="header-customization" class="section">
+                <h2>Header Customization</h2>
+                <p>The header is a flexible section with multiple layout options and settings.</p>
+
+                <h3>Header Settings</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting ID</th>
+                            <th>Type</th>
+                            <th>Label</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">logo</code></td>
+                            <td><span class="badge badge-default">Image</span></td>
+                            <td>Logo image</td>
+                            <td>-</td>
+                            <td>Upload your brand logo (recommended: PNG with transparent background, max 400px width)</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">logo_width</code></td>
+                            <td><span class="badge badge-integer">Range</span></td>
+                            <td>Logo width</td>
+                            <td>160px</td>
+                            <td>Control logo size (80-300px)</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">menu</code></td>
+                            <td><span class="badge badge-string">Menu</span></td>
+                            <td>Menu</td>
+                            <td>main-menu</td>
+                            <td>Select navigation menu to display in header</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">header_sticky</code></td>
+                            <td><span class="badge badge-boolean">Checkbox</span></td>
+                            <td>Sticky header</td>
+                            <td>true</td>
+                            <td>Keep header visible on scroll</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">header_style</code></td>
+                            <td><span class="badge badge-string">Select</span></td>
+                            <td>Header Style</td>
+                            <td>standard</td>
+                            <td>Layout: Standard (logo center), Minimal (logo left), Promo (with banner)</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">header_transparent</code></td>
+                            <td><span class="badge badge-boolean">Checkbox</span></td>
+                            <td>Transparent header</td>
+                            <td>false</td>
+                            <td>Header becomes transparent over hero images on homepage</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Logo Options</h3>
+                <ul>
+                    <li><strong>Logo Image:</strong> Upload a high-resolution image (PNG/SVG recommended)</li>
+                    <li><strong>Logo Width:</strong> Adjust between 80-300px based on your logo's aspect ratio</li>
+                    <li><strong>Logo Text Fallback:</strong> If no logo image is set, your shop name displays as text</li>
+                </ul>
+
+                <h3>Navigation</h3>
+                <ul>
+                    <li><strong>Menu Selection:</strong> Choose from existing link lists in <em>Online Store → Navigation</em></li>
+                    <li><strong>Mega Menu:</strong> Add blocks in the header section to create dropdown mega menus</li>
+                    <li><strong>Mobile Menu:</strong> Automatically generated from the same menu with hamburger toggle</li>
+                </ul>
+
+                <h3>Mega Menu Configuration</h3>
+                <p>Add "Mega Menu" blocks to the header section:</p>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Block Setting</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">nav_link_title</code></td>
+                            <td>Exact nav link text this mega menu attaches to (e.g., "Collections")</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">featured_heading</code></td>
+                            <td>Column heading for featured products section</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">featured_collection</code></td>
+                            <td>Select collection to showcase</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">featured_image</code></td>
+                            <td>Promo image (used if no collection selected)</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">promo_text</code></td>
+                            <td>Text overlay on promo image</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">promo_btn_label</code></td>
+                            <td>Button text on promo</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">highlights_heading</code></td>
+                            <td>Second column heading for link lists</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">highlights_menu</code></td>
+                            <td>Select a link list for additional navigation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <!-- Footer Customization Section -->
+            <section id="footer-customization" class="section">
+                <h2>Footer Customization</h2>
+                <p>The footer includes newsletter signup, social links, navigation columns, and payment icons.</p>
+
+                <h3>Footer Settings</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting ID</th>
+                            <th>Type</th>
+                            <th>Label</th>
+                            <th>Default</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">copyright_suffix</code></td>
+                            <td>Text</td>
+                            <td>Copyright suffix</td>
+                            <td>"All rights reserved."</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Theme Settings Used by Footer</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting ID</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">footer_tagline</code></td>
+                            <td>Text</td>
+                            <td>Tagline displayed under logo</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">footer_show_newsletter</code></td>
+                            <td>Checkbox</td>
+                            <td>Show/hide newsletter signup</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">footer_newsletter_label</code></td>
+                            <td>Text</td>
+                            <td>Subscribe button text</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">social_instagram_url</code></td>
+                            <td>URL</td>
+                            <td>Instagram profile link</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">social_facebook_url</code></td>
+                            <td>URL</td>
+                            <td>Facebook page link</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">social_twitter_url</code></td>
+                            <td>URL</td>
+                            <td>Twitter/X profile link</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">show_payment_icons</code></td>
+                            <td>Checkbox</td>
+                            <td>Display accepted payment methods</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Footer Columns (Blocks)</h3>
+                <p>Add "Link column" blocks to create navigation columns:</p>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Block Setting</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">heading</code></td>
+                            <td>Column title (e.g., "Shop", "Help", "Company")</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">menu</code></td>
+                            <td>Select a link list from Navigation</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Default Footer Structure</h3>
+                <pre><code>Footer Section (3 blocks by default):
+├── Brand Column (Logo + Tagline + Newsletter + Social)
+├── Link Column 1 (e.g., Shop)
+├── Link Column 2 (e.g., Help)
+└── Link Column 3 (e.g., Company)
+
+Bottom Bar:
+├── Copyright text
+├── Payment icons (optional)
+└── Policy links (legal pages)</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- Section Reference -->
+            <section id="section-reference" class="section">
+                <h2>Section Reference</h2>
+                <p>Complete reference of all theme sections with their settings and purposes.</p>
+
+                <!-- Hero Sections -->
+                <h3>Hero Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Hero Slider</h4>
+                        <p>Full-width image/video slider with multiple slides, text overlays, and call-to-action buttons.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Hero Grid</h4>
+                        <p>Grid-based hero layout with multiple content blocks, ideal for showcasing categories.</p>
+                    </div>
+                </div>
+
+                <!-- Product Sections -->
+                <h3>Product Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Main Product</h4>
+                        <p>Full product page with gallery, variants, add-to-cart, reviews, and related products.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Product Carousel</h4>
+                        <p>Horizontal scrolling product carousel showing items from a collection.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Featured Collection</h4>
+                        <p>Grid or list display of products from a selected collection.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Product Recommendations</h4>
+                        <p>Auto-generated related/cross-sell products based on cart or current product.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Recently Viewed</h4>
+                        <p>Shows products the customer has recently viewed.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Bundle / FBT</h4>
+                        <p>"Frequently Bought Together" product bundle with discount.</p>
+                    </div>
+                </div>
+
+                <!-- Collection Sections -->
+                <h3>Collection Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Main Collection</h4>
+                        <p>Collection page with filtering, sorting, and product grid.</p>
+                    </div>
+                </div>
+
+                <!-- Marketing Sections -->
+                <h3>Marketing & Conversion Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Trust Bar</h4>
+                        <p>Display trust badges, shipping info, and secure checkout icons.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Promo Banner</h4>
+                        <p>Single promotional banner with text and link.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Promo Banners</h4>
+                        <p>Multiple rotating promotional banners.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Flash Sale Timer</h4>
+                        <p>Countdown timer for sales and limited-time offers.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Newsletter Popup</h4>
+                        <p>Popup email capture form with exit-intent trigger.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Testimonials</h4>
+                        <p>Customer testimonial/review display section.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Brand Story</h4>
+                        <p>About section with image and text content.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Image with Text</h4>
+                        <p>Flexible two-column content block.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Custom Code</h4>
+                        <p>Add custom HTML/Liquid/JavaScript code.</p>
+                    </div>
+                </div>
+
+                <!-- Cart Sections -->
+                <h3>Cart Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Cart Upsell</h4>
+                        <p>Show recommended products in cart drawer.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Cart AjX</h4>
+                        <p>Handles cart updates via AJAX.</p>
+                    </div>
+                </div>
+
+                <!-- Blog Sections -->
+                <h3>Blog & Content Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Main Blog</h4>
+                        <p>Blog listing page with article cards.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Featured Blog</h4>
+                        <p>Showcase selected blog posts.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Blog Section</h4>
+                        <p>Display latest articles on any page.</p>
+                    </div>
+                </div>
+
+                <!-- Customer Account Sections -->
+                <h3>Customer Account Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Main Account</h4>
+                        <p>Customer account dashboard.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Main Login</h4>
+                        <p>Login/register forms.</p>
+                    </div>
+                </div>
+
+                <!-- Utility Sections -->
+                <h3>Utility Sections</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Quick View</h4>
+                        <p>Modal product preview without leaving page.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Promo Popup</h4>
+                        <p>Customizable popup with discount form.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Main 404</h4>
+                        <p>Custom 404 error page.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Main Search</h4>
+                        <p>Search results page with filtering.</p>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- CSS Variables Section -->
+            <section id="css-variables" class="section">
+                <h2>CSS Variables</h2>
+                <p>All CSS custom properties are automatically updated from Theme Settings.</p>
+
+                <h3>Complete CSS Variables List</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Default Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">--color-bg</code></td>
+                            <td>#F7FAFC</td>
+                            <td>Page background color</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--color-text</code></td>
+                            <td>#0E1D34</td>
+                            <td>Primary text color</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--color-navy</code></td>
+                            <td>#003B73</td>
+                            <td>Brand navy color</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--color-purple</code></td>
+                            <td>#8A2BE2</td>
+                            <td>Accent purple (CTAs)</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--color-muted</code></td>
+                            <td>#5a6a80</td>
+                            <td>Secondary text color</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--color-border</code></td>
+                            <td>#D8E1EC</td>
+                            <td>Border color</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--color-white</code></td>
+                            <td>#ffffff</td>
+                            <td>White</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--color-sale</code></td>
+                            <td>#e74c3c</td>
+                            <td>Sale price color</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--radius</code></td>
+                            <td>8px</td>
+                            <td>Default border radius</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--radius-sm</code></td>
+                            <td>4px</td>
+                            <td>Small border radius</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--radius-lg</code></td>
+                            <td>12px</td>
+                            <td>Large border radius</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--font-size-base</code></td>
+                            <td>15px</td>
+                            <td>Base font size</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--font-size-sm</code></td>
+                            <td>12px</td>
+                            <td>Small font size</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--font-size-lg</code></td>
+                            <td>18px</td>
+                            <td>Large font size</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--spacing-sm</code></td>
+                            <td>8px</td>
+                            <td>Small spacing unit</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--spacing-md</code></td>
+                            <td>16px</td>
+                            <td>Medium spacing unit</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--spacing-lg</code></td>
+                            <td>24px</td>
+                            <td>Large spacing unit</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--shadow-sm</code></td>
+                            <td>0 1px 3px rgba(0,0,0,0.08)</td>
+                            <td>Small shadow</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--shadow-md</code></td>
+                            <td>0 4px 12px rgba(0,0,0,0.1)</td>
+                            <td>Medium shadow</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--shadow-lg</code></td>
+                            <td>0 8px 24px rgba(0,0,0,0.12)</td>
+                            <td>Large shadow</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--transition</code></td>
+                            <td>0.3s ease</td>
+                            <td>Default transition</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">--container-width</code></td>
+                            <td>1400px</td>
+                            <td>Max content width</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <!-- Section Reference with Settings -->
+            <section id="section-reference-detailed" class="section">
+                <h2>Section Settings Reference</h2>
+                <p>Detailed settings for all major theme sections.</p>
+
+                <!-- Header Section -->
+                <h3 id="header-settings">Header Section</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Type</th>
+                            <th>Options/Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>logo</td>
+                            <td>Image</td>
+                            <td>-</td>
+                            <td>Logo image file</td>
+                        </tr>
+                        <tr>
+                            <td>logo_width</td>
+                            <td>Range</td>
+                            <td>80-300px, default 160</td>
+                            <td>Logo width in pixels</td>
+                        </tr>
+                        <tr>
+                            <td>menu</td>
+                            <td>Menu</td>
+                            <td>main-menu</td>
+                            <td>Navigation menu to display</td>
+                        </tr>
+                        <tr>
+                            <td>header_sticky</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Keep header fixed on scroll</td>
+                        </tr>
+                        <tr>
+                            <td>header_style</td>
+                            <td>Select</td>
+                            <td>standard/minimal/promo</td>
+                            <td>Header layout style</td>
+                        </tr>
+                        <tr>
+                            <td>header_transparent</td>
+                            <td>Checkbox</td>
+                            <td>false</td>
+                            <td>Transparent over hero on homepage</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Footer Section -->
+                <h3 id="footer-settings">Footer Section</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Type</th>
+                            <th>Options/Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>copyright_suffix</td>
+                            <td>Text</td>
+                            <td>"All rights reserved."</td>
+                            <td>Text after copyright year and shop name</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Product Page Settings -->
+                <h3 id="product-settings">Product Page (Main Product)</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>show_vendor</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Display product vendor name</td>
+                        </tr>
+                        <tr>
+                            <td>show_rating</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show star rating (requires review app)</td>
+                        </tr>
+                        <tr>
+                            <td>enable_zoom</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Enable image zoom on hover</td>
+                        </tr>
+                        <tr>
+                            <td>show_share</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show social share buttons</td>
+                        </tr>
+                        <tr>
+                            <td>show_inventory</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Display stock status</td>
+                        </tr>
+                        <tr>
+                            <td>show_preorder_badge</td>
+                            <td>Checkbox</td>
+                            <td>false</td>
+                            <td>Show pre-order badge</td>
+                        </tr>
+                        <tr>
+                            <td>preorder_message</td>
+                            <td>Text</td>
+                            <td>"Pre-order now! Ships by"</td>
+                            <td>Pre-order message text</td>
+                        </tr>
+                        <tr>
+                            <td>preorder_date</td>
+                            <td>Text</td>
+                            <td>"Dec 15, 2024"</td>
+                            <td>Estimated shipping date for pre-orders</td>
+                        </tr>
+                        <tr>
+                            <td>show_fbt</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show "Frequently Bought Together" bundle</td>
+                        </tr>
+                        <tr>
+                            <td>enable_emi</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show EMI calculator (India)</td>
+                        </tr>
+                        <tr>
+                            <td>enable_cod</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show Cash on Delivery badge</td>
+                        </tr>
+                        <tr>
+                            <td>enable_buy_now</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show Buy Now button (express checkout)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Cart Page Settings -->
+                <h3 id="cart-settings">Cart Page (Main Cart)</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>show_note</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show cart notes textarea</td>
+                        </tr>
+                        <tr>
+                            <td>show_shipping_calc</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show shipping calculator</td>
+                        </tr>
+                        <tr>
+                            <td>show_express_checkout</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show express payment buttons</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Collection Page Settings -->
+                <h3 id="collection-settings">Collection Page (Main Collection)</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>products_per_row</td>
+                            <td>Select</td>
+                            <td>4</td>
+                            <td>Products per row (2-6)</td>
+                        </tr>
+                        <tr>
+                            <td>products_per_page</td>
+                            <td>Select</td>
+                            <td>24</td>
+                            <td>Products per page (12, 24, 36, 48)</td>
+                        </tr>
+                        <tr>
+                            <td>show_filters</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show filtering sidebar</td>
+                        </tr>
+                        <tr>
+                            <td>show_sort</td>
+                            <td>Checkbox</td>
+                            <td>true</td>
+                            <td>Show sorting dropdown</td>
+                        </tr>
+                        <tr>
+                            <td>enable_infinite_scroll</td>
+                            <td>Checkbox</td>
+                            <td>false</td>
+                            <td>Auto-load more on scroll</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <!-- JavaScript API Section -->
+            <section id="javascript-api" class="section">
+                <h2>JavaScript API</h2>
+                <p>Global JavaScript objects and functions available throughout the theme.</p>
+
+                <h3>Global Objects</h3>
+                
+                <h4>LuxeCart - Cart Management</h4>
+                <pre><code>window.LuxeCart = {
+  showToast: function(message, duration = 3000) { },
+  updateCart: function() { },
+  openCart: function() { },
+  closeCart: function() { },
+  getCart: function() { }
+};
+
+// Usage
+LuxeCart.showToast('Product added to cart!');
+LuxeCart.updateCart();
+LuxeCart.openCart();</code></pre>
+
+                <h4>LuxeWishlist - Wishlist Management</h4>
+                <pre><code>window.LuxeWishlist = {
+  get: function() { },
+  has: function(productId) { },
+  add: function(productId) { },
+  remove: function(productId) { },
+  toggle: function(productId) { },
+  getCount: function() { }
+};
+
+// Usage
+var wishlist = LuxeWishlist.get();
+var isInWishlist = LuxeWishlist.has(123456789);
+LuxeWishlist.add(123456789);</code></pre>
+
+                <h4>LuxeCompare - Product Comparison</h4>
+                <pre><code>window.LuxeCompare = {
+  get: function() { },
+  has: function(productId) { },
+  add: function(productId, title, price, image, url) { },
+  remove: function(productId) { }
+};
+
+// Global functions
+window.addToCompare(id, title, price, image, url);
+window.removeFromCompare(id);</code></pre>
+
+                <h4>LuxeCurrencyConverter (Optional)</h4>
+                <pre><code>window.LuxeCurrencyConverterInstance = {
+  selectedCurrency: 'USD',
+  sourceCurrency: 'USD',
+  rates: {},
+  convert: function(price) { }
+};</code></pre>
+
+                <h3>Custom Events</h3>
+                <pre><code>// Cart updated
+document.addEventListener('cartUpdated', function(event) {
+  var cart = event.detail?.cart;
+  var itemCount = cart?.item_count;
+});
+
+// Product added to cart
+document.addEventListener('productAddedToCart', function(event) {
+  var variantId = event.detail?.variantId;
+  var quantity = event.detail?.quantity;
+});
+
+// Wishlist updated
+document.addEventListener('wishlistUpdated', function(event) {
+  var items = event.detail?.items;
+});
+
+// Quick view opened/closed
+document.addEventListener('quickViewOpened', function(event) {});
+document.addEventListener('quickViewClosed', function(event) {});</code></pre>
+
+                <h3>AJAX Cart Examples</h3>
+                <pre><code>// Add to cart
+fetch('/cart/add.js', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    items: [{ id: VARIANT_ID, quantity: 1 }]
+  })
+})
+.then(response => response.json())
+.then(data => {
+  LuxeCart.updateCart();
+  LuxeCart.showToast('Product added to cart!');
+});
+
+// Update quantity
+fetch('/cart/change.js', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ line: LINE_NUMBER, quantity: NEW_QUANTITY })
+})
+.then(response => response.json())
+.then(data => LuxeCart.updateCart());
+
+// Remove item
+fetch('/cart/change.js', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ line: LINE_NUMBER, quantity: 0 })
+})
+.then(response => response.json())
+.then(data => LuxeCart.updateCart());</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- Data Objects Reference -->
+            <section id="data-objects-reference" class="section">
+                <h2>Data Objects Reference</h2>
+                
+                <h3>Product Object</h3>
+                <pre><code>{{ product.id }}                    {# Product ID #}
+{{ product.title }}                 {# Title #}
+{{ product.handle }}               {# URL handle #}
+{{ product.description }}          {# HTML description #}
+{{ product.vendor }}               {# Vendor name #}
+{{ product.type }}                 {# Product type #}
+{{ product.tags | join: ', ' }}   {# Tags array #}
+{{ product.price }}                {# Price in cents #}
+{{ product.price | money }}        {# Formatted price #}
+{{ product.compare_at_price }}     {# Compare-at price #}
+{{ product.available }}            {# Boolean #}
+{{ product.images | size }}        {# Image count #}
+{{ product.variants | size }}      {# Variant count #}
+{{ product.options_with_values }} {# Options array #}
+
+{% for variant in product.variants %}
+  {{ variant.id }}
+  {{ variant.title }}
+  {{ variant.price }}
+  {{ variant.available }}
+  {{ variant.inventory_quantity }}
+  {{ variant.sku }}
+{% endfor %}</code></pre>
+
+                <h3>Collection Object</h3>
+                <pre><code>{{ collection.title }}
+{{ collection.description }}
+{{ collection.handle }}
+{{ collection.products | size }}
+{{ collection.all_products_count }}
+{{ collection.url }}
+{{ collection.image }}
+
+{% paginate collection.products by 24 %}
+  {% for product in collection.products %}
+    {{ product.title }}
+  {% endfor %}
+  {{ paginate | default_pagination }}
+{% endpaginate %}</code></pre>
+
+                <h3>Cart Object</h3>
+                <pre><code>{{ cart.item_count }}
+{{ cart.total_price | money }}
+{{ cart.subtotal_price | money }}
+{{ cart.total_discounts | money }}
+
+{% for item in cart.items %}
+  {{ item.id }}
+  {{ item.product.title }}
+  {{ item.variant.title }}
+  {{ item.quantity }}
+  {{ item.price | money }}
+  {{ item.image }}
+  {{ item.url }}
+{% endfor %}</code></pre>
+
+                <h3>Customer Object</h3>
+                <pre><code>{{ customer.id }}
+{{ customer.first_name }}
+{{ customer.last_name }}
+{{ customer.email }}
+{{ customer.orders_count }}
+{{ customer.total_spent | money }}
+{{ customer.tags | join: ', ' }}</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- Adding Custom Features -->
+            <section id="adding-custom-features" class="section">
+                <h2>Adding Custom Features</h2>
+                <p>Learn how to extend the theme with custom sections, snippets, and metafields.</p>
+
+                <h3>Custom Section Template</h3>
+                <pre><code>{%- comment -%}
+  My Custom Section - Complete template with all setting types
+{%- endcomment -%}
+
+&lt;div class="my-section" style="padding: {{ section.settings.padding }}px; background: {{ section.settings.bg_color }};"&gt;
+  {%- if section.settings.show_heading -%}
+    &lt;h2 class="section-heading"&gt;{{ section.settings.heading }}&lt;/h2&gt;
+  {%- endif -%}
+  
+  {%- for block in section.blocks -%}
+    &lt;div class="block-{{ block.type }}" {{ block.shopify_attributes }}&gt;
+      {{ block.settings.text }}
+    &lt;/div&gt;
+  {%- endfor -%}
+&lt;/div&gt;
+
+{% schema %}
+{
+  "name": "My Custom Section",
+  "settings": [
+    { "type": "checkbox", "id": "show_heading", "label": "Show heading", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "My Section" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#ffffff" },
+    { "type": "range", "id": "padding", "label": "Padding", "min": 0, "max": 100, "default": 40, "unit": "px" }
+  ],
+  "blocks": [
+    { "type": "text", "name": "Text Block", "settings": [
+      { "type": "textarea", "id": "text", "label": "Text" }
+    ]}
+  ],
+  "presets": [{ "name": "My Custom Section" }]
+}
+{% endschema %}</code></pre>
+
+                <h3>Custom Snippet with Parameters</h3>
+                <pre><code>{%- comment -%}
+  Custom badge - Usage: {% render 'custom-badge', text: 'New', type: 'primary' %}
+{%- endcomment -%}
+
+&lt;span class="badge badge--{{ type | default: 'primary' }}"&gt;
+  {{ text }}
+&lt;/span&gt;
+
+&lt;style&gt;
+.badge { display: inline-block; padding: 4px 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; border-radius: 4px; }
+.badge--primary { background: #003B73; color: #fff; }
+.badge--sale { background: #e74c3c; color: #fff; }
+&lt;/style&gt;</code></pre>
+
+                <h3>Custom Product Template</h3>
+                <p>Create <code class="inline-code">templates/product.custom.json</code>:</p>
+                <pre><code>{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "show_vendor": true,
+        "enable_zoom": true,
+        "show_share": true
+      }
+    },
+    "promo": {
+      "type": "promo-banner",
+      "settings": {
+        "text": "Free shipping on orders over $99!",
+        "bg_color": "#003B73",
+        "text_color": "#ffffff"
+      }
+    }
+  },
+  "order": ["main", "promo"]
+}</code></pre>
+
+                <h3>Access Metafields</h3>
+                <pre><code>{# Product metafields #}
+{{ product.metafields.custom.features }}
+{{ product.metafields.custom.warranty }}
+{{ product.metafields.reviews.rating.value }}
+{{ product.metafields.age.verification_required }}
+
+{# Customer metafields #}
+                {{ customer.metafields.loyalty.points }}</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- Template Customization -->
+            <section id="template-customization" class="section">
+                <h2>Pre-Built Templates & Pages</h2>
+                <p>LUXE includes 15+ pre-built templates for all essential store pages. Each template uses sections for maximum flexibility.</p>
+
+                <h3>Available Templates</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Template</th>
+                            <th>File</th>
+                            <th>Purpose</th>
+                            <th>Key Sections</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Homepage</strong></td>
+                            <td><code>templates/index.json</code></td>
+                            <td>Landing page with hero, featured products, marketing sections</td>
+                            <td>Hero slider, featured collection, flash sale, testimonials</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Product Page</strong></td>
+                            <td><code>templates/product.json</code></td>
+                            <td>Full product detail with gallery, variants, add-to-cart</td>
+                            <td>Main product, product recommendations, recently viewed, FBT</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Collection Page</strong></td>
+                            <td><code>templates/collection.json</code></td>
+                            <td>Product grid with filters and sorting</td>
+                            <td>Main collection, filters, product carousel, collection banner</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cart Page</strong></td>
+                            <td><code>templates/cart.json</code></td>
+                            <td>Shopping cart with line items and checkout button</td>
+                            <td>Main cart, cart upsell, cross-sell products</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Blog Listing</strong></td>
+                            <td><code>templates/blog.json</code></td>
+                            <td>List of blog articles with excerpt and featured image</td>
+                            <td>Main blog, featured posts, article grid</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Article Page</strong></td>
+                            <td><code>templates/article.json</code></td>
+                            <td>Single blog post with content, comments, share buttons</td>
+                            <td>Main article, related posts, author bio</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Contact Page</strong></td>
+                            <td><code>templates/page.contact.json</code></td>
+                            <td>Contact form with company info and map</td>
+                            <td>Contact form, contact info, FAQ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>404 Page</strong></td>
+                            <td><code>templates/page.404.json</code></td>
+                            <td>Custom error page with search and helpful links</td>
+                            <td>404 message, search bar, popular products</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Password Page</strong></td>
+                            <td><code>templates/password.json</code></td>
+                            <td>Coming soon page with email signup</td>
+                            <td>Password message, newsletter, countdown</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Search Results</strong></td>
+                            <td><code>templates/search.json</code></td>
+                            <td>Search page with results and filters</td>
+                            <td>Search bar, results grid, suggestions</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>How to Assign Templates</h3>
+                <ol>
+                    <li>Create a new page: <strong>Online Store → Pages → Add page</strong>.</li>
+                    <li>In the <strong>Theme template</strong> dropdown, select the desired template (e.g., "page.contact").</li>
+                    <li>Save the page.</li>
+                    <li>For collections, edit a collection and select a template under <strong>Theme template</strong>.</li>
+                    <li>For products, edit the product and select a template under <strong>Theme template</strong>.</li>
+                </ol>
+
+                <h3>Creating Custom Templates</h3>
+                <p>Create new templates for specific use cases:</p>
+
+                <h4>Option 1: Duplicate Existing</h4>
+                <ol>
+                    <li>Go to <strong>Online Store → Themes → Actions → Edit code</strong>.</li>
+                    <li>Under <code>templates/</code>, copy an existing JSON file (e.g., <code>product.json</code>).</li>
+                    <li>Rename it (e.g., <code>product.luxury.json</code>).</li>
+                    <li>Modify the section order or settings as needed.</li>
+                    <li>Assign the new template to a product from the product editor.</li>
+                </ol>
+
+                <h4>Option 2: Create New from Scratch</h4>
+                <pre><code>{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "show_vendor": true,
+        "enable_zoom": true
+      }
+    },
+    "promo": {
+      "type": "promo-banner",
+      "settings": {
+        "text": "Free shipping on orders over $99!",
+        "bg_color": "#003B73"
+      }
+    }
+  },
+  "order": ["main", "promo"]
+}</code></pre>
+
+                <h3>Template-Specific Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Product Templates</h4>
+                        <p>Support for pre-orders, EMI calculator, COD badge, size guides, and product bundles.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Collection Templates</h4>
+                        <p>Grid/list view toggle, infinite scroll, sidebar filters, product quick view.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Page Templates</h4>
+                        <p>Full-width, sidebar, hero banner, custom sections supports.</p>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- Snippet Reference -->
+            <section id="snippet-reference" class="section">
+                <h2>Snippet Reference</h2>
+                
+                <h3>Core Snippets</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Snippet</th>
+                            <th>Purpose</th>
+                            <th>Key Variables</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">cart-drawer.liquid</code></td>
+                            <td>Slide-out cart</td>
+                            <td><code class="inline-code">cart</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">localization.liquid</code></td>
+                            <td>Currency selector</td>
+                            <td><code class="inline-code">localization</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">mega-menu.liquid</code></td>
+                            <td>Dropdown mega menu</td>
+                            <td><code class="inline-code">link</code>, <code class="inline-code">blocks</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">product-card.liquid</code></td>
+                            <td>Product card (grid)</td>
+                            <td><code class="inline-code">product</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">quick-view.liquid</code></td>
+                            <td>Quick view modal</td>
+                            <td><code class="inline-code">product</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">wishlist-drawer.liquid</code></td>
+                            <td>Wishlist drawer</td>
+                            <td><code class="inline-code">wishlist</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Feature Snippets</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Snippet</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">notify-me.liquid</code></td>
+                            <td>Back-in-stock notification</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">cod-badge.liquid</code></td>
+                            <td>Cash on Delivery badge</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">emi-calculator.liquid</code></td>
+                            <td>EMI calculator for India</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">loyalty-display.liquid</code></td>
+                            <td>Loyalty points display</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">chat-buttons.liquid</code></td>
+                            <td>WhatsApp/Telegram chat</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">size-guide.liquid</code></td>
+                            <td>Size guide modal</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">urgency-indicators.liquid</code></td>
+                            <td>Low stock badges</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">product-compare.liquid</code></td>
+                            <td>Product comparison drawer</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">cookie_consent.liquid</code></td>
+                            <td>GDPR cookie banner</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Icon Snippets</h3>
+                <pre><code>{%- render 'icon-cart' -%}
+{%- render 'icon-heart' -%}
+{%- render 'icon-search' -%}
+{%- render 'icon-account' -%}
+{%- render 'icon-x' -%}
+{%- render 'icon-menu' -%}
+{%- render 'icon-chevron-right' -%}
+{%- render 'icon-chevron-down' -%}
+{%- render 'icon-arrow-right' -%}
+{%- render 'icon-arrow-left' -%}
+{%- render 'icon-trash' -%}
+{%- render 'icon-eye' -%}
+{%- render 'icon-image' -%}
+{%- render 'icon-check' -%}</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- App Integration -->
+            <section id="app-integration" class="section">
+                <h2>App Integration</h2>
+                
+                <div class="feature-grid">
+                     <div class="feature-card">
+                         <h4>Judge.me Reviews</h4>
+                         <p>1. Install from Shopify App Store<br>
+                         2. Widget auto-appears on product pages<br>
+                         3. Use shortcodes in descriptions</p>
+                     </div>
+                     <div class="feature-card">
+                         <h4>Loox Reviews</h4>
+                         <p>1. Install Loox app<br>
+                         2. Add App ID in Theme Settings<br>
+                         3. Widget appears automatically</p>
+                     </div>
+                     <div class="feature-card">
+                         <h4>Yotpo Reviews</h4>
+                         <p>1. Install Yotpo app<br>
+                         2. Add App Key in Theme Settings → Reviews Apps</p>
+                     </div>
+                     <div class="feature-card">
+                         <h4>Klaviyo Email</h4>
+                         <p>1. Install Klaviyo<br>
+                         2. Add tracking via Custom Code section<br>
+                         3. Use Newsletter section for signup</p>
+                     </div>
+                     <div class="feature-card">
+                         <h4>Appixen Shopify Apps</h4>
+                         <p>1. Visit <a href="https://appixen.com/shopify" target="_blank">appixen.com/shopify</a><br>
+                         2. Install desired apps (reviews, upsell, etc.)<br>
+                         3. Follow setup wizard in each app<br>
+                         4. Contact: <a href="mailto:info@appixen.com">info@appixen.com</a></p>
+                     </div>
+                 </div>
+
+                <h3>Common Integration Code</h3>
+                <pre><code>{%- comment -%} Recharge Subscriptions {%- endcomment -%}
+{%- if product.metafields.subscriptions.subscription_id -%}
+  {% render 'subscription-product' %}
+{%- endif -%}
+
+{%- comment -%} Smile.io Rewards {%- endcomment -%}
+{%- if settings.smile_app_enabled -%}
+  {% render 'smile-points-balance' %}
+{%- endif -%}
+
+{%- comment -%} Back in Stock Notification {%- endcomment -%}
+{%- render 'notify-me', product: product, variant: current_variant -%}</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- Performance Optimization -->
+            <section id="performance-optimization" class="section">
+                <h2>Performance Optimization</h2>
+                
+                <h3>Image Optimization</h3>
+                <pre><code>{# Lazy loading #}
+{{ product.featured_image | image_url: width: 400 | image_tag: loading: 'lazy' }}
+
+{# Responsive images with srcset #}
+{{ product.featured_image | image_url: width: 400 | image_tag: 
+  srcset: 
+    product.featured_image | image_url: width: 400 | append: ' 400w,' | 
+    product.featured_image | image_url: width: 600 | append: ' 600w,' |
+    product.featured_image | image_url: width: 800 | append: ' 800w'
+}}
+
+{# Prevent layout shift #}
+{{ product.featured_image | image_url: width: 400 | image_tag: 
+  width: 400, height: 400,
+  loading: 'lazy',
+  decoding: 'async'
+}}</code></pre>
+
+                <h3>Liquid Optimization</h3>
+                <pre><code>{# Assign once, reuse #}
+{%- assign products = collection.products -%}
+{%- assign limit = section.settings.limit -%}
+{%- for product in products limit: limit -%}
+  {{ product.title }}
+{%- endfor -%}
+
+{# Cache expensive operations #}
+{%- capture cache_key -%}products_{{ collection.id }}_{{ current_page }}{%- endcapture -%}</code></pre>
+
+                <h3>JavaScript Optimization</h3>
+                <pre><code>// Defer non-critical JS
+&lt;script src="{{ 'optional.js' | asset_url }}" defer&gt;&lt;/script&gt;
+
+// Use requestAnimationFrame for animations
+function animate() {
+  requestAnimationFrame(animate);
+}
+
+// Debounce scroll/resize
+window.addEventListener('scroll', debounce(function() {
+  // Handler code
+}, 100));</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- SEO & Meta Tags -->
+            <section id="seo-meta-tags" class="section">
+                <h2>SEO &amp; Meta Tags</h2>
+                
+                <h3>Structured Data (JSON-LD)</h3>
+                <pre><code>{%- comment -%} Product Schema {%- endcomment -%}
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | json }},
+  "image": [{{ product.featured_image | image_url: width: 1024 | prepend: 'https:' | json }}],
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ shop.url | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ product.price | money_without_currency | json }},
+    "availability": {{ product.available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' | json }}
+  }
+}
+&lt;/script&gt;</code></pre>
+
+                <h3>Meta Tags</h3>
+                <pre><code>&lt;meta name="description" content="{{ page_description | escape }}"&gt;
+&lt;meta property="og:title" content="{{ page_title | escape }}"&gt;
+&lt;meta property="og:description" content="{{ page_description | escape }}"&gt;
+&lt;meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 | prepend: 'https:' }}"&gt;
+&lt;meta property="og:type" content="product"&gt;
+&lt;meta name="twitter:card" content="summary_large_image"&gt;</code></pre>
+            </section>
+
+            <hr>
+
+            <!-- Accessibility -->
+            <section id="accessibility" class="section">
+                <h2>Accessibility</h2>
+                <p>WCAG 2.1 compliant with 200+ ARIA labels and keyboard navigation support.</p>
+
+                <h3>ARIA Best Practices</h3>
+                <pre><code>{# Navigation #}
+&lt;nav aria-label="Primary navigation"&gt;
+  &lt;ul role="list"&gt;
+    &lt;li&gt;&lt;a href="/" aria-current="page"&gt;Home&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+
+{# Buttons #}
+&lt;button aria-label="Close menu" aria-expanded="false"&gt;
+&lt;button aria-controls="menu" aria-haspopup="true"&gt;
+
+{# Forms #}
+&lt;label for="email"&gt;Email&lt;/label&gt;
+&lt;input id="email" type="email" required aria-required="true"&gt;
+
+{# Live regions #}
+&lt;div role="status" aria-live="polite"&gt;Product added to cart&lt;/div&gt;
+&lt;div role="alert" aria-live="assertive"&gt;Error message&lt;/div&gt;</code></pre>
+
+                <h3>Skip Links</h3>
+                <pre><code>&lt;a href="#MainContent" class="skip-to-content"&gt;
+  Skip to content
+&lt;/a&gt;
+
+&lt;main id="MainContent" tabindex="-1"&gt;
+  {{ content_for_layout }}
+&lt;/main&gt;</code></pre>
+
+                <h3>Keyboard Navigation</h3>
+                <ul>
+                    <li><kbd>Tab</kbd> - Navigate forward through interactive elements</li>
+                    <li><kbd>Shift + Tab</kbd> - Navigate backward</li>
+                    <li><kbd>Enter/Space</kbd> - Activate buttons/links</li>
+                    <li><kbd>Escape</kbd> - Close modals/drawers</li>
+                    <li><kbd>Arrow keys</kbd> - Navigate menus, sliders, and carousels</li>
+                </ul>
+            </section>
+
+            <hr>
+
+            <!-- Troubleshooting -->
+            <section id="troubleshooting" class="section">
+                <h2>Troubleshooting</h2>
+                
+                <h3>Common Issues &amp; Solutions</h3>
+                
+                <h4>1. Cart not updating</h4>
+                <ul>
+                    <li>Check if <code class="inline-code">luxe-theme.js</code> loads correctly</li>
+                    <li>Verify no JavaScript errors in console (<kbd>F12</kbd>)</li>
+                    <li>Ensure <code class="inline-code">cart</code> object exists</li>
+                    <li>Clear theme cache in Shopify admin</li>
+                </ul>
+
+                <h4>2. Styles not applying</h4>
+                <ul>
+                    <li>Clear browser cache (_hard refresh: Ctrl+F5)</li>
+                    <li>Clear theme cache in Shopify admin</li>
+                    <li>Check CSS specificity</li>
+                    <li>Verify CSS variables are defined</li>
+                </ul>
+
+                <h4>3. Sections not appearing</h4>
+                <ul>
+                    <li>Verify schema has <code class="inline-code">presets</code> defined</li>
+                    <li>Check section file exists in <code class="inline-code">/sections/</code></li>
+                    <li>Ensure valid JSON in schema (use JSON validator)</li>
+                    <li>Section must be added to template JSON</li>
+                </ul>
+
+                <h4>4. Liquid rendering errors</h4>
+                <ul>
+                    <li>Check for missing/undefined variables</li>
+                    <li>Verify filter syntax (e.g., <code class="inline-code">| money</code>)</li>
+                    <li>Use <code class="inline-code">{{ variable | json }}</code> for debugging</li>
+                    <li>Check for unclosed tags</li>
+                </ul>
+
+                <h4>5. Images not loading</h4>
+                <ul>
+                    <li>Verify <code class="inline-code">loading: 'lazy'</code> attribute</li>
+                    <li>Check image URL filters correct</li>
+                    <li>Ensure images exist in Shopify admin</li>
+                </ul>
+
+                <h4>6. Mega menu not working</h4>
+                <ul>
+                    <li>Confirm <code class="inline-code">nav_link_title</code> matches menu item exactly</li>
+                    <li>Verify block is added to header section</li>
+                    <li>Check JavaScript console for errors</li>
+                </ul>
+
+                <h4>7. Currency converter not showing</h4>
+                <ul>
+                    <li>Enable in Theme Settings → Currency &amp; Language</li>
+                    <li>Enter valid ExchangeRate-API key</li>
+                    <li>Ensure <code class="inline-code">enable_currency_converter</code> is checked</li>
+                </ul>
+
+                <h3>Debug Mode</h3>
+                <p>Enable debug mode by adding <code class="inline-code">?debug=1</code> to URL to see detailed console logs.</p>
+
+                <h3>Frequently Asked Questions (FAQ)</h3>
+
+                <h4>How do I update the theme?</h4>
+                <ol>
+                    <li>Download the latest version from your account</li>
+                    <li>Go to <strong>Online Store → Themes</strong></li>
+                    <li>Click <strong>Actions → Upload zip file</strong></li>
+                    <li>Publish the new theme (your current theme remains as backup)</li>
+                </ol>
+
+                <h4>Can I use this theme on multiple stores?</h4>
+                <p>Each theme license is for one store only. You'll need to purchase additional licenses for additional stores. Contact us for bulk licensing options.</p>
+
+                <h4>Is the theme compatible with Shopify's latest version?</h4>
+                <p>Yes. LUXE is built on Shopify Online Store 2.0 and is fully compatible with the latest Shopify features and standards. We regularly update the theme to maintain compatibility.</p>
+
+                <h4>How do I add a new language?</h4>
+                <ol>
+                    <li>Enable multiple languages in <strong>Settings → Languages</strong></li>
+                    <li>Install a translation app (e.g., Weglot, Langify)</li>
+                    <li>Translate your content using the app's interface</li>
+                </ol>
+
+                <h4>Can I remove the "Powered by Shopify" footer?</h4>
+                <p>Yes. Go to <strong>Online Store → Themes → Customize → Theme Settings → Footer</strong> and disable <strong>Show powered by Shopify</strong>. Please note that removing this attribution may violate Shopify's terms of service for certain theme types.</p>
+
+                <h4>How do I add a custom section?</h4>
+                <p>Create a new file in <code>/sections/</code> with a <code>{% schema %}</code> block defining settings and blocks. Then add it to your template JSON. See <a href="#adding-custom-features">Adding Custom Features</a> for examples.</p>
+
+                <h4>Why are my images blurry or pixelated?</h4>
+                <p>Upload high-resolution images (minimum 1200×1200px for product images). Use Shopify's CDN which automatically serves optimized WebP images to supported browsers. Enable <strong>Image Zoom</strong> and <strong>Lazy Loading</strong> in theme settings for better performance.</p>
+
+                <h4>Why is my cart not updating?</h4>
+                <p>Check for JavaScript errors in the browser console. Ensure the AJAX endpoints <code>/cart/add.js</code>, <code>/cart/change.js</code> are accessible. Clear theme cache and verify no app conflicts.</p>
+            </section>
+
+            <hr>
+
+            <!-- Support & Resources -->
+            <section id="support-resources" class="section">
+                <h2>Support & Resources</h2>
+                <p>Need help with your LUXE theme? We're here to assist you.</p>
+
+                <h3>Support Channels</h3>
+                <div class="feature-grid">
+                     <div class="feature-card">
+                         <h4>Email Support</h4>
+                         <p><strong>info@appixen.com</strong><br>
+                         Response time: 24–48 hours on weekdays</p>
+                     </div>
+                     <div class="feature-card">
+                         <h4>Help Desk</h4>
+                         <p><a href="https://appixen.com/shopify" target="_blank">appixen.com/shopify</a><br>
+                         Search knowledge base, submit tickets</p>
+                     </div>
+                     <div class="feature-card">
+                         <h4>Live Chat</h4>
+                         <p><strong>Available on our website</strong><br>
+                         Mon–Fri, 9am–5pm EST (for sales & pre-sales)</p>
+                     </div>
+                     <div class="feature-card">
+                         <h4>Appixen Support</h4>
+                         <p><a href="mailto:info@appixen.com">info@appixen.com</a><br>
+                         Shopify app integrations & custom development</p>
+                     </div>
+                 </div>
+
+                <h3>Community</h3>
+                <ul>
+                    <!-- <li><strong>Facebook Group:</strong> Join the <a href="#" target="_blank">LUXE Theme Users</a> community</li> -->
+                    <li><strong>Discord Server:</strong> Real-time help from other merchants and developers</li>
+                    <li><strong>Documentation:</strong> This guide + video tutorials on our YouTube channel</li>
+                </ul>
+
+                <h3>Before Contacting Support</h3>
+                <p>To speed up resolution, please follow these steps:</p>
+                <ol>
+                    <li><strong>Check the Troubleshooting section</strong> above for common issues and fixes</li>
+                    <li><strong>Search the help desk</strong> for similar questions</li>
+                    <li><strong>Clear browser cache</strong> and try in incognito mode</li>
+                    <li><strong>Disable other apps</strong> temporarily to check for conflicts</li>
+                    <li><strong>Provide details:</strong> Store URL, theme version, screenshots, console errors</li>
+                </ol>
+
+                <h3>Helpful Resources</h3>
+                <ul>
+                    <li><strong>Shopify Documentation:</strong> <a href="https://help.shopify.com" target="_blank">help.shopify.com</a></li>
+                    <li><strong>Shopify Community:</strong> <a href="https://community.shopify.com" target="_blank">community.shopify.com</a></li>
+                    <li><strong>Liquid Templates:</strong> <a href="https://shopify.dev/docs/api/liquid" target="_blank">Shopify Liquid Reference</a></li>
+                    <li><strong>Appixen Apps:</strong> <a href="https://appixen.com/shopify" target="_blank">appixen.com/shopify</a> - Premium Shopify app integrations</li>
+                </ul>
+
+                <h3>Video Tutorials</h3>
+                <p>Watch step-by-step guides on our YouTube channel:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Installation Walkthrough</h4>
+                        <p>How to upload, activate, and configure your LUXE theme</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Customization Demo</h4>
+                        <p>Changing colors, fonts, sections, and layouts</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Advanced Tweaks</h4>
+                        <p>Adding custom CSS, creating new sections, metafields</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Niche-Specific Setups</h4>
+                        <p>Configuring fashion, tech, dropshipping, and luxury stores</p>
+                    </div>
+                </div>
+
+                <h3>Request a Feature</h3>
+                <p>Have an idea for improving LUXE? We'd love to hear it! Submit feature requests through our <a href="https://appixen.com/shopify" target="_blank">feature request form</a>.</p>
+            </section>
+
+            <hr>
+
+            <!-- Changelog -->
+            <section id="changelog" class="section">
+                <h2>Changelog</h2>
+                
+                <h3>Version 1.0.0 (May 2026)</h3>
+                <ul>
+                    <li>Initial release</li>
+                    <li>Shopify 2.0 Online Store 2.0 compatible</li>
+                    <li>40+ sections and blocks</li>
+                    <li>Performance optimized with lazy loading, critical CSS</li>
+                    <li>WCAG 2.1 AA compliant</li>
+                    <li>Full responsive design (mobile-first)</li>
+                </ul>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">↑ Back to top</a>
+
+    <script>
+        // Back to top button visibility
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Smooth scrolling for sidebar links
+        document.querySelectorAll('.sidebar nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Update active link in sidebar on scroll
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+{% layout none %}
+{% comment %} Quick View Section - Returns product info for modal {% endcomment %}
+
+{%- comment -%}
+  Accepts a product_handle via request.params.product_handle
+  Usage: ?section_id=quick-view&product_handle=PRODUCT_HANDLE
+{%- endcomment -%}
+
+{%- assign product = nil -%}
+{%- if request.params.product_handle != blank -%}
+  {%- assign product = all_products[request.params.product_handle] -%}
+{%- else -%}
+  {%- assign product = collections.all.products | first -%}
+{%- endif -%}
+
+{%- if product == nil -%}
+  {%- assign product = collections.all.products | first -%}
+{%- endif -%}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<div class="qv-product">
+
+  <!-- Gallery -->
+  <div class="qv-product__gallery">
+    <div class="qv-gallery__main" id="QVGalleryMain">
+      {%- if product.featured_image -%}
+        <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" class="qv-product__img" width="{{ product.featured_image.width }}"
+                  height="{{ product.featured_image.height }}">
+      {%- endif -%}
+    </div>
+    <div class="qv-gallery__thumbs" id="QVGalleryThumbs">
+      {%- for image in product.images limit: 4 -%}
+        <button class="qv-thumb" data-index="{{ forloop.index0 }}">
+          <img src="{{ image | image_url: width: 100 }}" alt="{{ image.alt | escape }}" width="{{ image.width }}" height="{{ image.height }}">
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="qv-product__info">
+
+    <p class="qv-product__vendor">{{ product.vendor }}</p>
+    <h2 class="qv-product__title" id="QVTitle">{{ product.title }}</h2>
+
+    <!-- Price -->
+    <div class="qv-product__price" id="QVPrice">
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+        <span class="price__sale">{{ current_variant.price | money }}</span>
+        <span class="price__compare">{{ current_variant.compare_at_price | money }}</span>
+      {%- else -%}
+        <span class="price__regular">{{ current_variant.price | money }}</span>
+      {%- endif -%}
+    </div>
+
+    <!-- Options -->
+    <div class="qv-product__options" id="QVOptions">
+      {%- if product.options.size > 0 -%}
+        {%- for option in product.options_with_values -%}
+          <div class="option">
+            <label class="option__name">{{ option.name }}</label>
+            <div class="option__values">
+              {%- for value in option.values -%}
+                <button class="option__btn{% if forloop.first %} active{% endif %}" data-option-index="{{ forloop.parentloop.index0 }}" data-value="{{ value }}">{{ value }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    <!-- Quantity -->
+    <div class="qv-product__qty-wrap">
+      <label class="qv-product__qty-label">Quantity</label>
+      <div class="qv-product__qty">
+        <button type="button" class="qv-qty-btn" data-action="decrease">−</button>
+        <input type="number" id="QVQty" value="1" min="1" class="qv-qty-input" aria-label="Quantity">
+        <button type="button" class="qv-qty-btn" data-action="increase">+</button>
+      </div>
+    </div>
+
+    <!-- CTA row -->
+    <div class="qv-product__cta">
+      <button
+        class="btn btn--atc"
+        id="QVAddToCart"
+        data-variant-id="{{ current_variant.id }}"
+        data-product-title="{{ product.title | escape }}"
+      >
+        <span class="btn__icon">+</span>
+        <span id="QVAddToCartText">Add to Cart</span>
+      </button>
+      <button
+        class="btn btn--wishlist"
+        id="QVWishlist"
+        data-product-id="{{ product.id }}"
+        aria-label="Add to wishlist"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- View full details link -->
+    <a href="{{ product.url }}" class="qv-product__full-link">
+      View full product details →
+    </a>
+
+  </div>
+</div>

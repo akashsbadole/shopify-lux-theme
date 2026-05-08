@@ -10,13 +10,12 @@
 7. [Snippet Reference](#snippet-reference)
 8. [Section Schema](#section-schema)
 9. [Template Customization](#template-customization)
-10. [Translations](#translations)
-11. [App Integration](#app-integration)
-12. [Performance Optimization](#performance-optimization)
-13. [SEO & Meta Tags](#seo--meta-tags)
-14. [Accessibility](#accessibility)
-15. [Troubleshooting](#troubleshooting)
-16. [Changelog](#changelog)
+10. [App Integration](#app-integration)
+11. [Performance Optimization](#performance-optimization)
+12. [SEO & Meta Tags](#seo--meta-tags)
+13. [Accessibility](#accessibility)
+14. [Troubleshooting](#troubleshooting)
+15. [Changelog](#changelog)
 
 ---
 
@@ -33,7 +32,7 @@ luxe-theme/
 │   ├── cart-drawer.liquid        # Ajax cart drawer
 │   ├── cart-items.liquid         # Cart items rendering
 │   ├── cookie_consent.liquid     # GDPR cookie banner
-│   ├── localization.liquid       # Currency/language selector
+│   ├── localization.liquid       # Currency selector
 │   ├── mega-menu.liquid          # Navigation mega menu
 │   ├── pincode-checker.liquid    # India delivery checker
 │   ├── product-card.liquid       # Product card component
@@ -90,9 +89,6 @@ luxe-theme/
 │   ├── luxe-theme.css            # Main stylesheet
 │   ├── google-fonts.css          # Font imports
 │   └── theme.scss                # Source SCSS (if using)
-├── locales/                      # Translation files
-│   ├── en.default.json          # English (default)
-│   └── *.json                    # Other languages
 ├── config.yml                    # Theme configuration
 └── README.md                     # Theme overview
 ```
@@ -934,7 +930,7 @@ function setUrlParam(key, value) {
 | `cart-drawer.liquid` | Slide-out cart | `cart` object |
 | `cart-items.liquid` | Cart line items | `cart` object |
 | `cookie_consent.liquid` | GDPR banner | `settings.*` |
-| `localization.liquid` | Currency/Lang selector | `localization` object |
+| `localization.liquid` | Currency selector | `localization` object |
 | `mega-menu.liquid` | Navigation mega menu | `link`, `blocks` |
 | `pincode-checker.liquid` | Delivery checker | `settings.*` |
 | `product-card.liquid` | Product card component | `product` |
@@ -1232,91 +1228,6 @@ function setUrlParam(key, value) {
 
 ---
 
-## Translations
-
-### Locales Structure
-
-```json
-// locales/en.default.json
-{
-  "general": {
-    "search": {
-      "placeholder": "Search products...",
-      "submit": "Search",
-      "results": "Results for \"{{ terms }}\""
-    },
-    "navigation": {
-      "home": "Home",
-      "shop": "Shop",
-      "account": "Account",
-      "cart": "Cart"
-    },
-    "links": {
-      "view_all": "View All",
-      "learn_more": "Learn More"
-    }
-  },
-  "products": {
-    "product": {
-      "add_to_cart": "Add to Cart",
-      "sold_out": "Sold Out",
-      "unavailable": "Unavailable",
-      "pre_order": "Pre-order",
-      "new": "New",
-      "sale": "Sale",
-      "save": "Save {{ percentage }}%"
-    },
-    "tabs": {
-      "description": "Description",
-      "details": "Details",
-      "shipping": "Shipping",
-      "returns": "Returns"
-    }
-  },
-  "cart": {
-    "title": "Your Cart",
-    "empty": "Your cart is empty",
-    "continue_shopping": "Continue Shopping",
-    "subtotal": "Subtotal",
-    "total": "Total",
-    "checkout": "Checkout",
-    "update": "Update"
-  },
-  "customer": {
-    "account": {
-      "title": "My Account",
-      "orders": "Orders",
-      "addresses": "Addresses",
-      "logout": "Log Out"
-    },
-    "login": {
-      "title": "Log In",
-      "email": "Email",
-      "password": "Password",
-      "forgot": "Forgot password?",
-      "create": "Create Account"
-    }
-  },
-  "wishlist": {
-    "title": "My Wishlist",
-    "empty": "Your wishlist is empty",
-    "add": "Add to Wishlist",
-    "remove": "Remove"
-  }
-}
-```
-
-### Using Translations
-
-```liquid
-{{ 'general.search.placeholder' | t }}
-{{ 'products.product.add_to_cart' | t }}
-
-{%- assign total = cart.total_price | money -%}
-{{ 'cart.total' | t: total: total }}
-```
-
----
 
 ## App Integration
 

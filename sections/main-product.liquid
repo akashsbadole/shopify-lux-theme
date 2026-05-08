@@ -28,10 +28,21 @@
     <div class="main-product__gallery" id="ProductGallery" data-media-count="{{ product.media.size }}">
       <!-- Main image area with all media -->
       <div class="product-gallery__main" id="ProductMainImage">
+        {%- assign color_option_index = -1 -%}
+        {%- for option in product.options_with_values -%}
+          {%- if option.name == 'Color' or option.name == 'colour' or option.name == 'Color' -%}
+            {%- assign color_option_index = forloop.index0 -%}
+          {%- endif -%}
+        {%- endfor -%}
         {%- for media in product.media -%}
+          {%- assign media_options = '' -%}
+          {%- if color_option_index >= 0 and media.alt != blank -%}
+            {%- assign media_options = media.alt | split: '[' | last | split: ']' | first -%}
+          {%- endif -%}
           <div 
             class="product-gallery__slide{% if media == featured_media %} product-gallery__slide--active{% endif %}{% if section.settings.enable_zoom %} product-gallery__slide--zoomable{% endif %}"
             data-media-id="{{ media.id }}"
+            data-media-options="{{ media_options }}"
             data-index="{{ forloop.index0 }}"
             {%- if media != featured_media -%}style="display:none;"{%- endif -%}
           >
@@ -225,9 +236,12 @@
             >
             <button type="button" class="main-product__qty-btn" data-action="increase" aria-label="Increase quantity">+</button>
           </div>
-        </div>
+         </div>
 
-        <!-- Add to cart -->
+         <!-- Volume Pricing Table -->
+         {%- render 'volume-pricing' -%}
+
+         <!-- Add to cart -->
         <div class="main-product__atc-wrap{% unless current_variant.available %} main-product__atc-wrap--hidden{% endunless %}" id="ATCWrap">
           <button
             type="submit"
@@ -393,12 +407,10 @@
 
 <style>
   .main-product__atc-wrap { display: flex; gap: 12px; align-items: stretch; margin: 24px 0; }
-   .btn--atc { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: var(--color-blue); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-   .btn--atc:hover { background: #0055AA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,59,115,0.3); }
-   .btn--buy-now { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: var(--color-blue); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
-   .btn--buy-now:hover { background: #0055AA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,59,115,0.3); }
-  .btn--wishlist { padding: 16px; background: #f5f5f5; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; color: #666; }
-  .btn--wishlist:hover { background: #ffe5e5; color: #e74c3c; }
+  .btn--atc, .btn--buy-now { flex: 1; padding: 16px 24px; font-size: 15px; font-weight: 600; background: var(--color-blue); color: #fff; border: 1.5px solid var(--color-blue); border-radius: var(--radius-full); cursor: pointer; transition: all 0.3s ease; }
+  .btn--atc:hover, .btn--buy-now:hover { background: #0055AA; border-color: #0055AA; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,59,115,0.3); }
+  .btn--wishlist { padding: 16px; background: #f5f5f5; border: 1.5px solid var(--color-border); border-radius: var(--radius-full); cursor: pointer; transition: all 0.3s ease; color: #666; }
+  .btn--wishlist:hover { background: #ffe5e5; border-color: #e74c3c; color: #e74c3c; }
   @media (max-width: 480px) {
     .main-product__atc-wrap { flex-wrap: wrap; }
     .btn--atc, .btn--buy-now { width: 100%; flex: none; }
@@ -526,6 +538,29 @@
         updateGallery(currentIndex + 1);
       });
     }
+    
+    // Function to update gallery by variant image
+    function updateGalleryByImage(imageId) {
+      var foundIndex = -1;
+      slides.forEach(function(slide, i) {
+        var img = slide.querySelector('img');
+        if (img && img.dataset.imageId == imageId) {
+          foundIndex = i;
+        }
+      });
+      if (foundIndex >= 0) {
+        updateGallery(foundIndex);
+      }
+    }
+    
+    // Map current options to image for each media item
+    var mediaItems = document.querySelectorAll('.product-gallery__slide');
+    mediaItems.forEach(function(slide) {
+      var img = slide.querySelector('img');
+      if (img) {
+        img.dataset.imageId = img.dataset.imageId || '';
+      }
+    });
 
     // Description tabs
     var descTabs = document.querySelectorAll('.desc-tab');
@@ -612,12 +647,80 @@
 
     if (match) {
       input.value = match.id;
-      if (priceEl) priceEl.querySelector('.main-product__price-regular, .main-product__price-sale').textContent = luxeFormatMoney(match.price);
+      if (priceEl) {
+        var priceRegular = priceEl.querySelector('.main-product__price-regular');
+        var priceSale = priceEl.querySelector('.main-product__price-sale');
+        var priceCompare = priceEl.querySelector('.main-product__price-compare');
+        if (match.compare_at_price > match.price && priceSale) {
+          if (priceRegular) priceRegular.style.display = 'none';
+          priceSale.style.display = '';
+          priceSale.textContent = luxeFormatMoney(match.price);
+          if (priceCompare) {
+            priceCompare.style.display = '';
+            priceCompare.textContent = luxeFormatMoney(match.compare_at_price);
+          }
+        } else if (priceRegular) {
+          if (priceSale) priceSale.style.display = 'none';
+          if (priceCompare) priceCompare.style.display = 'none';
+          priceRegular.style.display = '';
+          priceRegular.textContent = luxeFormatMoney(match.price);
+        }
+      }
       if (btn) {
         btn.disabled = !match.available;
         btn.classList.toggle('btn--disabled', !match.available);
       }
       if (btnText) btnText.textContent = match.available ? 'Add to Cart' : 'Sold Out';
+      
+      // Update gallery image if variant has featured image
+      if (match.featured_image) {
+        updateGalleryByImage(match.featured_image.id);
+      } else {
+        // Try to find image by matching selected color option
+        var selectedColor = '';
+        document.querySelectorAll('[data-option-index]').forEach(function(el) {
+          var val = el.dataset.value || '';
+          if (val && (el.classList.contains('main-product__swatch--active') || el.getAttribute('aria-checked') === 'true')) {
+            selectedColor = val;
+          }
+        });
+        
+        if (selectedColor) {
+          // Find media that matches the selected color
+          var matchingSlide = null;
+          var slides = document.querySelectorAll('.product-gallery__slide');
+          slides.forEach(function(slide) {
+            var mediaOptions = slide.dataset.mediaOptions || '';
+            if (mediaOptions && mediaOptions.toLowerCase().includes(selectedColor.toLowerCase())) {
+              matchingSlide = slide;
+            }
+          });
+          
+          if (matchingSlide) {
+            var idx = parseInt(matchingSlide.dataset.index);
+            if (!isNaN(idx)) updateGallery(idx);
+          }
+        }
+      }
+      
+      // Update inventory display
+      var inventoryEl = document.getElementById('ProductInventory');
+      if (inventoryEl && match.inventory_quantity !== undefined) {
+        var qty = match.inventory_quantity;
+        if (qty <= 0) {
+          inventoryEl.textContent = 'Out of stock';
+          inventoryEl.className = 'main-product__inventory main-product__inventory--out';
+        } else if (qty <= 10) {
+          inventoryEl.textContent = 'Only ' + qty + ' left!';
+          inventoryEl.className = 'main-product__inventory main-product__inventory--low';
+        } else if (qty <= 30) {
+          inventoryEl.textContent = qty + ' in stock';
+          inventoryEl.className = 'main-product__inventory main-product__inventory--medium';
+        } else {
+          inventoryEl.textContent = 'In stock';
+          inventoryEl.className = 'main-product__inventory';
+        }
+      }
     }
   }
 

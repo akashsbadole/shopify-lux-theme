@@ -1,6 +1,6 @@
 {
   "name": "{{ shop.name }}",
-  "short_name": "LUXE",
+  "short_name": "FlowTheme",
   "description": "{{ shop.description | default: 'Premium Shopping Experience' }}",
   "start_url": "/",
   "display": "standalone",

@@ -1,0 +1,19 @@
+{%- comment -%}Volume Pricing Table{%- endcomment -%}
+{%- assign show_table = settings.promo_volume_show_table -%}
+{%- if show_table -%}
+{%- assign promo_type = product.metafields.luxe.promo_type.value -%}
+{%- if promo_type == 'volume_discount' -%}
+{%- assign vol_qty = product.metafields.luxe.promo_min_qty.value | default: 3 -%}
+{%- assign vol_pct = product.metafields.luxe.promo_discount_value.value | default: 15 -%}
+<div class="volume-pricing-table" id="VolumePricingTable">
+  <h4 class="volume-pricing__title">{{ settings.promo_volume_table_label }}</h4>
+  <table class="volume-pricing__table">
+    <thead><tr><th>Qty</th><th>Price</th><th>Savings</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>{{ product.price | money }}</td><td>-</td></tr>
+      <tr><td>{{ vol_qty }}+</td><td>{{ product.price | money }}</td><td>{{ vol_pct }}% off</td></tr>
+    </tbody>
+  </table>
+</div>
+{%- endif -%}
+{%- endif -%}

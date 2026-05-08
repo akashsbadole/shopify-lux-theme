@@ -1,0 +1,49 @@
+{%- comment -%}
+  Promo Widget
+  Mini notification displayed in cart drawer showing promotion progress.
+  Shows "Add $X more for free gift!" or "Buy N more for BOGO"
+{%- endcomment -%}
+
+{%- assign promo_type = cart.attributes.promo_type | default: '' -%}
+{%- assign promo_progress = cart.attributes.promo_progress | default: 0 | plus: 0 -%}
+{%- assign show_widget = false -%}
+{%- if promo_progress > 0 -%}
+  {%- if promo_progress < 100 -%}
+    {%- assign show_widget = true -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if show_widget and settings.promo_show_progress_bar -%}
+  <div class="promo-widget" id="PromoWidget" data-promo-type="{{ promo_type }}">
+    <div class="promo-widget__icon">
+      {%- case promo_type -%}
+        {%- when 'free_gift' -%} 🎁
+        {%- when 'bogo' -%} 🎁
+        {%- when 'volume_discount' -%} 📦
+        {%- when 'price_based' -%} 💰
+        {%- else -%} ⚡
+      {%- endcase -%}
+    </div>
+    <div class="promo-widget__text">
+{%- if promo_type == 'free_gift' -%}
+         {%- assign remaining = cart.total_price | minus: settings.promo_gift_min_amount | default: 0 | abs | money -%}
+         {%- if cart.total_price >= settings.promo_gift_min_amount -%}
+           🎉 You qualify for a free gift! Select it now.
+         {%- else -%}
+           Add {{ remaining }} more for a free gift!
+         {%- endif -%}
+      {%- elsif promo_type == 'bogo' -%}
+        Add more items to unlock your free product!
+      {%- elsif promo_type == 'volume_discount' -%}
+        {%- assign min_qty = settings.promo_volume_min_qty | default: 3 -%}
+        {%- assign needed = min_qty | minus: cart.item_count -%}
+        Add {{ needed }} more for bulk pricing!
+      {%- else -%}
+        Keep shopping to activate your promotion!
+      {%- endif -%}
+    </div>
+    <a href="{{ routes.all_products_collection_url }}" class="promo-widget__link">
+      Shop →
+    </a>
+  </div>
+{%- endif -%}

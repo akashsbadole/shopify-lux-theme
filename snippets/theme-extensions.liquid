@@ -1,28 +1,8 @@
 {%- comment -%}
-  Theme Extensions & Customization Guide
-  Use this snippet to add custom styles or override theme behavior.
-  
-  Available CSS Variables (use in your custom CSS):
-  --color-bg: Page background
-  --color-text: Primary text
-  --color-navy: Brand navy/blue
-  --color-purple: Accent purple
-  --color-muted: Secondary/muted text
-  --color-border: Border color
-  --color-sale: Sale price color
-  --color-success: Success green
-  --color-error: Error red
-  --font-family-base: Primary font
-  --font-size-base: Base font size
-  --radius: Border radius
-  --transition: Transition speed
-  
-  Example: To change button color, add in Custom Code section:
-  .btn { --btn-bg: #ff0000; }
-  
-  For developers: Add custom JS/CSS via:
-  1. Theme Settings > Custom Code section
-  2. Online Store > Themes > Customize > Edit Code
+   Theme Extensions
+   Additional theme functionality
+   Note: This snippet is intentionally designed to be included conditionally via JavaScript
+   for extending theme functionality based on merchant settings.
 {%- endcomment -%}
 
 {%- assign custom_styles = settings.custom_styles | default: '' -%}

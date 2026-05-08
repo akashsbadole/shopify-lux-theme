@@ -6,6 +6,10 @@
 
 <div class="cart-ajax" id="CartAjaxContent">
   {%- if cart.item_count > 0 -%}
+
+    <!-- Promotion Progress Bar -->
+    {%- render 'promo-progress', cart: cart -%}
+
     <!-- Cart items -->
     {%- render 'cart-items', cart: cart -%}
 
@@ -48,12 +52,16 @@
         </button>
       </form>
 
-      <div class="cart-trust">
-        <div class="cart-trust__badge">🔒 Secure Checkout</div>
-        <div class="cart-trust__badge">↩️ Easy Returns</div>
-        <div class="cart-trust__badge">🚚 Fast Delivery</div>
-      </div>
-    </div>
+       <div class="cart-trust">
+         <div class="cart-trust__badge">🔒 Secure Checkout</div>
+         <div class="cart-trust__badge">↩️ Easy Returns</div>
+         <div class="cart-trust__badge">🚚 Fast Delivery</div>
+       </div>
+
+       <!-- Promo Widget -->
+       {%- render 'promo-widget' -%}
+
+     </div>
 
   {%- else -%}
     <!-- Empty cart -->
@@ -70,11 +78,19 @@
   var cartCount = {{ cart.item_count }};
   var cartTotal = {{ cart.total_price }};
   
-  // Dispatch custom event for other components to listen
-  window.dispatchEvent(new CustomEvent('cart:updated', { 
-    detail: { 
-      itemCount: cartCount, 
-      totalPrice: cartTotal 
-    } 
-  }));
-</script>
+   // Dispatch custom event for other components to listen
+   window.dispatchEvent(new CustomEvent('cart:updated', { 
+     detail: { 
+       itemCount: cartCount, 
+       totalPrice: cartTotal 
+     } 
+   }));
+   
+   // Promotion metafields for JS (as JSON, will be read by luxe-theme.js)
+   // The script content is NOT executed but parsed by updateCartContent
+  </script>
+
+   <!-- JSON data for promotions (non-executing) -->
+   <script type="application/json" id="PromoMetafieldsData">
+     []
+   </script>

@@ -86,10 +86,13 @@
       {%- elsif product.tags contains 'hot' -%}
         <span class="product-card__badge product-card__badge--hot">Hot 🔥</span>
       {%- endif -%}
-    {%- endif -%}
+     {%- endif -%}
 
-    <!-- Hover quick actions -->
-    <div class="product-card__actions" aria-hidden="true">
+     <!-- Promotional Badge (BOGO, Volume, etc.) -->
+     {%- render 'promo-badge', product: product -%}
+
+     <!-- Hover quick actions -->
+    <div class="product-card__actions">
       <button
         class="product-card__action-btn"
         data-action="wishlist"
@@ -199,7 +202,7 @@
           </div>
           {%- endif -%}
           <button
-            class="btn btn--add-to-cart"
+            class="btn btn--primary btn--sm"
             data-variant-id="{{ product.variants.first.id }}"
             data-product-title="{{ product.title | escape }}"
             aria-label="Add {{ product.title | escape }} to cart"
@@ -207,7 +210,7 @@
             Add to Cart
           </button>
         {%- else -%}
-          <a href="{{ product.url }}" class="btn btn--select-options">
+          <a href="{{ product.url }}" class="btn btn--outline btn--sm">
             Select Options
           </a>
         {%- endif -%}

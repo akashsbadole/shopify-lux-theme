@@ -1,7 +1,9 @@
 {%- comment -%}
-  Multi-Channel Chat Buttons
-  Shows WhatsApp, Telegram, or custom chat widget
-  Usage: {% render 'chat-buttons' %}
+   Multi-Channel Chat Buttons
+   Shows WhatsApp, Telegram, or custom chat widget
+   Usage: {% render 'chat-buttons' %}
+   Note: This snippet is intentionally designed to be included conditionally via JavaScript
+   based on merchant settings for chat widget enablement.
 {%- endcomment -%}
 
 {%- assign chat_position = settings.chat_button_position | default: 'bottom-right' -%}

@@ -1,0 +1,47 @@
+{%- comment -%}
+  Promotional Badge
+  Displays promotion type on product cards (e.g., "Buy 2 Get 1 Free", "Buy 3 Save 15%")
+  Usage: {% render 'promo-badge', product: product %}
+{%- endcomment -%}
+
+{%- assign show_badges = settings.promo_show_badges | default: true -%}
+{%- if show_badges -%}
+
+{%- assign promo_type = nil -%}
+{%- assign promo_text = nil -%}
+
+{%- comment %}Check product metafields for promotion definition{%- endcomment -%}
+{%- assign promo_from_metafield = product.metafields.luxe.promo_type.value | default: '' -%}
+{%- assign buy_qty = product.metafields.luxe.promo_buy_qty.value | default: 0 | plus: 0 -%}
+{%- assign get_qty = product.metafields.luxe.promo_get_qty.value | default: 0 | plus: 0 -%}
+{%- assign promo_discount = product.metafields.luxe.promo_discount_value.value | default: 0 | plus: 0 -%}
+{%- assign promo_min_qty = product.metafields.luxe.promo_min_qty.value | default: 0 | plus: 0 -%}
+
+{%- if promo_from_metafield != '' -%}
+  {%- assign promo_type = promo_from_metafield -%}
+  {%- case promo_from_metafield -%}
+    {%- when 'bogo' -%}
+      {%- assign label_template = settings.promo_bogo_label | default: 'Buy {buy_qty} Get {get_qty} Free' -%}
+      {%- assign promo_text = label_template | replace: '{buy_qty}', buy_qty | replace: '{get_qty}', get_qty -%}
+    {%- when 'volume_discount' -%}
+      {%- assign promo_text = 'Buy ' | append: promo_min_qty | append: '+ Save ' | append: promo_discount | append: '%' -%}
+    {%- when 'free_gift' -%}
+      {%- assign threshold = product.metafields.luxe.promo_min_amount.value | default: 0 | money -%}
+      {%- assign promo_text = 'Free gift with ' | append: threshold | append: ' purchase' -%}
+    {%- when 'price_based' -%}
+      {%- assign min_qty = product.metafields.luxe.promo_min_qty.value | default: 3 -%}
+      {%- assign promo_text = 'Buy ' | append: min_qty | append: '+ Cheapest Item Free' -%}
+    {%- else -%}
+      {%- assign promo_text = settings.promo_generic_label | default: 'Special Offer' -%}
+  {%- endcase -%}
+{%- endif -%}
+
+{%- if promo_type != nil and promo_text != nil -%}
+<span class="product-card__badge product-card__badge--promo promo-badge-{{ promo_type }}" 
+      data-promo-type="{{ promo_type }}"
+      aria-label="Promotion: {{ promo_text }}">
+  {{ promo_text }}
+</span>
+{%- endif -%}
+
+{%- endif -%}

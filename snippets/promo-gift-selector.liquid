@@ -1,0 +1,170 @@
+{%- comment -%}
+  Free Gift Selector Modal
+  Shown when customer reaches free gift threshold. Displays multiple
+  eligible gift products for customer to choose from.
+{%- endcomment -%}
+
+{%- assign modal_id = 'PromoGiftModal' -%}
+{%- assign modal_class = 'promo-gift-modal' -%}
+
+<div class="{{ modal_class }}" id="{{ modal_id }}" role="dialog" aria-modal="true" aria-labelledby="GiftModalTitle" style="display:none;">
+  <div class="{{ modal_class }}__overlay" id="GiftModalOverlay"></div>
+  
+  <div class="{{ modal_class }}__container">
+    <div class="{{ modal_class }}__content">
+      
+      <button class="{{ modal_class }}__close" id="GiftModalClose" aria-label="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <div class="{{ modal_class }}__header">
+        <h2 id="GiftModalTitle" class="{{ modal_class }}__title">
+          {{ settings.promo_gift_modal_title | default: '🎁 Congratulations! You\'ve unlocked a free gift!' }}
+        </h2>
+        <p class="{{ modal_class }}__subtitle">
+          Select one free item as your reward
+        </p>
+      </div>
+
+      <div class="{{ modal_class }}__products" id="PromoGiftOptions">
+        {%- comment -%} Populated by JavaScript via PromoEngine.getGiftOptions() {%- endcomment -%}
+        <div class="promo-gift-loading">
+          <div class="promo-gift-spinner"></div>
+          <p>Loading gift options...</p>
+        </div>
+      </div>
+
+      <div class="{{ modal_class }}__footer">
+        <p class="{{ modal_class }}__note">
+          Free gift will be added to your cart at no cost. Limit one per order.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  (function() {
+    'use strict';
+
+    const modal = document.getElementById('{{ modal_id }}');
+    const closeBtn = document.getElementById('GiftModalClose');
+    const overlay = document.getElementById('GiftModalOverlay');
+    const optionsContainer = document.getElementById('PromoGiftOptions');
+
+    function openModal() {
+      modal.style.display = 'block';
+      document.body.classList.add('promo-gift-modal-open');
+      document.body.style.overflow = 'hidden';
+      renderGiftOptions();
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.classList.remove('promo-gift-modal-open');
+      document.body.style.overflow = '';
+    }
+
+    function renderGiftOptions() {
+      if (!window.LuxePromo) return;
+      
+      const giftOptions = window.LuxePromo.getGiftOptions();
+      if (!giftOptions || giftOptions.length === 0) {
+        optionsContainer.innerHTML = '<p>No gift options available.</p>';
+        return;
+      }
+
+      optionsContainer.innerHTML = giftOptions.map(gift => `
+        <div class="promo-gift-item" data-variant-id="${gift.variants[0] ? gift.variants[0].id : ''}" data-product-id="${gift.product_id}">
+          <div class="promo-gift-item__img-wrap">
+            ${gift.featured_image 
+              ? '<img src="' + gift.featured_image.replace('.jpg', '_120x120.jpg') + '" alt="' + gift.title + '" class="promo-gift-item__img" loading="lazy">'
+              : '<div class="promo-gift-item__img promo-gift-item__img--placeholder">🎁</div>'
+            }
+            <span class="promo-gift-item__badge">FREE</span>
+          </div>
+          <h4 class="promo-gift-item__title">${gift.title}</h4>
+          <p class="promo-gift-item__price"><s>${ (gift.price / 100).toFixed(2) }</s> <span class="promo-gift-item__price-free">$0.00</span></p>
+          <button type="button" class="promo-gift-item__btn btn btn--small btn--primary" data-variant-id="${gift.variants[0] ? gift.variants[0].id : ''}">
+            Add Free Gift
+          </button>
+        </div>
+      `).join('');
+
+      // Attach event listeners
+      optionsContainer.querySelectorAll('.promo-gift-item__btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const variantId = parseInt(this.dataset.variantId);
+          if (variantId) {
+            addGiftToCart(variantId);
+          }
+        });
+      });
+    }
+
+    function addGiftToCart(variantId) {
+      const loadingBtn = optionsContainer.querySelector('.promo-gift-item__btn[data-variant-id="' + variantId + '"]');
+      if (loadingBtn) {
+        loadingBtn.textContent = 'Adding...';
+        loadingBtn.disabled = true;
+      }
+
+      window.LuxePromo.claimGift(variantId, 1)
+        .then(() => {
+          closeModal();
+          window.LuxeCart.showToast('{{ settings.promo_gift_claimed_message | default: "Free gift added to cart!" }}', 'success');
+          // Refresh cart display
+          window.LuxeCart.fetchCart().then(doc => {
+            const drawerBody = document.getElementById('CartDrawerBody');
+            const cartAjax = doc.getElementById('CartAjaxContent');
+            if (drawerBody && cartAjax) {
+              drawerBody.innerHTML = cartAjax.innerHTML;
+              // Re-init cart buttons
+              if (window.initCartQuantityButtons) window.initCartQuantityButtons();
+              if (window.initCartRemoveButtons) window.initCartRemoveButtons();
+            }
+          });
+        })
+        .catch(err => {
+          console.error('Error adding gift:', err);
+          window.LuxeCart.showToast('Error adding gift. Please try again.', 'error');
+          if (loadingBtn) {
+            loadingBtn.textContent = 'Add Free Gift';
+            loadingBtn.disabled = false;
+          }
+        });
+    }
+
+    // Event listeners
+    // Manual trigger via button(s)
+    document.querySelectorAll('.promo-gift-select-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal();
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (overlay) overlay.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.style.display === 'block') {
+        closeModal();
+      }
+    });
+
+    function isModalOpen() {
+      return modal.style.display === 'block';
+    }
+
+    // Expose for external triggers (e.g., from cart widget)
+    window.PromoGiftModal = {
+      open: openModal,
+      close: closeModal
+    };
+
+  })();
+</script>

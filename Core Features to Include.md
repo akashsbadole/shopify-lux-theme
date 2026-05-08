@@ -19,7 +19,7 @@ Blog & Contact Pages: Engage customers with content and support options.
 Liquid Templating: Use Liquid to dynamically pull data (products, collections, etc.).
 Sections & Blocks: Build modular sections for flexibility.
 App Compatibility: Ensure your theme works with popular Shopify apps (e.g., Oberlo, Klaviyo).
-Multi-language & Currency: Support for international stores.
+Multi-currency Support: Automatic currency formatting and conversion tooltips.
 
 5. Performance & Security
 

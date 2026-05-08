@@ -18,12 +18,16 @@
     </button>
   </div>
 
-  <div class="cart-drawer__body" id="CartDrawerBody">
-    {%- if cart.item_count > 0 -%}
-      {%- render 'cart-items', cart: cart -%}
-      
-      <!-- Cart Upsell Section -->
-      {%- section 'cart-upsell' -%}
+   <div class="cart-drawer__body" id="CartDrawerBody">
+     {%- if cart.item_count > 0 -%}
+
+       <!-- Promotion Progress Bar -->
+       {%- render 'promo-progress', cart: cart -%}
+
+       {%- render 'cart-items', cart: cart -%}
+       
+       <!-- Cart Upsell Section -->
+       {%- section 'cart-upsell' -%}
       
     {%- else -%}
       <div class="cart-drawer__empty" id="CartEmpty">
@@ -38,14 +42,18 @@
       <div class="cart-spinner"></div>
     </div>
 
-    <!-- AJAX Cart Upsell -->
-    <div class="cart-upsell" id="CartUpsell" style="display:none;">
-      <h3 class="cart-upsell__title">Recommended for You</h3>
-      <div class="cart-upsell__items" id="CartUpsellItems">
-        {%- comment -%} Populated by JS based on cart contents {%- endcomment -%}
-      </div>
-    </div>
-  </div>
+     <!-- AJAX Cart Upsell -->
+     <div class="cart-upsell" id="CartUpsell" style="display:none;">
+       <h3 class="cart-upsell__title">Recommended for You</h3>
+       <div class="cart-upsell__items" id="CartUpsellItems">
+         {%- comment -%} Populated by JS based on cart contents {%- endcomment -%}
+       </div>
+     </div>
+
+     <!-- Free Gift Selector Modal -->
+     {%- render 'promo-gift-selector' -%}
+
+   </div>
 
   {%- if cart.item_count > 0 -%}
   <div class="cart-drawer__footer" id="CartFooter">
@@ -95,14 +103,17 @@
       </div>
     {%- endif -%}
 
-    <!-- Trust badges -->
-    <div class="cart-trust">
-      <div class="cart-trust__badge">🔒 Secure Checkout</div>
-      <div class="cart-trust__badge">↩️ Easy Returns</div>
-      <div class="cart-trust__badge">🚚 Fast Delivery</div>
-    </div>
+     <!-- Trust badges -->
+     <div class="cart-trust">
+       <div class="cart-trust__badge">🔒 Secure Checkout</div>
+       <div class="cart-trust__badge">↩️ Easy Returns</div>
+       <div class="cart-trust__badge">🚚 Fast Delivery</div>
+     </div>
 
-  </div>
+     <!-- Promo Widget -->
+     {%- render 'promo-widget' -%}
+
+   </div>
   {%- endif -%}
 </div>
 
@@ -205,19 +216,54 @@
       }
     },
 
-    // Show toast notification
-    showToast: function(message, type) {
-      var toast = document.getElementById('luxeToast');
-      var msg = document.getElementById('luxeToastMsg');
-      if (toast && msg) {
-        msg.textContent = message;
-        toast.classList.add('show');
-        if (type) toast.classList.add(type);
-        setTimeout(function() {
-          toast.classList.remove('show');
-          if (type) toast.classList.remove(type);
-        }, 3000);
-      }
-    }
-  };
-</script>
+     // Show toast notification
+     showToast: function(message, type) {
+       var toast = document.getElementById('luxeToast');
+       var msg = document.getElementById('luxeToastMsg');
+       if (toast && msg) {
+         msg.textContent = message;
+         toast.classList.add('show');
+         if (type) toast.classList.add(type);
+         setTimeout(function() {
+           toast.classList.remove('show');
+           if (type) toast.classList.remove(type);
+         }, 3000);
+       }
+     },
+
+     // Update cart attributes (for promotions)
+     updateAttributes: function(attrs) {
+       // Persist to localStorage; actual cart update occurs on next form submit or via direct API call
+       try {
+         var stored = JSON.parse(localStorage.getItem('luxe_cart_attributes') || '{}');
+         Object.assign(stored, attrs);
+         localStorage.setItem('luxe_cart_attributes', JSON.stringify(stored));
+       } catch(e) {}
+     }
+   };
+ </script>
+
+ <!-- Initial promotion metafields (rendered server-side) -->
+ <script type="text/javascript">
+   window.__LUXE_PROMO_METAFIELDS__ = [
+     {%- for item in cart.items %}
+       {
+         "type": {{ item.product.metafields.luxe.promo_type.value | json }},
+         "product_id": {{ item.product.id }},
+         "buy_qty": {{ item.product.metafields.luxe.promo_buy_qty.value | default: 0 }},
+         "get_qty": {{ item.product.metafields.luxe.promo_get_qty.value | default: 0 }},
+         "get_product_id": {{ item.product.metafields.luxe.promo_get_product.value | default: '' | json }},
+         "min_amount": {{ item.product.metafields.luxe.promo_min_amount.value | default: 0 }},
+         "gift_product_ids": {{ item.product.metafields.luxe.promo_gift_product_ids.value | default: '[]' | json }},
+         "min_qty": {{ item.product.metafields.luxe.promo_min_qty.value | default: 0 }},
+         "discount_type": {{ item.product.metafields.luxe.promo_discount_type.value | default: 'percentage' | json }},
+         "discount_value": {{ item.product.metafields.luxe.promo_discount_value.value | default: 0 }},
+         "apply_to": {{ item.product.metafields.luxe.promo_apply_to.value | default: 'cheapest' | json }},
+         "bundle_product_ids": {{ item.product.metafields.luxe.promo_bundle_product_ids.value | default: '[]' | json }},
+         "bundle_price": {{ item.product.metafields.luxe.promo_bundle_price.value | default: 0 }},
+         "enabled": true,
+         "id": "product-{{ item.product.id }}"
+       }{%- unless forloop.last -%},{%- endunless -%}
+     {%- endfor %}
+   ];
+ </script>

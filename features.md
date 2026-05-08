@@ -64,7 +64,6 @@ Product badges
 Press coverage
 In-menu promos
 FAQ page
-EU translations (EN, FR, IT, DE, ES)
 Customizable contact form
 Cross-selling
 Countdown timer

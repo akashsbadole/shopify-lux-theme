@@ -1,55 +1,28 @@
 {%- comment -%}
-  Currency & Language Selector
-  Shows currency and language selectors in header
-  Configure languages in Shopify Admin → Settings → Languages
+  Currency Selector
+  Shows currency selector in header
+  Configure currencies in Shopify Admin → Settings → Markets
 {%- endcomment -%}
 
-{%- if settings.show_currency_selector or settings.show_language_selector -%}
+{%- if settings.show_currency_selector and localization.available_currencies.size > 0 -%}
 <div class="localization-selector" id="LocalizationSelector">
-  {%- if settings.show_language_selector -%}
-     <div class="localization-item localization-item--lang">
-       <label for="LanguageSelector" class="visually-hidden">{{ 'general.language_label' | t }}</label>
-       <select id="LanguageSelector" class="localization-select" name="language_code">
-        {%- if settings.custom_languages != blank -%}
-          {%- assign custom_langs = settings.custom_languages | split: ',' -%}
-          {%- for lang in custom_langs -%}
-            {%- assign lang_pair = lang | split: '-' -%}
-            {%- assign code = lang_pair[0] | strip -%}
-            {%- assign name = lang_pair[1] | strip | default: code -%}
-            <option value="{{ code }}"{% if code == localization.language.iso_code %} selected{% endif %}>
-              {{ name }}
-            </option>
-          {%- endfor -%}
-        {%- elsif localization.available_languages.size > 1 -%}
-          {%- for language in localization.available_languages -%}
-            <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>
-              {{ language.endonym_name }}
-            </option>
-          {%- endfor -%}
-        {%- endif -%}
-      </select>
-    </div>
-  {%- endif -%}
-
-  {%- if settings.show_currency_selector and localization.available_currencies.size > 0 -%}
-    <div class="localization-item localization-item--currency">
-      <label for="CurrencySelector" class="visually-hidden">{{ 'general.currency_label' | t }}</label>
-      <select 
-        id="CurrencySelector" 
-        class="localization-select{% if settings.enable_currency_converter and settings.exchange_rate_api_key != blank %} js-currency-converter-select{% endif %}"
-        name="currency_code"
-        {% if settings.enable_currency_converter and settings.exchange_rate_api_key != blank %}
-          data-converter-enabled="true"
-        {% endif %}
-      >
-        {%- for currency in localization.available_currencies -%}
-          <option value="{{ currency.iso_code }}"{% if currency.iso_code == localization.currency.iso_code %} selected{% endif %}>
-            {{ currency.iso_code }} {{ currency.symbol }}
-          </option>
-        {%- endfor -%}
-      </select>
-    </div>
-  {%- endif -%}
+  <div class="localization-item localization-item--currency">
+    <label for="CurrencySelector" class="visually-hidden">{{ 'general.currency_label' | t }}</label>
+    <select 
+      id="CurrencySelector" 
+      class="localization-select{% if settings.enable_currency_converter and settings.exchange_rate_api_key != blank %} js-currency-converter-select{% endif %}"
+      name="currency_code"
+      {% if settings.enable_currency_converter and settings.exchange_rate_api_key != blank %}
+        data-converter-enabled="true"
+      {% endif %}
+    >
+      {%- for currency in localization.available_currencies -%}
+        <option value="{{ currency.iso_code }}"{% if currency.iso_code == localization.currency.iso_code %} selected{% endif %}>
+          {{ currency.iso_code }} {{ currency.symbol }}
+        </option>
+      {%- endfor -%}
+    </select>
+  </div>
 </div>
 
 <style>

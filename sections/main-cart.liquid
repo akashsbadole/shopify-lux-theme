@@ -18,6 +18,9 @@
       </script>
         <div class="main-cart__layout">
 
+          <!-- Promotion Progress Bar -->
+          {%- render 'promo-progress', cart: cart -%}
+
           <!-- Items -->
           <div class="main-cart__items">
             {%- for item in cart.items -%}
@@ -148,9 +151,14 @@
                   .catch(function() {});
               });
             </script>
-          {%- endif -%}
+           {%- endif -%}
 
-          <!-- Summary -->
+            <!-- Promo Metafields for JS -->
+            <script type="text/javascript">
+              window.__LUXE_PROMO_METAFIELDS__ = [];
+            </script>
+
+            <!-- Summary -->
           <div class="main-cart__summary">
             <h2 class="main-cart__summary-title">Order Summary</h2>
             <div class="cart-totals">

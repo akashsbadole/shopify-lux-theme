@@ -4,7 +4,7 @@
 {%- endcomment -%}
 
 {%- if section.settings.upsell_collection != blank -%}
-{%- assign upsell_products = section.settings.upsell_collection.products | limit: section.settings.upsell_limit -%}
+{%- assign upsell_products = section.settings.upsell_collection.products | slice: 0, section.settings.upsell_limit -%}
 
 {%- if upsell_products.size > 0 -%}
 <div class="cart-upsell" id="CartUpsell">
