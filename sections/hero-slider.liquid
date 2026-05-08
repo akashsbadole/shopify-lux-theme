@@ -8,9 +8,17 @@
 <div class="hero-slider section-{{ section.id }} animate-fade-in" id="HeroSlider" data-autoplay="{% if section.settings.autoplay != false %}{{ settings.hero_slider_autoplay | default: true }}{% else %}false{% endif %}" data-speed="{{ settings.hero_slider_speed | default: 5 }}000" data-dots="{{ section.settings.show_dots }}" data-arrows="{{ section.settings.show_arrows }}">
   <div class="hero-slider__track" id="HeroSliderTrack">
     {%- for block in section.blocks -%}
+      {%- liquid
+        assign loading = 'lazy'
+        assign fetchpriority = 'auto'
+        if forloop.first
+          assign loading = 'eager'
+          assign fetchpriority = 'high'
+        endif
+      -%}
       <div class="hero-slider__slide animate-fade-in-up delay-{{ forloop.index }}" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
         {%- if block.settings.image != blank -%}
-          {{ block.settings.image | image_url: width: 1920 | image_tag: class: 'hero-slider__img', loading: loading, fetchpriority: fetchpriority }}
+          {{ block.settings.image | image_url: width: 1920 | image_tag: class: 'hero-slider__img', loading: loading, fetchpriority: fetchpriority, widths: '600, 800, 1000, 1200, 1400, 1600, 1920, 2400', sizes: '100vw' }}
         {%- else -%}
            <img 
              src="{{ 'hero-slider-default.jpg' | asset_url }}" 

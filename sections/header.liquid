@@ -136,6 +136,13 @@
         </span>
       </button>
 
+      <!-- App Blocks -->
+      {%- for block in section.blocks -%}
+        {%- if block.type == '@app' -%}
+          {%- render block -%}
+        {%- endif -%}
+      {%- endfor -%}
+
     </div>
   </div><!-- /.site-header__inner -->
 
@@ -318,6 +325,9 @@
           "info": "Create a link list in Navigation and select it here"
         }
       ]
+    },
+    {
+      "type": "@app"
     }
   ],
   "presets": [
